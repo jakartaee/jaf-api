@@ -1,0 +1,62 @@
+	 JavaBeans(tm) Activation Framework 1.2 Release Notes
+
+Welcome to the JavaBeans(tm) Activation Framework!
+
+System Requirements:
+--------------------
+
+The JavaBeans(tm) Activation Framework (JAF) was developed and tested
+against JDK 1.5.  JAF is written in Java (with no native code).  It
+will run on any JDK 1.5 (or newer) compatible virtual machine.
+
+Note that JAF is included in Java SE 6 and later releases.
+
+Installation:
+-------------
+
+There is effectively *no* installation of the JAF. The classes that
+make up the JAF are contained in the included Java(tm) Archive (JAR) file,
+"javax.activation.jar". This file can be placed anywhere accessible to the
+Java virtual machine running on your system. The only requirement is
+that the javax.activation.jar be included in your system's class path so
+Java can find the JAF classes.
+
+Related Web Sites:
+------------------
+
+There are a number of web sites you might find useful if you haven't
+already run across them:
+
+https://github.com/eclipse-ee4j/javamail -- The JavaMail(tm) API provides a set
+                             of abstract classes that model a mail system.
+                             Its implementation is dependent on the JAF.
+
+
+Bugs fixed in the 1.2 Release:
+------------------------------
+
+JDK-8047773 Remove JAF's API dependency on java.beans.Beans.instantiate
+JDK-8049379 JDK 1.9 moves config files to <java.home>/conf
+
+
+Bugs fixed in the 1.1.1 Release:
+--------------------------------
+
+6456395	DataHandler.writeTo should have built-in support for byte arrays
+	and Strings
+6538484	JAF fails in Turkish locale
+
+
+Bugs fixed in the 1.1 Release:
+------------------------------
+
+<no id>	use context class loader to load data content handlers
+<no id>	guard against possible NPE when parsing mailcap file
+<no id>	really make sure input stream gets closed in DataHandler.writeTo
+4134676	need way to find all known MIME types
+4786035	API doc: some bugs in javax/activation/MimeType.cmnt
+4848096	MailcapCommandMap should store *ALL* mailcap entries
+5090200	CommandMap needs file name to choose proper command on Windows
+6245613	fix ActivationDataFlavor normalize methods to match DataFlavor
+6252930	MailcapCommandMap needs support for "fallback" entries in mailcap file
+6357487	DataHandler.getBean should load class using application's class loader
