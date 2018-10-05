@@ -36,7 +36,7 @@ public class ImageViewer extends Panel implements CommandObject {
     }
     /**
      * Set the DataHandler for this CommandObject
-     * @param DataHandler the DataHandler
+     * @param dh the DataHandler
      */
     public void setCommandContext(String verb, DataHandler dh)	throws IOException{
 	_dh = dh;

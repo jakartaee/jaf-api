@@ -27,7 +27,7 @@ public class MailcapTokenizer {
     /**
      *  Constructor
      *
-     *  @parameter  inputString the string to tokenize
+     *  @param  inputString the string to tokenize
      */
     public MailcapTokenizer(String inputString) {
 	data = inputString;
@@ -50,6 +50,8 @@ public class MailcapTokenizer {
      *  preceeding it) is considered a token.
      *
      *  This is required for handling command strings in a mailcap entry.
+     *
+     *  @param	value	on or off
      */
     public void setIsAutoquoting(boolean value) {
 	isAutoquoting = value;
@@ -58,7 +60,7 @@ public class MailcapTokenizer {
     /**
      *  Retrieve current token.
      *
-     *  @returns    The current token value
+     *  @return    The current token value
      */
     public int getCurrentToken() {
 	return currentToken;
