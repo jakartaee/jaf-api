@@ -26,6 +26,7 @@ public class ImageViewerCanvas extends Canvas
 
   /**
    * set the image
+   * @param new_image the image
    */
   public void setImage(Image new_image)
     {
