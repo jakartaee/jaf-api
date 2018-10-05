@@ -48,6 +48,7 @@ public class MailcapFile {
      * The constructor that takes a filename as an argument.
      *
      * @param new_fname The file name of the mailcap file.
+     * @throws	IOException	for I/O errors
      */
     public MailcapFile(String new_fname) throws IOException {
 	if (LogSupport.isLoggable())
@@ -69,6 +70,7 @@ public class MailcapFile {
      * The constructor that takes an input stream as an argument.
      *
      * @param is	the input stream
+     * @throws	IOException	for I/O errors
      */
     public MailcapFile(InputStream is) throws IOException {
 	if (LogSupport.isLoggable())
@@ -89,8 +91,11 @@ public class MailcapFile {
      *
      * <p>
      * <strong>Semantics:</strong> First check for the literal mime type,
-     * if that fails looks for wildcard <type>/\* and return that. Return the
-     * list of all that hit.
+     * if that fails looks for wildcard &lt;type&gt;/\* and return that.
+     * Return the list of all that hit.
+     *
+     * @param	mime_type	the MIME type
+     * @return	the map of MailcapEntries
      */
     public Map getMailcapList(String mime_type) {
 	Map search_result = null;
@@ -122,8 +127,11 @@ public class MailcapFile {
      *
      * <p>
      * <strong>Semantics:</strong> First check for the literal mime type,
-     * if that fails looks for wildcard <type>/\* and return that. Return the
-     * list of all that hit.
+     * if that fails looks for wildcard &lt;type&gt;/\* and return that.
+     * Return the list of all that hit.
+     *
+     * @param	mime_type	the MIME type
+     * @return	the map of fallback MailcapEntries
      */
     public Map getMailcapFallbackList(String mime_type) {
 	Map search_result = null;
@@ -152,6 +160,8 @@ public class MailcapFile {
 
     /**
      * Return all the MIME types known to this mailcap file.
+     *
+     * @return	a String array of the MIME types
      */
     public String[] getMimeTypes() {
 	Set types = new HashSet(type_hash.keySet());
@@ -164,6 +174,9 @@ public class MailcapFile {
 
     /**
      * Return all the native comands for the given MIME type.
+     *
+     * @param	mime_type	the MIME type
+     * @return	a String array of the commands
      */
     public String[] getNativeCommands(String mime_type) {
 	String[] cmds = null;
@@ -206,12 +219,14 @@ public class MailcapFile {
     /**
      * appendToMailcap: Append to this Mailcap DB, use the mailcap
      * format:
-     * Comment == "# <i>comment string</i>
-     * Entry == "mimetype;        javabeanclass<nl>
+     * Comment == "# <i>comment string</i>"
+     * Entry == "mimetype;        javabeanclass"
      *
      * Example:
      * # this is a comment
      * image/gif       jaf.viewers.ImageViewer
+     *
+     * @param	mail_cap	the mailcap string
      */
     public void appendToMailcap(String mail_cap) {
 	if (LogSupport.isLoggable())
@@ -273,6 +288,10 @@ public class MailcapFile {
      *
      *	Note that this routine does not handle line continuations.
      *	They should have been handled prior to calling this routine.
+     *
+     * @param	mailcapEntry	the mailcap entry
+     * @throws	MailcapParseException	for parse errors
+     * @throws	IOException	for I/O errors
      */
     protected void parseLine(String mailcapEntry)
 				throws MailcapParseException, IOException {

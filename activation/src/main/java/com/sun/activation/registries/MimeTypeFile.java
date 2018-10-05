@@ -21,6 +21,7 @@ public class MimeTypeFile {
      * The construtor that takes a filename as an argument.
      *
      * @param new_fname The file name of the mime types file.
+     * @throws	IOException	for I/O errors
      */
     public MimeTypeFile(String new_fname) throws IOException {
 	File mime_file = null;
@@ -55,6 +56,9 @@ public class MimeTypeFile {
 
     /**
      * get the MimeTypeEntry based on the file extension
+     *
+     * @param	file_ext	the file extension
+     * @return	the MimeTypeEntry
      */
     public MimeTypeEntry getMimeTypeEntry(String file_ext) {
 	return (MimeTypeEntry)type_hash.get((Object)file_ext);
@@ -62,6 +66,9 @@ public class MimeTypeFile {
 
     /**
      * Get the MIME type string corresponding to the file extension.
+     *
+     * @param	file_ext	the file extension
+     * @return	the MIME type string
      */
     public String getMIMETypeString(String file_ext) {
 	MimeTypeEntry entry = this.getMimeTypeEntry(file_ext);
@@ -86,6 +93,8 @@ public class MimeTypeFile {
      * audio/basic            au
      * text/plain             txt text
      * type=application/postscript exts=ps,eps
+     *
+     * @param mime_types	the mime.types string
      */
     public void appendToRegistry(String mime_types) {
 	try {

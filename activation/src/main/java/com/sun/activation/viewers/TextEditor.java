@@ -105,6 +105,9 @@ public class TextEditor extends Panel implements CommandObject,
   /**
    * set the data stream, component to assume it is ready to
    * be read.
+   *
+   * @param	ins	the data stream
+   * @throws	IOException	for I/O errors
    */
     public void setInputStream(InputStream ins) throws IOException {
 	
