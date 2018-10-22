@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
@@ -417,11 +417,6 @@
 	    <!--
 		Tell the source plugin about the sources that may have
 		been downloaded by the maven-dependency-plugin.
-
-		Also, need this plugin to define target/classes as another
-		source directory so that the filtered Version.java
-		that's copied there will also be compiled when using
-		the latest version of the maven-compiler-plugin.
 	    -->
 
 	    <plugin>
@@ -439,10 +434,48 @@
 				<source> <!-- for dependencies -->
 				    ${project.build.directory}/sources
 				</source>
-				<source> <!-- for Version.java -->
-				    target/classes
-				</source>
 			    </sources>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>add-resource</id>
+			<phase>generate-resources</phase>
+			<goals>
+			    <goal>add-resource</goal>
+			</goals>
+			<configuration>
+			    <resources>
+				<resource>
+				    <directory>${main.basedir}</directory>
+				    <targetPath>META-INF</targetPath>
+				    <includes>
+					<include>LICENSE.md</include>
+					<include>NOTICE.md</include>
+				    </includes>
+				</resource>
+			    </resources>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Directory plugin to find parent root directory absolute path.
+		Sets ${main.basedir}, used above with build-helper-maven-plugin
+		to include LICENSE.md and NOTICE.md in jar files.
+	    -->
+	    <plugin>
+		<groupId>org.commonjava.maven.plugins</groupId>
+		<artifactId>directory-maven-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>directories</id>
+			<goals>
+			    <goal>highest-basedir</goal>
+			</goals>
+			<phase>initialize</phase>
+			<configuration>
+			    <property>main.basedir</property>
 			</configuration>
 		    </execution>
 		</executions>
@@ -511,6 +544,11 @@
 		    <version>1.7</version>
 		</plugin>
 		<plugin>
+		    <groupId>org.commonjava.maven.plugins</groupId>
+		    <artifactId>directory-maven-plugin</artifactId>
+		    <version>0.3</version>
+		</plugin>
+		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-assembly-plugin</artifactId>
 		    <version>2.4</version>
@@ -570,6 +608,15 @@
 			</excludeFile>
 		    </configuration>
 		</plugin>
+		<plugin>
+		    <groupId>org.sonatype.plugins</groupId>
+		    <artifactId>nexus-staging-maven-plugin</artifactId>
+		    <extensions>true</extensions>
+		    <configuration>
+			<serverId>ossrh</serverId>
+			<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+		    </configuration>
+		</plugin>
 	    </plugins>
 	</pluginManagement>
     </build>
@@ -578,7 +625,7 @@
 	<dependencies>
 	    <dependency>
 		<groupId>com.sun.activation</groupId>
-		<artifactId>javax.activation</artifactId>
+		<artifactId>jakarta.activation</artifactId>
 		<version>${project.version}</version>
 	    </dependency>
 	</dependencies>
