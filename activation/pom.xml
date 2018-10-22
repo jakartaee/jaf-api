@@ -22,16 +22,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
-    <artifactId>javax.activation</artifactId>
+    <artifactId>jakarta.activation</artifactId>
     <packaging>jar</packaging>
     <name>JavaBeans Activation Framework</name>
 
     <properties>
 	<activation.extensionName>
-	    javax.activation
+	    jakarta.activation
 	</activation.extensionName>
 	<activation.moduleName>
-	    java.activation
+	    jakarta.activation
 	</activation.moduleName>
 	<activation.specificationTitle>
 	    JavaBeans(TM) Activation Framework Specification

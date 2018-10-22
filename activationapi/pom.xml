@@ -31,16 +31,16 @@
     <name>JavaBeans Activation Framework API jar</name>
     <properties>
         <activation.extensionName>
-            javax.activation
+            jakarta.activation
         </activation.extensionName>
         <activation.moduleName>
-            java.activation
+            jakarta.activation
         </activation.moduleName>
         <activation.packages.export>
             javax.activation.*; version=${activation.spec.version}
         </activation.packages.export>
         <activation.bundle.symbolicName>
-            javax.activation-api
+            jakarta.activation-api
         </activation.bundle.symbolicName>
     </properties>
     <build>
@@ -67,7 +67,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.sun.activation</groupId>
-                                    <artifactId>javax.activation</artifactId>
+                                    <artifactId>jakarta.activation</artifactId>
                                     <version>${project.version}</version>
                                     <classifier>sources</classifier>
                                     <outputDirectory>
@@ -82,7 +82,7 @@
                     <artifactItems>
                         <artifactItem>
                             <groupId>com.sun.activation</groupId>
-                            <artifactId>javax.activation</artifactId>
+                            <artifactId>jakarta.activation</artifactId>
                             <version>${project.version}</version>
                         </artifactItem>
                     </artifactItems>

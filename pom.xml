@@ -417,11 +417,6 @@
 	    <!--
 		Tell the source plugin about the sources that may have
 		been downloaded by the maven-dependency-plugin.
-
-		Also, need this plugin to define target/classes as another
-		source directory so that the filtered Version.java
-		that's copied there will also be compiled when using
-		the latest version of the maven-compiler-plugin.
 	    -->
 
 	    <plugin>
@@ -438,9 +433,6 @@
 			    <sources>
 				<source> <!-- for dependencies -->
 				    ${project.build.directory}/sources
-				</source>
-				<source> <!-- for Version.java -->
-				    target/classes
 				</source>
 			    </sources>
 			</configuration>
@@ -616,6 +608,15 @@
 			</excludeFile>
 		    </configuration>
 		</plugin>
+		<plugin>
+		    <groupId>org.sonatype.plugins</groupId>
+		    <artifactId>nexus-staging-maven-plugin</artifactId>
+		    <extensions>true</extensions>
+		    <configuration>
+			<serverId>ossrh</serverId>
+			<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+		    </configuration>
+		</plugin>
 	    </plugins>
 	</pluginManagement>
     </build>
@@ -624,7 +625,7 @@
 	<dependencies>
 	    <dependency>
 		<groupId>com.sun.activation</groupId>
-		<artifactId>javax.activation</artifactId>
+		<artifactId>jakarta.activation</artifactId>
 		<version>${project.version}</version>
 	    </dependency>
 	</dependencies>
