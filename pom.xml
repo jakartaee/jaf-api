@@ -24,7 +24,7 @@
     <groupId>com.sun.activation</groupId>
     <artifactId>all</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
     <name>JavaBeans Activation Framework distribution</name>
     <description>${project.name}</description>
     <url>https://github.com/eclipse-ee4j/jaf</url>
