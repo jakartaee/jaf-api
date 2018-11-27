@@ -1,0 +1,94 @@
+
+		JavaBeans Activation Framework 1.2
+		==================================
+
+JAF 1.2 proposes a few minor changes to the JAF specification to
+align with other changes in JDK 9.  Following is a description of
+the changes that are being introduced in JAF 1.2.  The numbers in
+parentheses are bug numbers; you can find more information about the
+bug reports at:
+
+    http://bugs.openjdk.java.net
+
+The JAF 1.2 RI will require Java SE 7 or later.  JAF 1.2 will be
+included in Java SE 9.
+
+The JAF 1.2 RI and TCK will be available under the same terms as the
+JAF 1.1 RI and TCK.
+
+
+===================================================================
+
+1.  JDK 9 moves config files to <java.home>/conf (JDK-8049379)
+----------------------------------------------------------------
+
+The specification for MailcapCommandMap is changed as follows:
+
+     * <b>Mailcap file search order:</b><p>
+     * The MailcapCommandMap looks in various places in the user's
+     * system for mailcap file entries. When requests are made
+     * to search for commands in the MailcapCommandMap, it searches
+     * mailcap files in the following order:
+     * <p>
+     * <ol>
+     * <li> Programatically added entries to the MailcapCommandMap instance.
+     * <li> The file <code>.mailcap</code> in the user's home directory.
+     * <li> The file <code>mailcap</code> in the Java runtime.
+     * <li> The file or resources named <code>META-INF/mailcap</code>.
+     * <li> The file or resource named <code>META-INF/mailcap.default</code>
+     * (usually found only in the <code>activation.jar</code> file).
+     * </ol>
+     * <p>
+     * (The current implementation looks for the <code>mailcap</code> file
+     * in the Java runtime in the directory <code><i>java.home</i>/conf</code>
+     * if it exists, and otherwise in the directory
+     * <code><i>java.home</i>/lib</code>, where <i>java.home</i> is the value
+     * of the "java.home" System property.  Note that the "conf" directory was
+     * introduced in JDK 9.)
+
+
+The specification for MimetypesFileTypeMap is changed as follows:
+
+     * <b>MIME types file search order:</b><p>
+     * The MimetypesFileTypeMap looks in various places in the user's
+     * system for MIME types file entries. When requests are made
+     * to search for MIME types in the MimetypesFileTypeMap, it searches  
+     * MIME types files in the following order:
+     * <ol>
+     * <li> Programmatically added entries to the MimetypesFileTypeMap instance.
+     * <li> The file <code>.mime.types</code> in the user's home directory.
+     * <li> The file <code>mime.types</code> in the Java runtime.
+     * <li> The file or resources named <code>META-INF/mime.types</code>.
+     * <li> The file or resource named <code>META-INF/mimetypes.default</code>
+     * (usually found only in the <code>activation.jar</code> file).
+     * </ol>
+     * <p>
+     * (The current implementation looks for the <code>mime.types</code> file
+     * in the Java runtime in the directory <code><i>java.home</i>/conf</code>
+     * if it exists, and otherwise in the directory
+     * <code><i>java.home</i>/lib</code>, where <i>java.home</i> is the value
+     * of the "java.home" System property.  Note that the "conf" directory was
+     * introduced in JDK 9.)
+
+
+===================================================================
+
+2.  Remove JAF's API dependency on java.beans.Beans.instantiate (JDK-804773)
+----------------------------------------------------------------------------
+
+To allow custom runtimes to be created without the java.desktop module,
+the getCommandObject method of CommandInfo is changed to make the use
+of java.beans.Beans.instantiate conditional:
+
+    /**
+     * Return the instantiated JavaBean component.
+     * <p>
+     * If the current runtime environment supports
+     * {@link java.beans.Beans#instantiate Beans.instantiate},
+     * use it to instantiate the JavaBeans component.  Otherwise, use
+     * {@link java.lang.Class#forName Class.forName}.
+     * <p>
+     * The component class needs to be public.
+     * On Java SE 9 and newer, if the component class is in a named module,
+     * it needs to be in an exported package.
+    ...
