@@ -118,6 +118,7 @@
     <modules>
 	<module>activation</module>
 	<module>activationapi</module>
+	<module>spec</module>
     </modules>
 
     <profiles>
