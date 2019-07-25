@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!--
 
-    Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -24,7 +24,7 @@
     <groupId>com.sun.activation</groupId>
     <artifactId>jakarta.activation</artifactId>
     <packaging>jar</packaging>
-    <name>JavaBeans Activation Framework</name>
+    <name>Jakarta Activation</name>
 
     <properties>
 	<activation.extensionName>
@@ -34,7 +34,7 @@
 	    jakarta.activation
 	</activation.moduleName>
 	<activation.specificationTitle>
-	    JavaBeans(TM) Activation Framework Specification
+	    Jakarta Activation Specification
 	</activation.specificationTitle>
 	<activation.implementationTitle>
 	    javax.activation
@@ -122,13 +122,13 @@
 			<configuration>
 			    <author>false</author>
 			    <description>
-				JavaBeans Activation Framework API documentation
+				Jakarta Activation API documentation
 			    </description>
 			    <doctitle>
-				JavaBeans Activation Framework API documentation
+				Jakarta Activation API documentation
 			    </doctitle>
 			    <windowtitle>
-				JavaBeans Activation Framework API documentation
+				Jakarta Activation API documentation
 			    </windowtitle>
 			    <splitindex>true</splitindex>
 			    <use>true</use>
@@ -136,7 +136,7 @@
 			    <serialwarn>true</serialwarn>
 			    <quiet>true</quiet>
 			    <bottom>
-<![CDATA[Copyright &#169; 1996-2017,
+<![CDATA[Copyright &#169; 1996-2019,
     <a href="http://www.oracle.com">Oracle</a>
     and/or its affiliates. All Rights Reserved.
     Use is subject to
@@ -145,7 +145,7 @@
 			    </bottom>
 			    <groups>
 				<group>
-				    <title>JavaBeans Activation Framework API Packages</title>
+				    <title>Jakarta Activation API Packages</title>
 				    <packages>javax.*</packages>
 				</group>
 			    </groups>

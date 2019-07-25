@@ -1,6 +1,6 @@
-# Notices for Eclipse Project for JAF
+# Notices for Jakarta Activation
 
-This content is produced and maintained by the Eclipse Project for JAF project.
+This content is produced and maintained by Jakarta Activation project.
 
 * Project home: https://projects.eclipse.org/projects/ee4j.jaf
 

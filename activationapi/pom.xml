@@ -11,7 +11,7 @@
 
 -->
 <!--
-    This project builds the JAF API jar file, which contains only
+    This project builds the Activation API jar file, which contains only
     the javax.activation.* API definitions and is *only* intended to be used
     for programs to compile against.  Note that it includes none of the
     implementation-specific classes that the javax.activation.* classes rely on.
@@ -28,7 +28,7 @@
     <groupId>jakarta.activation</groupId>
     <artifactId>jakarta.activation-api</artifactId>
     <packaging>jar</packaging>
-    <name>JavaBeans Activation Framework API jar</name>
+    <name>Jakarta Activation API jar</name>
     <properties>
         <activation.extensionName>
             jakarta.activation

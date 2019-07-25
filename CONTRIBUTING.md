@@ -1,14 +1,13 @@
-# Contributing to Eclipse Project for JAF
+# Contributing to Jakarta Activation
 
 Thanks for your interest in this project.
 
 ## Project description
 
-The JavaBeans Activation Framework (JAF) is a standard extension to the Java
-platform that lets you take advantage of standard services to: determine the
-type of an arbitrary piece of data; encapsulate access to it; discover the
-operations available on it; and instantiate the appropriate bean to perform the
-operation(s).
+Jakarta Activation lets you take advantage of standard services to:
+determine the type of an arbitrary piece of data; encapsulate access to
+discover the operations available on it; and instantiate the
+appropriate bean to perform the operation(s).
 
 * https://projects.eclipse.org/projects/ee4j.jaf
 
