@@ -1,26 +1,28 @@
-# JavaBeans Activation Framework (JAF)
+# Jakarta Activation
 
-The JavaBeans Activation Framework (JAF) is a standard extension to the
-Java platform that lets you take advantage of standard services to:
+Jakarta Activation lets you take advantage of standard services to:
 determine the type of an arbitrary piece of data; encapsulate access to
 it; discover the operations available on it; and instantiate the
 appropriate bean to perform the operation(s).
 
-JAF is used by [JavaMail](https://github.com/eclipse-ee4j/javamail)
-and [JAX-WS](https://github.com/eclipse-ee4j/jax-ws-api) for data content
-handling.
-
-JAF is included in Java SE 6 through Java SE 10.
+Jakarta Activation is used by
+[Jakarta Mail](https://github.com/eclipse-ee4j/javamail) and
+[Jakarta XML Web Services](https://github.com/eclipse-ee4j/jax-ws-api)
+for data content handling.
 
 # Table of Contents
 * [Latest News](#Latest_News)
-* [Download JavaMail Release](#Download_JavaMail_Release)
 * [API Documentation](#API_Documentation)
 * [Help](#Help)
 * [Bugs](#Bugs)
 * [Development Releases](#Development_Releases)
 
 # <a name="Latest_News"></a>Latest News
+
+## July 25, 2019 - Jakarta Activation is the new name for JAF ##
+
+The JavaBeans Activation Framework has been renamed to Jakarta Activation
+in preparationfor inclusion in a future version of Jakarta EE.
 
 ## November 26, 2018 - JavaBeans Activation Framework 1.2.1 Final Release ##
 
@@ -66,8 +68,8 @@ You can post questions to the
 
 # <a name="Bugs"></a>Bugs
 
-JAF bugs are tracked in the
-[GitHub JAF project issue tracker](https://github.com/eclipse-ee4j/jaf/issues).
+Jakarta Activation bugs are tracked in the
+[GitHub Jakarta Activation project issue tracker](https://github.com/eclipse-ee4j/jaf/issues).
 
 # <a name="Development_Releases"></a>Development Releases
 
@@ -77,7 +79,7 @@ under development are published to the
 These snapshot releases have received only minimal testing, but may
 provide previews of bug fixes or new features under development.
 
-For example, you can download the jakarta.activation.jar file from the JAF
+For example, you can download the jakarta.activation.jar file from the Jakarta Activation
 1.2.2-SNAPSHOT release
 [here](https://oss.sonatype.org/content/repositories/snapshots/com/sun/activation/jakarta.activation/1.2.2-SNAPSHOT/).
 Be sure to scroll to the bottom and choose the jar file with the most
