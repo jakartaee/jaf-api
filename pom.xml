@@ -55,9 +55,6 @@
 	<activation.extensionName>
 	    ${project.groupId}.${project.artifactId}
 	</activation.extensionName>
-	<activation.moduleName>
-	    ${project.groupId}.${project.artifactId}
-	</activation.moduleName>
 	<activation.specificationTitle>
 	    ${project.groupId}.${project.artifactId}
 	</activation.specificationTitle>
@@ -92,7 +89,7 @@
 	    true
 	</findbugs.skip>
 	<findbugs.exclude/>
-        <copyright-plugin.version>1.42</copyright-plugin.version>
+        <copyright-plugin.version>2.2</copyright-plugin.version>
     </properties>
 
     <developers>
@@ -134,36 +131,6 @@
 		<activeByDefault>true</activeByDefault>
 	    </activation>
 	</profile>
-
-	<!--
-	    A special profile for compiling with the real JDK 1.5
-	    compiler, to make sure there are no accidental dependencies
-	    on JDK 1.6 or newer APIs.  Set the property javac.path to the path
-	    to the JDK 1.5 compiler, e.g.,
-	    "mvn -P1.5 -Djavac.path=/opt/jdk1.5/bin/javac".
-	-->
-	<profile>
-	    <id>1.5</id>
-	    <build>
-		<plugins>
-		    <plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<executions>
-			    <execution>
-				<id>default-compile</id>
-				<configuration>
-				    <fork>true</fork>
-				    <executable>${javac.path}</executable>
-				    <compilerVersion>1.5</compilerVersion>
-				    <source>1.5</source>
-				    <target>1.5</target>
-				</configuration>
-			    </execution>
-			</executions>
-		    </plugin>
-		</plugins>
-	    </build>
-	</profile>
     </profiles>
 
     <build>
@@ -184,8 +151,11 @@
 			<configuration>
 			    <rules>
 				<requireMavenVersion>
-				    <version>[2.2.1,)</version>
+				    <version>[3.0.3,)</version>
 				</requireMavenVersion>
+				<requireJavaVersion>
+				    <version>[9,)</version>
+				</requireJavaVersion>
 			    </rules>
 			</configuration>
 		    </execution>
@@ -262,7 +232,7 @@
 	    </plugin>
 
 	    <!--
-		Use the 1.5 compiler for Activation itself and the test classes.
+		Use the JDK 9+ compiler.
 	    -->
 	    <plugin>
 		<artifactId>maven-compiler-plugin</artifactId>
@@ -270,15 +240,13 @@
 		    <execution>
 			<id>default-compile</id>
 			<configuration>
-			    <source>1.5</source>
-			    <target>1.5</target>
+			    <release>9</release>
 			</configuration>
 		    </execution>
 		    <execution>
 			<id>default-testCompile</id>
 			<configuration>
-			    <source>1.5</source>
-			    <target>1.5</target>
+			    <release>9</release>
 			</configuration>
 		    </execution>
 		</executions>
@@ -323,10 +291,6 @@
 			    <Implementation-Vendor-Id>
 				com.sun
 			    </Implementation-Vendor-Id>
-			    <!-- for JDK 9 -->
-			    <Automatic-Module-Name>
-				${activation.moduleName}
-			    </Automatic-Module-Name>
 			</manifestEntries>
 		    </archive>
 		    <excludes>
@@ -431,15 +395,6 @@
 		    </excludes>
 		</configuration>
 	    </plugin>
-
-<!-- not used
-	    <plugin>
-		<artifactId>maven-release-plugin</artifactId>
-		<configuration>
-		    <arguments>-P deploy</arguments>
-		</configuration>
-	    </plugin>
--->
 	</plugins>
 
 	<pluginManagement>
@@ -447,7 +402,7 @@
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-compiler-plugin</artifactId>
-		    <version>2.4</version>
+		    <version>3.7.0</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
@@ -500,7 +455,7 @@
 		<plugin>
 		    <groupId>org.apache.felix</groupId>
 		    <artifactId>maven-bundle-plugin</artifactId>
-		    <version>2.1.0</version>
+		    <version>3.5.0</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
@@ -510,7 +465,7 @@
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-javadoc-plugin</artifactId>
-		    <version>2.10</version>
+		    <version>3.1.1</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
