@@ -22,9 +22,10 @@
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
         <version>1.0.5</version>
+	<relativePath/>
     </parent>
     <artifactId>activation-spec</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>pom</packaging>
     <name>Jakarta Activation Specification</name>
 
@@ -36,7 +37,7 @@
         <asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version>
         <jruby.version>9.2.6.0</jruby.version>
         <!-- status: DRAFT, BETA, etc., or blank for final -->
-        <status>DRAFT</status>
+        <status></status>
         <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
         <revisiondate>${maven.build.timestamp}</revisiondate>
     </properties>
@@ -120,7 +121,7 @@
                             <backend>pdf</backend>
                             <outputFile>${project.build.directory}/generated-docs/activation-spec-${project.version}.pdf</outputFile>
                             <attributes>
-                                <pdf-stylesdir>${project.basedir}/src/main/theme</pdf-stylesdir>
+                                <pdf-stylesdir>${project.basedir}/src/theme</pdf-stylesdir>
                                 <pdf-style>jakartaee</pdf-style>
                                 <doctype>book</doctype>
                                 <status>${status}</status>

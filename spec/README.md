@@ -1,5 +1,5 @@
 Jakarta Activation Specification
-============================
+================================
 
 This project generates the Jakarta Activation Specification.
 
