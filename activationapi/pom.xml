@@ -99,6 +99,22 @@
                     </includes>
                 </configuration>
             </plugin>
+
+	    <!--
+		 Skip compiling since the dependency plugin pulled in
+		 the sources and class files.
+	    -->
+	    <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>default-compile</id>
+			<configuration>
+			    <skipMain>true</skipMain>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
