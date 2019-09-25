@@ -232,7 +232,8 @@
 	    </plugin>
 
 	    <!--
-		Use the JDK 9+ compiler.
+		Use the JDK 9+ compiler but with -source 1.8 for all
+		but the module-info.java file.
 	    -->
 	    <plugin>
 		<artifactId>maven-compiler-plugin</artifactId>
@@ -240,7 +241,23 @@
 		    <execution>
 			<id>default-compile</id>
 			<configuration>
+			    <source>1.8</source>
+			    <target>1.8</target>
+			    <excludes>
+				<exclude>module-info.java</exclude>
+			    </excludes>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>module-info-compile</id>
+			<goals>
+			    <goal>compile</goal>
+			</goals>
+			<configuration>
 			    <release>9</release>
+			    <includes>
+				<include>module-info.java</include>
+			    </includes>
 			</configuration>
 		    </execution>
 		    <execution>
