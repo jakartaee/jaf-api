@@ -150,7 +150,7 @@
 				      name if it doesn't end with "/".
 			    -->
 			    <links>
-				<link>http://docs.oracle.com/javase/8/docs/api/.</link>
+				<link>http://docs.oracle.com/javase/9/docs/api/.</link>
 			    </links>
 			</configuration>
 		    </execution>
