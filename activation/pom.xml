@@ -152,18 +152,6 @@
 			    </sourceFileExcludes>
 			    <!-- force the doc-files directory to be copied -->
 			    <docfilessubdirs>true</docfilessubdirs>
-			    <!--
-				Links to Java SE javadocs.
-
-				XXX - links need to include a trailing "/."
-				      because Maven strips off a trailing "/"
-				      before passing the option to the javadoc
-				      command, which then strips off the last
-				      name if it doesn't end with "/".
-			    -->
-			    <links>
-				<link>http://docs.oracle.com/javase/8/docs/api/.</link>
-			    </links>
 			</configuration>
 		    </execution>
                 </executions>
