@@ -131,6 +131,20 @@
 		<activeByDefault>true</activeByDefault>
 	    </activation>
 	</profile>
+
+	<!--
+	    This profile is used for deploying a Jakarta Activation
+	    final release.
+
+	    Activating this profile manually for deployment causes
+	    the above profile to be deactivated, which works around
+	    an apparent bug in maven that prevents me from manually
+	    deactivating a profile.  This profile purposely has none
+	    of the modules I don't want to be deployed.
+	-->
+	<profile>
+	    <id>oss-release</id>
+	</profile>
     </profiles>
 
     <build>
