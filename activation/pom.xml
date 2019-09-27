@@ -152,6 +152,7 @@
 			    </sourceFileExcludes>
 			    <!-- force the doc-files directory to be copied -->
 			    <docfilessubdirs>true</docfilessubdirs>
+			    <detectJavaApiLink>false</detectJavaApiLink>
 			</configuration>
 		    </execution>
                 </executions>
