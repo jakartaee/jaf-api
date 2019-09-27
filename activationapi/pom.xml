@@ -95,7 +95,7 @@
                     </outputDirectory>
                     <includes>
                         javax/**,
-                        META-INF/LICENSE.txt
+                        module-info.*
                     </includes>
                 </configuration>
             </plugin>
