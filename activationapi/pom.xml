@@ -115,6 +115,21 @@
 		    </execution>
 		</executions>
 	    </plugin>
+
+	    <plugin>
+		<artifactId>maven-javadoc-plugin</artifactId>
+		<configuration>
+		    <!-- make all the APIs available for javadoc -->
+		    <additionalDependencies>
+			<additionalDependency>
+			    <groupId>com.sun.activation</groupId>
+			    <artifactId>jakarta.activation</artifactId>
+			    <version>${project.version}</version>
+			</additionalDependency>
+		    </additionalDependencies>
+		</configuration>
+	    </plugin>
+
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
