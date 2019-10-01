@@ -14,7 +14,7 @@ following is a summary of the TCK results for releases of Jakarta Activation.
 - [x] Specification Name, Version and download URL\
    [Jakarta Activation](https://jakarta.ee/activation/1.2)
 - [x] TCK Version, digital SHA-256 fingerprint and download URL\
-  [Jakarta Activation TCK 1.2.0](https://download.eclipse.org/jakartaee/activation/1.2/jakarta-activation-tck-1.2.0.zip), SHA-256: 127dfd1ab39b3ccb8fddc5892ecd8852d7ba9ee10dd909e36be2e1c4705c89b4
+  [Jakarta Activation TCK 1.2.0](https://download.eclipse.org/jakartaee/activation/1.2/jakarta-activation-tck-1.2.0.zip), SHA-256: 8a2ccba45790f26ef873fc1160cb7795ec4346b17a9dc9687378cbff1b965787
 - [x] Public URL of TCK Results Summary\
   [TCK results summary](https://eclipse-ee4j.github.io/jaf/TCK-Results.html)
 - [x] Any Additional Specification Certification Requirements\
