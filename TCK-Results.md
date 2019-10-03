@@ -34,3 +34,4 @@ Test results:
 [javatest.batch] Number of Tests Failed      = 0
 [javatest.batch] Number of Tests with Errors = 0
 [javatest.batch] Number of Tests Not Run     = 0
+```
