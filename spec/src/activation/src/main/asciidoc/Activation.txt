@@ -1,0 +1,950 @@
+= Bart Calder, Bill Shannon
+
+[#pgfId-268103]##JavaBeans™ Activation Framework Specification Version
+1.2
+
+image:jaf-1.gif[image]
+
+== [#pgfId-267530]##Bart Calder, Bill Shannon
+
+[#pgfId-269523]##The JavaBeans™ Activation Framework Specification is a
+data typing and registry technology that is a Standard Extension to the
+Java™ Platform.
+
+[#pgfId-274159]##
+
+image:jaf-1.gif[image]
+
+ 
+
+[#pgfId-274201]##Specification: JSR-925 JavaBeans(TM) Activation
+Framework Specification ("Specification")
+
+[#pgfId-274202]##Version: 1.2
+
+[#pgfId-274203]##Status: Final Release
+
+[#pgfId-274204]##Specification Lead: Oracle America, Inc.
+("Specification Lead")
+
+[#pgfId-274205]##Release: July 2017
+
+[#pgfId-274206]## 
+
+[#pgfId-274207]##Copyright 2006, 2017 Oracle America, Inc.
+
+[#pgfId-274208]##All rights reserved.
+
+=== [#pgfId-274193]##Overview
+
+image:jaf-2.gif[image]
+
+[#pgfId-273411]##JavaBeans™ is proving to be a popular technology. As
+more people embrace JavaBeans™ and the Java™ platform, some of the
+environment’s shortcomings are brought to light. JavaBeans™ was meant to
+satisfy needs in builder and development environments but its
+capabilities fall short of those needed to deploy stand alone components
+as content editing and creating entities.
+
+[#pgfId-273412]##Neither JavaBeans™ nor the Java™ platform define a
+consistent strategy for typing data, a method for determining the
+supported data types of a software component, a method for binding typed
+data to a component, or an architecture and implementation that supports
+these features.
+
+[#pgfId-273413]##Presumably with these pieces in place, a developer can
+write a JavaBeans™ based component that provides helper application like
+functionality in a web browser, added functionality to an office suite,
+or a content viewer in a Java™ application.
+
+=== [#pgfId-273414]##Goals
+
+image:jaf-2.gif[image]
+
+[#pgfId-273415]##This document describes the JavaBeans™ Activation
+Framework (JAF). The JAF implements the following services:
+
+* [#pgfId-273416]##It determines the type of arbitrary data.
+* [#pgfId-273417]##It encapsulates access to data.
+* [#pgfId-273405]##It discovers the operations available on a particular
+type of data.
+* [#pgfId-265761]##It instantiates the software component that
+corresponds to the desired operation on a particular piece of data.
+
+[#pgfId-269283]##The JAF is packaged as a Standard Extension to the
+Java™ platform.
+
+=== [#pgfId-264813]##Architectural Overview
+
+image:jaf-2.gif[image]
+
+[#pgfId-265027]##The Java™ platform (including JavaBeans™) already
+provides some support for a modest activation framework. The JAF
+leverages as much of that existing technology as possible. The JAF
+integrates these mechanisms.
+
+[#pgfId-268523]## 
+
+image:jaf-3.gif[image]
+
+[#pgfId-268156]##This diagram shows the major elements comprising the
+JAF architecture. Note that the framework shown here is not bound to a
+particular application.
+
+==== [#pgfId-264816]##The DataHandler Class
+
+[#pgfId-269287]##The DataHandler class (shown in the diagram above)
+provides a consistent interface between JAF-aware clients and other
+subsystems.
+
+==== [#pgfId-265036]##The DataSource Interface
+
+[#pgfId-269292]##DataSource interface encapsulates an object that
+contains data, and that can return both a stream providing data access,
+and a string defining the MIME type describing the data.
+
+[#pgfId-269293]##Classes can be implemented for common data sources
+(web, file system, IMAP, ftp, etc.). The DataSource interface can also
+be extended to allow per data source user customizations. Once the
+DataSource is set in the DataHandler, the client can determine the
+operations available on that data.
+
+[#pgfId-268181]##The JAF includes two DataSource class implementations
+for convenience:
+
+* [#pgfId-268182]##FileDataSource accesses data held in a file.
+* [#pgfId-268187]##URLDataSource accesses data held at a URL.
+
+==== [#pgfId-264820]##The CommandMap Interface
+
+[#pgfId-264821]##The CommandMap provides a service that allows consumers
+of its interfaces to determine the ‘commands’ available on a particular
+MIME type as well as an interface to retrieve an object that can operate
+on an object of a particular MIME type (effectively a component
+registry). The Command Map can generate and maintain a list of available
+capabilities on a particular data type by a mechanism defined by the
+implementation of the particular instance of the CommandMap.
+
+[#pgfId-269297]##The JavaBeans™ package provides the programming model
+for the software components that implement the commands. Each JavaBeans™
+component can use externalization, or can implement the CommandObject
+interface to allow the typed data to be passed to it.
+
+[#pgfId-264822]##The JAF defines the CommandMap interface, which
+provides a flexible and extensible framework for the CommandMap. The
+CommandMap interface allows developers to develop their own solutions
+for discovering which commands are available on the system. A possible
+implementation can access the ‘types registry’ on the platform or use a
+server-based solution. The JAF provides a simple default solution based
+on RFC 1524 (.mailcap) like functionality. See “Deliverables” below.
+
+==== [#pgfId-264823]##The Command Object Interface
+
+[#pgfId-264824]##Beans extend the CommandObject interface in order to
+interact with JAF services. JAF-aware JavaBeans™ components can directly
+access their DataSource and DataHandler objects in order to retrieve the
+data type and to act on the data.
+
+=== [#pgfId-264825]##Using The Framework
+
+image:jaf-2.gif[image]
+
+[#pgfId-269303]##We intend to make this infrastructure widely available
+for any Java™ Application that needs this functionality. The ‘canonical’
+consumer of this framework accesses it through the DataHandler (although
+the major subsystems are designed to also operate independently). An
+underlying DataSource object is associated with the DataHandler when the
+DataHandler class is constructed.
+
+* [#pgfId-269304]##The DataHandler retrieves the data typing information
+from the DataSource or gets the data type directly from the constructor.
+* [#pgfId-269305]##Once this initialization step is complete, a list of
+commands that can be performed on the data item can be accessed from the
+DataHandler.
+
+[#pgfId-269309]##When an application issues a request for this list, the
+DataHandler uses the MIME data type specifier returned to request a list
+of available commands from the CommandMap object. The CommandMap has
+knowledge of available commands (implemented as Beans) and their
+supported data types. The CommandMap returns a subset of the full list
+of all commands based on the requested MIME type and the semantics of
+the CommandMap implementation, to the DataHandler.
+
+[#pgfId-269310]##When the application wishes to apply a command to some
+data, it is accomplished through the appropriate DataHandler interface,
+which uses the CommandMap to retrieve the appropriate Bean that is used
+to operate on the data. The container (user of the framework) makes the
+association between the data and the Bean.
+
+=== [#pgfId-265043]##Usage Scenarios
+
+image:jaf-2.gif[image]
+
+[#pgfId-269314]##This scenario uses the example of a hypothetical file
+viewer application in order to illustrate the normal flow of tasks
+involved when implementing the JAF. The file viewer is similar to the
+Windows Explorer utility. When launched, it presents the user with a
+display of available files. It includes a function like Explorer’s
+‘right mouse’ menu, where all operations that can be performed on a
+selected data item are listed in a popup menu for that item.
+
+[#pgfId-269315]##A typical user launches this application to view a
+directory of files. When the user specifies a file by clicking on it,
+the application displays a popup menu that lists the available
+operations on that file. File system viewer utilities normally include
+‘edit,’ ‘view,’ and ‘print’ commands as available operations. For
+instance selecting ‘view’ causes the utility to open the selected file
+in a viewer that can display data of the data type held in that file.
+
+==== [#pgfId-264830]##Scenario Architecture
+
+[#pgfId-269319]##Description of tasks performed by the application is
+broken down into three discrete steps, for clarity:
+
+* [#pgfId-269320]##Initialization: The application constructs a view of
+the file system.
+* [#pgfId-269321]##Getting the Command List: The application presents
+the command list for a selected data item.
+* [#pgfId-269322]##Performing the Command: The application performs a
+command on the selected data object.
+
+==== [#pgfId-264833]##Initialization
+
+[#pgfId-264834]##One of the interfaces mentioned below is the
+‘DataSource’ object. Recall that the DataSource object encapsulates the
+underlying data object in a class that abstracts the underlying data
+storage mechanism, and presents its consumers with a common data access
+and typing interface. The file viewer application queries the file
+system for its contents.
+
+[#pgfId-268682]##The viewer instantiates a DataSource object for each
+file in the directory. Then it instantiates a a DataHandler with the
+DataSource as its constructor argument. The DataHandler object provides
+the client application with access to the CommandMap, which provides a
+service that enables access to commands that can operate on the data.
+The application maintains a list of the DataHandler objects, queries
+them for their names to generate its display.
+
+[#pgfId-265095]## // for each file in the directory:
+
+[#pgfId-265096]##File file = new File(file_name);
+
+[#pgfId-266552]##DataSource ds = new FileDataSource(file);
+
+[#pgfId-266553]##DataHandler dh = new DataHandler(ds);
+
+==== [#pgfId-266554]##Getting the Command List
+
+[#pgfId-264836]##Once the application has been initialized and has
+presented a list of files to the user, the user can select a file on the
+list. When the user selects a file, the application displays a popup
+menu that lists the available operations on that file.
+
+[#pgfId-269326]##The application implements this functionality by
+requesting the list of available commands from the DataHandler object
+associated with a file. The DataHandler retrieves the MIME type of the
+data from the DataSource object and queries the CommandMap for
+operations that are available on that type. The application interprets
+the list and presents it to the user on a popup menu. The user then
+selects one of the operations from that list.
+
+[#pgfId-264837]## // get the command list for an object
+
+[#pgfId-265100]##CommandInfo cmdInfo[] = dh.getPreferredCommands();
+
+[#pgfId-265549]## 
+
+[#pgfId-265103]##PopupMenu popup = new PopupMenu(“Item Menu”);
+
+[#pgfId-264838]## 
+
+[#pgfId-265550]## // populate the popup with available commands
+
+[#pgfId-265104]## for (i = 0; i < cmdInfo.length; i++)
+
+[#pgfId-265105]## popup.add(cmdInfo[i].getCommandName());
+
+[#pgfId-265106]## 
+
+[#pgfId-265551]## // add and show popup
+
+[#pgfId-265107]##add(popup);
+
+[#pgfId-265108]## popup.show(x_pos, y_pos);
+
+==== [#pgfId-264839]##Performing a Command
+
+[#pgfId-264840]##After the user has selected a command from the popup
+menu, the application uses the appropriate CommandInfo class to retrieve
+the Bean that corresponds to the selected command, and associates the
+data with that Bean using the appropriate mechanism (DataHandler,
+Externalization etc.). Some CommandObjects (viewers for instance) are
+subclassed from java.awt.Component and require that they are given a
+parent container. Others (like a default print Command) might not
+present a user interface. This allows them to be flexible enough to
+function as stand alone viewer/editors, or perhaps as components in a
+compound document system. The ‘application’ is responsible for providing
+the proper environment (containment, life cycle, etc.) for the
+CommandObject to execute in. We expect that the requirements will be
+lightweight (not much beyond JavaBeans™ containers and AWT containment
+for visible components).
+
+[#pgfId-264841]## // get the command object
+
+[#pgfId-265109]##Object cmdBean = cmdInfo[cmd_id].getCommandObject(dh,
+
+[#pgfId-267541]## this.getClassLoader());
+
+[#pgfId-265113]## ... // use serialization/externalization where
+appropriate
+
+[#pgfId-264843]## 
+
+[#pgfId-265555]## my_awt_container.add((Component)cmdBean);
+
+==== [#pgfId-264844]##An Alternative Scenario
+
+[#pgfId-264845]##The first scenario was the ‘canonical’ case. There are
+also circumstances where the application has already created objects to
+represent its data. In this case creating an in-memory instance of a
+DataSource that converted an existing object into an InputStream is an
+inefficient use of system resources and can result in a loss of data
+fidelity.
+
+[#pgfId-268749]##In these cases, the application can instantiate a
+DataHandler, using the DataHandler(Object obj, String mimeType)
+constructor. DataHandler implements the Transferable interface, so the
+consuming Bean can request representations other than InputStreams. The
+DataHandler also constructs a DataSource for consumers that request it.
+The DataContentHandler mechanism is extended to also allow conversion
+from Objects to InputStreams.
+
+[#pgfId-268758]##The following code is an example of a data base front
+end using the JAF, which provides query results in terms of objects.
+
+[#pgfId-264846]## /**
+
+[#pgfId-265114]## * Get the viewer to view my query results:
+
+[#pgfId-265115]## */
+
+[#pgfId-265116]## Component getQueryViewer(QueryObject qo) throws
+Exception \{
+
+[#pgfId-265118]## String mime_type = qo.getType();
+
+[#pgfId-265119]## Object q_result = qo.getResultObject();
+
+[#pgfId-265120]## DataHandler my_dh = new DataHandler(q_result,
+mime_type);
+
+[#pgfId-265559]## 
+
+[#pgfId-265123]## return (Component)my_dh.getCommand(“view”).
+
+[#pgfId-273709]## getCommandObject(my_dh, null));
+
+[#pgfId-265124]## }
+
+=== [#pgfId-264848]##Primary Framework Interfaces
+
+image:jaf-2.gif[image]
+
+[#pgfId-264849]##This section describes interfaces required to implement
+the JAF architecture introduced in Section Three.
+
+==== [#pgfId-264850]##The DataSource Interface
+
+[#pgfId-264851]##The DataSource interface is used by the DataHandler
+(and possibly other classes elsewhere) to access the underlying data.
+The DataSource object encapsulates the underlying data object in a class
+that abstracts the underlying data storage and typing mechanism, and
+presents its consumers with a common data access interface.
+
+[#pgfId-268257]##The JAF provides DataSource implementations that
+support file systems and URLs. Application system vendors can use the
+DataSource interface to implement their own specialized DataSource
+classes to support IMAP servers, object databases, or other sources.
+
+[#pgfId-268273]##There is a one-to-one correspondence between underlying
+data items (files for instance) and DataSource objects. Also note that
+the class that implements the DataSource interface is responsible for
+typing the data. To manage a file system, a DataSource can use a simple
+mechanism such as a file extension to type data, while a DataSource that
+supports incoming web-based data can actually examine the data stream to
+determine its type.
+
+==== [#pgfId-264860]##The DataHandler Class
+
+[#pgfId-269346]##The DataHandler class encapsulates a Data object, and
+provides methods which act on that data.
+
+[#pgfId-269347]##DataHandler encapsulates the type-to-command object
+binding service of the Command Map interface for applications. It
+provides a handle to the operations and data available on a data
+element.
+
+[#pgfId-269348]##DataHandler also implements the Transferable interface.
+This allows applications and applets to retrieve alternative
+representations of the underlying data, in the form of objects. The
+DataHandler encapsulates the interface to the component repository and
+data source.
+
+[#pgfId-268296]##Let’s examine these groups of features in more detail:
+
+===== [#pgfId-267592]## Data Encapsulation
+
+[#pgfId-269352]##A DataHandler object can only be instantiated with
+data. The data can be in the form of an object implementing the
+DataSource interface (the preferred way) or as an object with an
+associated content type.
+
+[#pgfId-268297]##Once instantiated, the DataHandler tries to provide its
+data in a flexible way. The DataHandler implements the Transferable
+interface which allows an object to provide alternative representations
+of the data. The Transferable interface’s functionality can be extended
+via objects implementing the DataContentHandler interface, and then made
+available to the DataHandler either by a DataContentHandlerFactory
+object, or via a CommandMap.
+
+===== [#pgfId-267594]##Command Binding
+
+[#pgfId-267595]##The DataHandler provides wrappers around commonly used
+functions for command discovery. DataHandler has methods that call into
+the current CommandMap associated with the DataHandler. By default the
+DataHandler calls CommandMap’s getDefaultCommandMap method if no
+CommandMap was explicitly set. As a convenience, DataHandler uses the
+content type of its data when calls are made to the CommandMap.
+
+==== [#pgfId-264876]##The DataContentHandler Interface
+
+[#pgfId-264877]##The DataContentHandler interface is implemented by
+classes that are used by the DataHandler to convert InputStreams into
+objects and vice versa. In effect, the DataHandler object uses a
+DataContentHandler object to implement the Transferable interface.
+DataContentHandlers are discovered via the current CommandMap. A
+DataContentHandler uses DataFlavors to represent the data types it can
+access.
+
+[#pgfId-268317]##The DataContentHandler also converts data from objects
+into InputStreams. For instance, if an application needs to access a
+.gif file, it passes the file to the image/gif DataContentHandler. The
+image/gif DataContentHandler converts the image object into a
+gif-formatted byte stream.
+
+[#pgfId-273980]##Applications will typically need to provide
+DataContentHandlers for all the MIME types they intend to support. (Note
+that the JavaMail reference implementation provides DataContentHandlers
+for many of the MIME types used in mail messages.)
+
+==== [#pgfId-264881]## The CommandMap Interface
+
+[#pgfId-264882]##Once the DataHandler has a MIME type describing the
+content, it can query the CommandMap for the operations, or commands
+that are available for that data type. The application requests commands
+available through the DataHandler and specifies a command on that list.
+The DataHandler uses the CommandMap to retrieve the Bean associated with
+that command. Some or all of the command map is stored in some ‘common’
+place, like a .mailcap (RFC 1524) file. Other more complex
+implementations can be distributed, or can provide licensing or
+authentication features.
+
+==== [#pgfId-264889]##The CommandInfo Class
+
+[#pgfId-269356]##The CommandInfo class is used to represent commands in
+an underlying registry. From a CommandInfo object, an application can
+instantiate the Bean or request the verb (command) it describes.
+
+==== [#pgfId-267858]##The CommandObject Interface
+
+[#pgfId-264890]##Beans designed specifically for use with the JAF
+Architecture should implement the CommandObject interface. This
+interface provides direct access to DataHandler methods and notifies a
+JAF-aware Bean which verb was used to call it. Upon instantiation, the
+Bean takes a string specifying a user-selected command verb, and the
+DataHandler object managing the target data. The DataHandler takes a
+DataSource object, which provides an input stream linked to that data,
+and a string specifying the data type.
+
+==== [#pgfId-267005]##The DataContentHandlerFactory
+
+[#pgfId-267006]##Like the ContentHandler factory in the java.net
+package, the DataContentHandlerFactory is an interface that allows
+developers to write objects that map MIME types to DataContentHandlers.
+The interface is extremely simple, in order to allow developers as much
+design and implementation freedom as possible.
+
+=== [#pgfId-264898]##Writing Beans for the Framework
+
+image:jaf-2.gif[image]
+
+==== [#pgfId-265063]##Overview
+
+[#pgfId-264900]##This section describes the specification of
+well-behaved JAF-aware Bean viewers. Note that this proposal assumes the
+reader is comfortable with the JavaBeans™ Specification. Developers
+intending to implement viewer Beans for the JAF should be familiar with
+JavaBeans™ concepts and architecture.
+
+==== [#pgfId-264901]##Viewer Goals
+
+. [#pgfId-264902]##Make the implementation of viewers and editors as
+simple as implementing Beans. That is, require low cost of entry to be a
+good citizen.
+
+====== [#pgfId-264903]##Allow developers to have a certain amount of flexibility in their implementations.
+
+==== [#pgfId-264904]##General
+
+[#pgfId-266484]##We are attempting to limit the amount of extra baggage
+that needs to be implemented beyond ‘generic’ Beans. In many cases,
+JavaBeans™ components that weren’t developed with knowledge of the
+framework can be used. The JAF exploits the existing features of
+JavaBeans™ and the JDK™, and defines as few additional interfaces and
+policies as possible.
+
+[#pgfId-268843]##We expect that viewers/editors will be bound to data
+via a simple registry mechanism similar in function to a .mailcap file.
+In addition, mailcap format files may be bundled with components,
+allowing additional packages to be added at runtime.
+
+[#pgfId-264906]##Our viewers/editors and related classes and files are
+encapsulated into JAR files, as is the preferred method for JavaBeans™.
+The JAF does not restrict the choice of classes used to implement a
+JAF-aware ‘viewer’ Beans, beyond those expected of well-behaved Beans.
+
+==== [#pgfId-264907]##Interfaces
+
+[#pgfId-264908]##A viewer Bean that communicates directly with a JAF
+DataHandler should implement the CommandObject interface. This interface
+is small and easy to implement. However, Beans can still use standard
+Serialization and Externalization methods available in JDK 1.1 and later
+versions.
+
+==== [#pgfId-264909]##Storage
+
+[#pgfId-264910]##The JAF expects applications and viewer Beans to
+implement storage tasks via the DataSource object. However; it is
+possible to use Externalization. A JAF-aware application can implement
+the following storage mechanism:
+
+[#pgfId-264911]##ObjectOutputStream oos = new ObjectOutputStream(
+
+[#pgfId-265396]## data_handler.getOutputStream());
+
+[#pgfId-265399]##my_externalizable_bean.writeExternal(oos);
+
+==== [#pgfId-264913]##Packaging
+
+[#pgfId-264914]##The basic format for packaging of the Viewer/Editors is
+the JAR file as described in the JavaBeans™ Specification. This format
+allows the convenient packaging of collections of files that are related
+to a particular Bean or applet. For more information concerning
+integration points, see Section 8.
+
+==== [#pgfId-264915]##Container Support
+
+[#pgfId-264916]##The JAF is designed to be flexible enough to support
+the needs of a variety of applications. The JAF expects these
+applications to provide the appropriate containers and life cycle
+support for these Beans. Beans written for the framework should be
+compatible with the guidelines in the JavaBeans™ documentation and
+should be tested against the BDK BeanBox (and the JDK Appletviewer if
+they are subclassed from Applet).
+
+==== [#pgfId-264917]##Lifecycle
+
+[#pgfId-265828]##In general the JAF expects that its viewer bean life
+cycle semantics are the same as those for all Beans. In the case of
+Beans that implement the CommandObject interface we encourage
+application developers to not parent Beans subclassed from
+java.awt.Component to an AWT container until after they have called the
+javax.activation.CommandObject.setCommandContext method.
+
+==== [#pgfId-264920]##Command Verbs
+
+[#pgfId-264921]##The MailcapCommandMap implementation provides a
+mechanism that allows for an extensible set of command verbs.
+Applications using the JAF can query the system for commands available
+for a particular MIME type, and retrieve the Bean associated with that
+MIME type.
+
+=== [#pgfId-265985]##Framework Integration Points
+
+image:jaf-2.gif[image]
+
+[#pgfId-266278]##This section presents several examples that clarify how
+JavaBeans™ developers can write Beans that are integrated with the JAF.
+
+[#pgfId-266323]##First, let’s review the pluggable components of the
+JavaBeans™ Activation Framework:
+
+* [#pgfId-266280]##A mechanism that accesses target data where it is
+stored: DataSource
+* [#pgfId-266343]##A mechanism to convert data objects to and from an
+external byte stream format: DataContentHandler
+* [#pgfId-266346]##A mechanism to locate visual components that operate
+on data objects: CommandMap
+* [#pgfId-266349]##The visual components that operate on data objects:
+JAF-aware Beans
+
+[#pgfId-266281]##As a JavaBeans™ developer, you may build visual Beans.
+You can also develop DataContentHandlers to supply data to those Beans.
+You might also need to develop a new DataSource or CommandMap class to
+access data and specify a data type.
+
+==== [#pgfId-266282]##Bean
+
+[#pgfId-266352]##Suppose you’re building a new Wombat Editor product,
+with its corresponding Wombat file format. You’ve built the Wombat
+Editor as one big Bean. Your WombatBean can do anything and everything
+that you might want to do with a Wombat. It can edit, it can print, it
+can view, it can save Wombats to files, and it can read Wombats in from
+files. You’ve defined a language-independent Wombat file format. You
+consider the Wombat data and file formats to be proprietary so you have
+no need to offer programmatic interfaces to Wombats beyond what your
+WombatBean supports.
+
+[#pgfId-266284]##You’ve chosen the MIME type “application/x-wombat” to
+describe your Wombat file format, and you’ve chosen the filename
+extension “.wom” to be used by files containing Wombats.
+
+[#pgfId-266285]##To integrate with the framework, you’ll need some
+simple wrappers for your WombatBean for each command you want to
+implement. For example, for a Print command wrapper you can write the
+following code:
+
+[#pgfId-266286]##public class WombatPrintBean extends WombatBean \{
+
+[#pgfId-266356]## public WombatPrintBean() \{
+
+[#pgfId-266357]## super();
+
+[#pgfId-266358]## initPrinting();
+
+[#pgfId-266359]## }
+
+[#pgfId-266360]## }
+
+[#pgfId-266287]##You will need to create a mailcap file that lists the
+MIME type “application/x-wombat” and user visible commands that are
+supported by your WombatBean. Your WombatBean wrappers will be listed as
+the objects supporting each of these commands.
+
+[#pgfId-266288]##application/x-wombat; ;
+x-java-view=com.foo.WombatViewBean; \
+
+[#pgfId-266364]## x-java-edit=com.foo.WombatEditBean; \
+
+[#pgfId-266365]## x-java-print=com.foo.WombatPrintBean
+
+[#pgfId-266289]##You’ll also need to create a mime.types file with an
+entry:
+
+[#pgfId-266290]##type=application/x-wombat desc=”Wombat” exts=wom
+
+[#pgfId-266291]##All of these components are packaged in a JAR file:
+
+[#pgfId-266292]## META-INF/mailcap
+
+[#pgfId-266366]##META-INF/mime.types
+
+[#pgfId-266367]##com/foo/WombatBean.class
+
+[#pgfId-266635]##com/foo/WombatEditBean.class
+
+[#pgfId-266631]##com/foo/WombatViewBean.class
+
+[#pgfId-266293]##Because everything is built into one Bean, and because
+no third party programmatic access to your Wombat objects is required,
+there’s no need for a DataContentHandler. Your WombatBean can therefore
+implement the Externalizable interface instead; and use its methods to
+read and write your Wombat files. The DataHandler can call the
+Externalizable methods when appropriate.
+
+==== [#pgfId-266294]##Beans
+
+[#pgfId-266295]##Your Wombat Editor product has really taken off, and
+you’re now adding significant new functionality and flexibility to your
+Wombat Editor. It’s no longer feasible to put everything into one giant
+Bean. Instead, you’ve broken the product into a number of Beans and
+other components:
+
+* [#pgfId-266378]##A WombatViewer Bean that can be used to quickly view
+a Wombat in read-only mode.
+* [#pgfId-266372]##A WombatEditor Bean that is heavier than the
+WombatViewer, but also allows editing.
+* [#pgfId-266384]##A WombatPrinter Bean that simply prints a Wombat.
+* [#pgfId-266381]##A component that reads and writes Wombat files.
+* [#pgfId-266387]##A Wombat class that encapsulates the Wombat data and
+is used by your other Beans and components.
+
+[#pgfId-266297]##In addition, customers have demanded to be able to
+programmatically manipulate Wombats, independently from the visual
+viewer or editor Beans. You’ll need to create a DataContentHandler that
+can convert a byte stream to and from a Wombat object. When reading, the
+WombatDataContentHandler reads a byte stream and returns a new Wombat
+object. When writing, the WombatDataContentHandler takes a Wombat object
+and produces a corresponding byte stream. You’ll need to publish the API
+to the Wombat class.
+
+[#pgfId-266298]##The WombatDataContentHandler is delivered as a class
+and is designated as a DataContentHandler that can operate on Wombats in
+the mailcap file included in your JAR file.
+
+[#pgfId-266299]##Your mailcap file changes to list the appropriate
+Wombat Beans, which implement user commands:
+
+[#pgfId-266300]##application/x-wombat; ;
+x-java-View=com.foo.WombatViewBean; \
+x-java-edit=com.foo.WombatEditBean; \
+
+[#pgfId-266388]## x-java-print=com.foo.WombatPrintBean; \
+
+[#pgfId-266650]##
+x-java-content-handler=com.foo.WombatDataContentHandler
+
+[#pgfId-266302]##Your Wombat Beans can continue to implement the
+Externalizable interface, and thus read and write Wombat byte streams.
+They are more likely to simply operate on Wombat objects directly. To
+find the Wombat object they’re being invoked to operate on, they
+implement the CommandObject interface. The setCommandContext method
+refers them to the corresponding DataHandler, from which they can invoke
+the getContent method, which will return a Wombat object (produced by
+the WombatData- ContentHandler).
+
+[#pgfId-266303]##All components are packaged in a JAR file.
+
+==== [#pgfId-266304]## Viewer Only
+
+[#pgfId-266305]##The Wombat product has been wildly successful. The
+ViewAll Company has decided that it can produce a Wombat viewer that’s
+much faster than the WombatViewer Bean. Since they don’t want to depend
+on the presence of any Wombat components, their viewer must parse the
+Wombat file format, which they reverse engineered.
+
+[#pgfId-266306]##The ViewAll WombatViewerBean implements the
+Externalizable interface to read the Wombat data format.
+
+[#pgfId-266307]##ViewAll delivers an appropriate mailcap file:
+
+[#pgfId-266308]##application/x-wombat; ;
+x-java-view=com.viewall.WombatViewer
+
+[#pgfId-266309]##and mime.types file:
+
+[#pgfId-266310]##type=application/x-wombat desc=”Wombat” exts=wom
+
+[#pgfId-266311]##All components are packaged in a JAR file.
+
+==== [#pgfId-266312]## ContentHandler Bean Only
+
+[#pgfId-266313]##Now that everyone is using Wombats, you’ve decided that
+it would be nice if you could notify people by email when new Wombats
+are created. You have designed a new WombatNotification class and a
+corresponding data format to be sent by email using the MIME type
+“application/x-wombat-notification”. Your server detects the presence of
+new Wombats, constructs a WombatNotification object, and constructs and
+sends an email message with the Wombat notification data as an
+attachment. Your customers run a program that scans their email INBOX
+for messages with Wombat notification attachments and use the
+WombatNotification class to notify their users of the new Wombats.
+
+[#pgfId-266314]##In addition to the server application and user
+application described, you’ll need a DataContentHandler to plug into the
+DataHandler infrastructure and construct the WombatNotification objects.
+The WombatNotification DataContentHandler is delivered as a class named
+WombatNotificationDataContentHandler and is delivered in a JAR file with
+the following mailcap file:
+
+[#pgfId-266660]##application/x-wombat-notification; \
+
+[#pgfId-266661]## WombatNotificationDataContentHandler
+
+[#pgfId-266315]##The server application creates DataHandlers for its
+WombatNotification objects. The email system uses the DataHandler to
+fetch a byte stream corresponding to the WombatNotification object. (The
+DataHandler uses the DataContentHandler to do this.)
+
+[#pgfId-266316]##The client application retrieves a DataHandler for the
+email attachment and uses the getContent method to get the corresponding
+WombatNotification object, which will then notify the user.
+
+[#pgfId-266064]## 
+
+=== [#pgfId-264922]## Framework Deliverables
+
+image:jaf-2.gif[image]
+
+==== [#pgfId-266515]##Packaging Details
+
+[#pgfId-266516]##The JAF is implemented as a Standard Extension to the
+Java™ Platform and is also included in the J2SE 6.0 release. The
+following are some more details about the package:
+
+* [#pgfId-266521]##The package name is javax.activation.
+* [#pgfId-266525]##This release is included in J2SE 6.0 and J2EE 5.0,
+and is also available separately for use on earlier versions of J2SE.
+* [#pgfId-273749]##The JAF Reference Implementation does not include
+DataContentHandlers for any MIME data types; applications must include
+the DataContentHandlers thy need. Note that the JavaMail Reference
+Implementation includes DataContentHandlers for some basic data types
+used in mail messages.
+
+==== [#pgfId-271189]##Framework Core Classes
+
+[#pgfId-271190]##interface DataSource: The DataSource interface provides
+the JavaBeans Activation Framework with an abstraction of some arbitrary
+collection of data. It provides a type for that data as well as access
+to it in the form of InputStreams and OutputStreams where appropriate.
+
+[#pgfId-271198]##class DataHandler: The DataHandler class provides a
+consistent interface to data available in many different sources and
+formats. It manages simple stream to string conversions and related
+operations using DataContentHandlers. It provides access to commands
+that can operate on the data. The commands are found using a CommandMap.
+
+[#pgfId-271347]##interface DataContentHandler: The DataContentHandler
+interface is implemented by objects that can be used to extend the
+capabilities of the DataHandler’s implementation of the Transferable
+interface. Through DataContentHandlers the framework can be extended to
+convert streams in to objects, and to write objects to streams.
+
+[#pgfId-271391]##interface DataContentHandlerFactory: This interface
+defines a factory for DataContentHandlers. An implementation of this
+interface should map a MIME type into an instance of DataContentHandler.
+The design pattern for classes implementing this interface is the same
+as for the ContentHandler mechanism used in java.net.URL.
+
+[#pgfId-271413]##class CommandMap: The CommandMap class provides an
+interface to the registry of viewer, editor, print, etc. objects
+available in the system. Developers are expected to either use the
+CommandMap implementation included with this package (MailcapCommandMap)
+or develop their own. Note that some of the methods in this class are
+abstract.
+
+[#pgfId-271438]##interface CommandObject: Beans that are Activation
+Framework aware implement this interface to find out which command verb
+they’re being asked to perform, and to obtain the DataHandler
+representing the data they should operate on. Beans that don’t implement
+this interface may be used as well. Such commands may obtain the data
+using the Externalizable interface, or using an application-specific
+method.
+
+[#pgfId-271462]##class CommandInfo: The CommandInfo class is used by
+CommandMap implementations to describe the results of command requests.
+It provides the requestor with both the verb requested, as well as an
+instance of the bean. There is also a method that will return the name
+of the class that implements the command but it is not guaranteed to
+return a valid value. The reason for this is to allow CommandMap
+implementations that subclass CommandInfo to provide special behavior.
+For example a CommandMap could dynamically generate Beans. In this case,
+it might not be possible to create an object with all the correct state
+information solely from the class name.
+
+==== [#pgfId-264929]##Framework Auxiliary Classes
+
+[#pgfId-271502]##class FileDataSource: The FileDataSource class
+implements a simple DataSource object that encapsulates a file. It
+provides data typing services via a FileTypeMap object.
+
+[#pgfId-271569]##class FileTypeMap: The FileTypeMap is an abstract class
+that provides a data typing interface for files. Implementations of this
+class will implement the getContentType methods which will derive a
+content type from a file name or a File object. FileTypeMaps could use
+any scheme to determine the data type, from examining the file extension
+of a file (like the MimetypesFileTypeMap) to opening the file and trying
+to derive its type from the contents of the file. The FileDataSource
+class uses the default FileTypeMap (a MimetypesFileTypeMap unless
+changed) to determine the content type of files.
+
+[#pgfId-271628]##class MimetypesFileTypeMap: This class extends
+FileTypeMap and provides data typing of files via their file extension.
+It uses the .mime.types format.
+
+[#pgfId-271634]##class URLDataSource: The URLDataSource class provides
+an object that wraps a URL object in a DataSource interface.
+URLDataSource simplifies the handling of data described by URLs within
+the JavaBeans Activation Framework because this class can be used to
+create new DataHandlers.
+
+[#pgfId-271660]##class MailcapCommandMap: MailcapCommandMap extends the
+CommandMap abstract class. It implements a CommandMap whose
+configuration is based on mailcap files (RFC 1524). The
+MailcapCommandMap can be configured both programmatically and via
+configuration files.
+
+[#pgfId-271680]##class ActivationDataFlavor: The ActivationDataFlavor is
+a special subclass of java.awt.datatransfer.DataFlavor. It allows the
+JAF to set all three values stored by the DataFlavor class via a new
+constructor as well as improved MIME parsing in the equals method.
+Except for the improved parsing, its semantics are identical to that of
+the JDK’s DataFlavor class.
+
+[#pgfId-271707]##class UnsupportedDataTypeException: Signals that
+requested operation does not support the requested data type.
+
+[#pgfId-267049]##class MimeType: A Multipurpose Internet Extension
+(MIME) type, as defined in RFC 2045 and 2046.
+
+[#pgfId-264932]##class com.sun.activation.viewers.*: A few simple
+example viewer Beans (text and image).
+
+=== [#pgfId-266916]##Document Change History
+
+image:jaf-2.gif[image]
+
+[#pgfId-266917]##May 13,1997 : Initial Public Draft 1
+
+[#pgfId-266919]##Aug 1, 1997: Internal Review Draft 2
+
+* [#pgfId-266923]## Added Integration Points section
+* [#pgfId-266924]##Minor API changes
+
+[#pgfId-266941]## 
+
+[#pgfId-266926]##Sept 16 1997: Second Public Draft 3
+
+* [#pgfId-266936]##Edited document to reflect change to Standard
+Extension
+* [#pgfId-266937]##Removed URL/URLConnection section
+* [#pgfId-266938]##Minor API changes
+
+[#pgfId-266944]##Oct 28 1997: Third Public Draft 4
+
+* [#pgfId-267334]##Minor API changes
+* [#pgfId-267336]##Add additional class descriptions
+* [#pgfId-267337]##Fixed minor errata
+
+[#pgfId-267887]##Dec 9, 1997: Fourth Public Draft 5
+
+* [#pgfId-267890]##Minor API changes
+* [#pgfId-267891]##Add additional class descriptions
+* [#pgfId-267892]##Fixed minor errata
+* [#pgfId-267893]##Includes Frozen API
+
+[#pgfId-268091]##Feb. 20, 1998: Version 0.6
+
+* [#pgfId-268094]##Minor typos fixed.
+* [#pgfId-269822]##Change bars removed.
+
+[#pgfId-269823]##Mar. 16, 1998: Version 1.0
+
+* [#pgfId-269827]## Version 1.0
+
+[#pgfId-269834]##Mar. 6, 1999: Version 1.0a
+
+* [#pgfId-269835]##Fixed minor typos.
+* [#pgfId-272798]##Synchronized with updated javadocs
+
+[#pgfId-273346]##May 16, 2005
+
+* [#pgfId-273347]##Updated for 1.1 release
+* [#pgfId-273393]##Removed all detailed API specifications; refer to the
+javadocs
+
+[#pgfId-274047]##July 11, 2017
+
+* [#pgfId-274043]##Updated for 1.2 release
+
+[#pgfId-265082]##
