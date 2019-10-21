@@ -22,8 +22,8 @@ or a content viewer in a Java™ application.
 == Goals
 
 
-This document describes the JavaBeans™ Activation
-Framework (JAF). The JAF implements the following services:
+This document describes Jakarta Activation.
+Jakarta Activation implements the following services:
 
 * It determines the type of arbitrary data.
 * It encapsulates access to data.
@@ -32,32 +32,32 @@ type of data.
 * It instantiates the software component that
 corresponds to the desired operation on a particular piece of data.
 
-The JAF is packaged as a Standard Extension to the
+Jakarta Activation is packaged as a Standard Extension to the
 Java™ platform.
 
 == Architectural Overview
 
 
 The Java™ platform (including JavaBeans™) already
-provides some support for a modest activation framework. The JAF
-leverages as much of that existing technology as possible. The JAF
+provides some support for a modest activation framework. Jakarta Activation
+leverages as much of that existing technology as possible. Jakarta Activation
 integrates these mechanisms.
 
 image:activation.png[image]
 
 This diagram shows the major elements comprising the
-JAF architecture. Note that the framework shown here is not bound to a
-particular application.
+Jakarta Activation architecture.
+Note that the framework shown here is not bound to a particular application.
 
 === The DataHandler Class
 
 The DataHandler class (shown in the diagram above)
-provides a consistent interface between JAF-aware clients and other
+provides a consistent interface between Activation-aware clients and other
 subsystems.
 
 === The DataSource Interface
 
-DataSource interface encapsulates an object that
+The DataSource interface encapsulates an object that
 contains data, and that can return both a stream providing data access,
 and a string defining the MIME type describing the data.
 
@@ -67,7 +67,7 @@ be extended to allow per data source user customizations. Once the
 DataSource is set in the DataHandler, the client can determine the
 operations available on that data.
 
-The JAF includes two DataSource class implementations
+Jakarta Activation includes two DataSource class implementations
 for convenience:
 
 * FileDataSource accesses data held in a file.
@@ -88,18 +88,20 @@ for the software components that implement the commands. Each JavaBeans™
 component can use externalization, or can implement the CommandObject
 interface to allow the typed data to be passed to it.
 
-The JAF defines the CommandMap interface, which
+Jakarta Activation defines the CommandMap interface, which
 provides a flexible and extensible framework for the CommandMap. The
 CommandMap interface allows developers to develop their own solutions
 for discovering which commands are available on the system. A possible
 implementation can access the ‘types registry’ on the platform or use a
-server-based solution. The JAF provides a simple default solution based
-on RFC 1524 (.mailcap) like functionality. See “Deliverables” below.
+server-based solution. Jakarta Activation provides a simple default
+solution based on RFC 1524 (.mailcap) like functionality.
+See “Deliverables” below.
 
 === The Command Object Interface
 
 Beans extend the CommandObject interface in order to
-interact with JAF services. JAF-aware JavaBeans™ components can directly
+interact with Activation services.
+Activation-aware JavaBeans™ components can directly
 access their DataSource and DataHandler objects in order to retrieve the
 data type and to act on the data.
 
@@ -138,7 +140,7 @@ association between the data and the Bean.
 
 This scenario uses the example of a hypothetical file
 viewer application in order to illustrate the normal flow of tasks
-involved when implementing the JAF. The file viewer is similar to the
+involved when implementing Jakarta Activation. The file viewer is similar to the
 Windows Explorer utility. When launched, it presents the user with a
 display of available files. It includes a function like Explorer’s
 ‘right mouse’ menu, where all operations that can be performed on a
@@ -181,13 +183,13 @@ service that enables access to commands that can operate on the data.
 The application maintains a list of the DataHandler objects, queries
 them for their names to generate its display.
 
- // for each file in the directory:
-
+[source, java]
+----
+// for each file in the directory:
 File file = new File(file_name);
-
 DataSource ds = new FileDataSource(file);
-
 DataHandler dh = new DataHandler(ds);
+----
 
 === Getting the Command List
 
@@ -204,29 +206,21 @@ operations that are available on that type. The application interprets
 the list and presents it to the user on a popup menu. The user then
 selects one of the operations from that list.
 
- // get the command list for an object
-
+[source, java]
+----
+// get the command list for an object
 CommandInfo cmdInfo[] = dh.getPreferredCommands();
-
-
 
 PopupMenu popup = new PopupMenu(“Item Menu”);
 
+// populate the popup with available commands
+for (i = 0; i < cmdInfo.length; i++)
+    popup.add(cmdInfo[i].getCommandName());
 
-
- // populate the popup with available commands
-
- for (i = 0; i < cmdInfo.length; i++)
-
- popup.add(cmdInfo[i].getCommandName());
-
-
-
- // add and show popup
-
+// add and show popup
 add(popup);
-
- popup.show(x_pos, y_pos);
+popup.show(x_pos, y_pos);
+----
 
 === Performing a Command
 
@@ -245,18 +239,16 @@ CommandObject to execute in. We expect that the requirements will be
 lightweight (not much beyond JavaBeans™ containers and AWT containment
 for visible components).
 
- // get the command object
-
+[source, java]
+----
+// get the command object
 Object cmdBean = cmdInfo[cmd_id].getCommandObject(dh,
+				this.getClassLoader());
 
- this.getClassLoader());
+  ...  // use serialization/externalization where appropriate
 
- ... // use serialization/externalization where
-appropriate
-
-
-
- my_awt_container.add((Component)cmdBean);
+my_awt_container.add((Component)cmdBean);
+----
 
 === An Alternative Scenario
 
@@ -275,38 +267,29 @@ DataHandler also constructs a DataSource for consumers that request it.
 The DataContentHandler mechanism is extended to also allow conversion
 from Objects to InputStreams.
 
-The following code is an example of a data base front
-end using the JAF, which provides query results in terms of objects.
+The following code is an example of a database front
+end using Jakarta Activation, which provides query results in terms of objects.
 
+[source, java]
+----
  /**
-
- * Get the viewer to view my query results:
-
- */
-
- Component getQueryViewer(QueryObject qo) throws
-Exception \{
-
+  * Get the viewer to view my query results:
+  */
+ Component getQueryViewer(QueryObject qo) throws Exception {
  String mime_type = qo.getType();
-
  Object q_result = qo.getResultObject();
-
- DataHandler my_dh = new DataHandler(q_result,
-mime_type);
-
-
+ DataHandler my_dh = new DataHandler(q_result, mime_type);
 
  return (Component)my_dh.getCommand(“view”).
-
- getCommandObject(my_dh, null));
-
+			getCommandObject(my_dh, null));
  }
+----
 
 == Primary Framework Interfaces
 
 
-This section describes interfaces required to implement
-the JAF architecture introduced in Section Three.
+This section describes interfaces required to implement the
+Jakarta Activation architecture introduced in Section Three.
 
 === The DataSource Interface
 
@@ -316,7 +299,7 @@ The DataSource object encapsulates the underlying data object in a class
 that abstracts the underlying data storage and typing mechanism, and
 presents its consumers with a common data access interface.
 
-The JAF provides DataSource implementations that
+Jakarta Activation provides DataSource implementations that
 support file systems and URLs. Application system vendors can use the
 DataSource interface to implement their own specialized DataSource
 classes to support IMAP servers, object databases, or other sources.
@@ -335,7 +318,7 @@ The DataHandler class encapsulates a Data object, and
 provides methods which act on that data.
 
 DataHandler encapsulates the type-to-command object
-binding service of the Command Map interface for applications. It
+binding service of the CommandMap interface for applications. It
 provides a handle to the operations and data available on a data
 element.
 
@@ -347,7 +330,7 @@ data source.
 
 Let’s examine these groups of features in more detail:
 
-===  Data Encapsulation
+====  Data Encapsulation
 
 A DataHandler object can only be instantiated with
 data. The data can be in the form of an object implementing the
@@ -362,7 +345,7 @@ via objects implementing the DataContentHandler interface, and then made
 available to the DataHandler either by a DataContentHandlerFactory
 object, or via a CommandMap.
 
-=== Command Binding
+==== Command Binding
 
 The DataHandler provides wrappers around commonly used
 functions for command discovery. DataHandler has methods that call into
@@ -389,7 +372,7 @@ gif-formatted byte stream.
 
 Applications will typically need to provide
 DataContentHandlers for all the MIME types they intend to support. (Note
-that the JavaMail reference implementation provides DataContentHandlers
+that the Jakarta Mail implementation provides DataContentHandlers
 for many of the MIME types used in mail messages.)
 
 ===  The CommandMap Interface
@@ -412,10 +395,10 @@ instantiate the Bean or request the verb (command) it describes.
 
 === The CommandObject Interface
 
-Beans designed specifically for use with the JAF
-Architecture should implement the CommandObject interface. This
-interface provides direct access to DataHandler methods and notifies a
-JAF-aware Bean which verb was used to call it. Upon instantiation, the
+Beans designed specifically for use with Jakarta Activation
+should implement the CommandObject interface. This
+interface provides direct access to DataHandler methods and notifies an
+Activation-aware Bean which verb was used to call it. Upon instantiation, the
 Bean takes a string specifying a user-selected command verb, and the
 DataHandler object managing the target data. The DataHandler takes a
 DataSource object, which provides an input stream linked to that data,
@@ -435,10 +418,10 @@ design and implementation freedom as possible.
 === Overview
 
 This section describes the specification of
-well-behaved JAF-aware Bean viewers. Note that this proposal assumes the
-reader is comfortable with the JavaBeans™ Specification. Developers
-intending to implement viewer Beans for the JAF should be familiar with
-JavaBeans™ concepts and architecture.
+well-behaved Activation-aware Bean viewers. Note that this proposal assumes the
+reader is comfortable with the JavaBeans™ Specification.
+Developers intending to implement viewer Beans for Jakarta Activation
+should be familiar with JavaBeans™ concepts and architecture.
 
 === Viewer Goals
 
@@ -446,14 +429,15 @@ JavaBeans™ concepts and architecture.
 simple as implementing Beans. That is, require low cost of entry to be a
 good citizen.
 
-=== Allow developers to have a certain amount of flexibility in their implementations.
+. Allow developers to have a certain amount of flexibility in their
+implementations.
 
 === General
 
 We are attempting to limit the amount of extra baggage
 that needs to be implemented beyond ‘generic’ Beans. In many cases,
 JavaBeans™ components that weren’t developed with knowledge of the
-framework can be used. The JAF exploits the existing features of
+framework can be used. Jakarta Activation exploits the existing features of
 JavaBeans™ and the JDK™, and defines as few additional interfaces and
 policies as possible.
 
@@ -464,29 +448,29 @@ allowing additional packages to be added at runtime.
 
 Our viewers/editors and related classes and files are
 encapsulated into JAR files, as is the preferred method for JavaBeans™.
-The JAF does not restrict the choice of classes used to implement a
-JAF-aware ‘viewer’ Beans, beyond those expected of well-behaved Beans.
+Jakarta Activation does not restrict the choice of classes used to implement
+Activaiton-aware ‘viewer’ Beans, beyond those expected of well-behaved Beans.
 
 === Interfaces
 
-A viewer Bean that communicates directly with a JAF
+A viewer Bean that communicates directly with a Jakarta Activation
 DataHandler should implement the CommandObject interface. This interface
 is small and easy to implement. However, Beans can still use standard
-Serialization and Externalization methods available in JDK 1.1 and later
-versions.
+Serialization and Externalization methods available in the JDK.
 
 === Storage
 
-The JAF expects applications and viewer Beans to
+Jakarta Activation expects applications and viewer Beans to
 implement storage tasks via the DataSource object. However; it is
-possible to use Externalization. A JAF-aware application can implement
+possible to use Externalization. An Activation-aware application can implement
 the following storage mechanism:
 
+[source, java]
+----
 ObjectOutputStream oos = new ObjectOutputStream(
-
- data_handler.getOutputStream());
-
+			data_handler.getOutputStream());
 my_externalizable_bean.writeExternal(oos);
+----
 
 === Packaging
 
@@ -498,8 +482,8 @@ integration points, see Section 8.
 
 === Container Support
 
-The JAF is designed to be flexible enough to support
-the needs of a variety of applications. The JAF expects these
+Jakarta Activation is designed to be flexible enough to support
+the needs of a variety of applications. Jakarta Activation expects these
 applications to provide the appropriate containers and life cycle
 support for these Beans. Beans written for the framework should be
 compatible with the guidelines in the JavaBeans™ documentation and
@@ -508,7 +492,7 @@ they are subclassed from Applet).
 
 === Lifecycle
 
-In general the JAF expects that its viewer bean life
+In general Jakarta Activation expects that its viewer bean life
 cycle semantics are the same as those for all Beans. In the case of
 Beans that implement the CommandObject interface we encourage
 application developers to not parent Beans subclassed from
@@ -519,18 +503,19 @@ javax.activation.CommandObject.setCommandContext method.
 
 The MailcapCommandMap implementation provides a
 mechanism that allows for an extensible set of command verbs.
-Applications using the JAF can query the system for commands available
-for a particular MIME type, and retrieve the Bean associated with that
-MIME type.
+Applications using Jakarta Activation can query the system for commands
+available for a particular MIME type, and retrieve the Bean associated
+with that MIME type.
 
 == Framework Integration Points
 
 
 This section presents several examples that clarify how
-JavaBeans™ developers can write Beans that are integrated with the JAF.
+JavaBeans™ developers can write Beans that are integrated with
+Jakarta Activation.
 
 First, let’s review the pluggable components of the
-JavaBeans™ Activation Framework:
+Jakarta Activation framework:
 
 * A mechanism that accesses target data where it is
 stored: DataSource
@@ -539,7 +524,7 @@ external byte stream format: DataContentHandler
 * A mechanism to locate visual components that operate
 on data objects: CommandMap
 * The visual components that operate on data objects:
-JAF-aware Beans
+Activation-aware Beans
 
 As a JavaBeans™ developer, you may build visual Beans.
 You can also develop DataContentHandlers to supply data to those Beans.
@@ -567,46 +552,46 @@ simple wrappers for your WombatBean for each command you want to
 implement. For example, for a Print command wrapper you can write the
 following code:
 
-public class WombatPrintBean extends WombatBean \{
-
- public WombatPrintBean() \{
-
- super();
-
- initPrinting();
-
- }
-
- }
+[source, java]
+----
+public class WombatPrintBean extends WombatBean {
+    public WombatPrintBean() {
+        super();
+        initPrinting();
+    }
+}
+----
 
 You will need to create a mailcap file that lists the
 MIME type “application/x-wombat” and user visible commands that are
 supported by your WombatBean. Your WombatBean wrappers will be listed as
 the objects supporting each of these commands.
 
-application/x-wombat; ;
-x-java-view=com.foo.WombatViewBean; \
-
- x-java-edit=com.foo.WombatEditBean; \
-
- x-java-print=com.foo.WombatPrintBean
+[source]
+----
+application/x-wombat; ; x-java-view=com.foo.WombatViewBean; \
+    x-java-edit=com.foo.WombatEditBean; \
+    x-java-print=com.foo.WombatPrintBean
+----
 
 You’ll also need to create a mime.types file with an
 entry:
 
+[source]
+----
 type=application/x-wombat desc=”Wombat” exts=wom
+----
 
 All of these components are packaged in a JAR file:
 
- META-INF/mailcap
-
+[source]
+----
+META-INF/mailcap
 META-INF/mime.types
-
 com/foo/WombatBean.class
-
 com/foo/WombatEditBean.class
-
 com/foo/WombatViewBean.class
+----
 
 Because everything is built into one Bean, and because
 no third party programmatic access to your Wombat objects is required,
@@ -648,14 +633,13 @@ the mailcap file included in your JAR file.
 Your mailcap file changes to list the appropriate
 Wombat Beans, which implement user commands:
 
-application/x-wombat; ;
-x-java-View=com.foo.WombatViewBean; \
-x-java-edit=com.foo.WombatEditBean; \
-
- x-java-print=com.foo.WombatPrintBean; \
-
-
-x-java-content-handler=com.foo.WombatDataContentHandler
+[source]
+----
+application/x-wombat; ; x-java-View=com.foo.WombatViewBean; \
+    x-java-edit=com.foo.WombatEditBean; \
+    x-java-print=com.foo.WombatPrintBean; \
+    x-java-content-handler=com.foo.WombatDataContentHandler
+----
 
 Your Wombat Beans can continue to implement the
 Externalizable interface, and thus read and write Wombat byte streams.
@@ -664,7 +648,7 @@ find the Wombat object they’re being invoked to operate on, they
 implement the CommandObject interface. The setCommandContext method
 refers them to the corresponding DataHandler, from which they can invoke
 the getContent method, which will return a Wombat object (produced by
-the WombatData- ContentHandler).
+the WombatDataContentHandler).
 
 All components are packaged in a JAR file.
 
@@ -681,12 +665,17 @@ Externalizable interface to read the Wombat data format.
 
 ViewAll delivers an appropriate mailcap file:
 
-application/x-wombat; ;
-x-java-view=com.viewall.WombatViewer
+[source]
+----
+application/x-wombat; ; x-java-view=com.viewall.WombatViewer
+----
 
 and mime.types file:
 
+[source]
+----
 type=application/x-wombat desc=”Wombat” exts=wom
+----
 
 All components are packaged in a JAR file.
 
@@ -710,9 +699,11 @@ The WombatNotification DataContentHandler is delivered as a class named
 WombatNotificationDataContentHandler and is delivered in a JAR file with
 the following mailcap file:
 
+[source]
+----
 application/x-wombat-notification; \
-
- WombatNotificationDataContentHandler
+    WombatNotificationDataContentHandler
+----
 
 The server application creates DataHandlers for its
 WombatNotification objects. The email system uses the DataHandler to
@@ -730,60 +721,58 @@ WombatNotification object, which will then notify the user.
 
 === Packaging Details
 
-The JAF is implemented as a Standard Extension to the
-Java™ Platform and is also included in the J2SE 6.0 release. The
-following are some more details about the package:
+Jakarta Activation is implemented as a Standard Extension to the
+Java™ Platform.
+The following are some more details about the package:
 
 * The package name is javax.activation.
-* This release is included in J2SE 6.0 and J2EE 5.0,
-and is also available separately for use on earlier versions of J2SE.
-* The JAF Reference Implementation does not include
+* The Jakarta Activation implementation does not include
 DataContentHandlers for any MIME data types; applications must include
-the DataContentHandlers thy need. Note that the JavaMail Reference
-Implementation includes DataContentHandlers for some basic data types
+the DataContentHandlers they need. Note that the Jakarta Mail
+implementation includes DataContentHandlers for some basic data types
 used in mail messages.
 
 === Framework Core Classes
 
-interface DataSource: The DataSource interface provides
-the JavaBeans Activation Framework with an abstraction of some arbitrary
+**interface DataSource:** The DataSource interface provides
+Jakarta Activation with an abstraction of some arbitrary
 collection of data. It provides a type for that data as well as access
 to it in the form of InputStreams and OutputStreams where appropriate.
 
-class DataHandler: The DataHandler class provides a
+**class DataHandler:** The DataHandler class provides a
 consistent interface to data available in many different sources and
 formats. It manages simple stream to string conversions and related
 operations using DataContentHandlers. It provides access to commands
 that can operate on the data. The commands are found using a CommandMap.
 
-interface DataContentHandler: The DataContentHandler
+**interface DataContentHandler:** The DataContentHandler
 interface is implemented by objects that can be used to extend the
 capabilities of the DataHandler’s implementation of the Transferable
 interface. Through DataContentHandlers the framework can be extended to
 convert streams in to objects, and to write objects to streams.
 
-interface DataContentHandlerFactory: This interface
+**interface DataContentHandlerFactory:** This interface
 defines a factory for DataContentHandlers. An implementation of this
 interface should map a MIME type into an instance of DataContentHandler.
 The design pattern for classes implementing this interface is the same
 as for the ContentHandler mechanism used in java.net.URL.
 
-class CommandMap: The CommandMap class provides an
+**class CommandMap:** The CommandMap class provides an
 interface to the registry of viewer, editor, print, etc. objects
 available in the system. Developers are expected to either use the
 CommandMap implementation included with this package (MailcapCommandMap)
 or develop their own. Note that some of the methods in this class are
 abstract.
 
-interface CommandObject: Beans that are Activation
-Framework aware implement this interface to find out which command verb
+**interface CommandObject:** Beans that are Activation
+aware implement this interface to find out which command verb
 they’re being asked to perform, and to obtain the DataHandler
 representing the data they should operate on. Beans that don’t implement
 this interface may be used as well. Such commands may obtain the data
 using the Externalizable interface, or using an application-specific
 method.
 
-class CommandInfo: The CommandInfo class is used by
+**class CommandInfo:** The CommandInfo class is used by
 CommandMap implementations to describe the results of command requests.
 It provides the requestor with both the verb requested, as well as an
 instance of the bean. There is also a method that will return the name
@@ -796,11 +785,11 @@ information solely from the class name.
 
 === Framework Auxiliary Classes
 
-class FileDataSource: The FileDataSource class
+**class FileDataSource:** The FileDataSource class
 implements a simple DataSource object that encapsulates a file. It
 provides data typing services via a FileTypeMap object.
 
-class FileTypeMap: The FileTypeMap is an abstract class
+**class FileTypeMap:** The FileTypeMap is an abstract class
 that provides a data typing interface for files. Implementations of this
 class will implement the getContentType methods which will derive a
 content type from a file name or a File object. FileTypeMaps could use
@@ -810,92 +799,39 @@ to derive its type from the contents of the file. The FileDataSource
 class uses the default FileTypeMap (a MimetypesFileTypeMap unless
 changed) to determine the content type of files.
 
-class MimetypesFileTypeMap: This class extends
+**class MimetypesFileTypeMap:** This class extends
 FileTypeMap and provides data typing of files via their file extension.
 It uses the .mime.types format.
 
-class URLDataSource: The URLDataSource class provides
+**class URLDataSource:** The URLDataSource class provides
 an object that wraps a URL object in a DataSource interface.
 URLDataSource simplifies the handling of data described by URLs within
-the JavaBeans Activation Framework because this class can be used to
+Jakarta Activation because this class can be used to
 create new DataHandlers.
 
-class MailcapCommandMap: MailcapCommandMap extends the
+**class MailcapCommandMap:** MailcapCommandMap extends the
 CommandMap abstract class. It implements a CommandMap whose
 configuration is based on mailcap files (RFC 1524). The
 MailcapCommandMap can be configured both programmatically and via
 configuration files.
 
-class ActivationDataFlavor: The ActivationDataFlavor is
-a special subclass of java.awt.datatransfer.DataFlavor. It allows the
-JAF to set all three values stored by the DataFlavor class via a new
-constructor as well as improved MIME parsing in the equals method.
+**class ActivationDataFlavor:** The ActivationDataFlavor is
+a special subclass of java.awt.datatransfer.DataFlavor. It allows
+Jakarta Activation to set all three values stored by the DataFlavor
+class via a new constructor as well as improved MIME parsing in the
+equals method.
 Except for the improved parsing, its semantics are identical to that of
 the JDK’s DataFlavor class.
 
-class UnsupportedDataTypeException: Signals that
+**class UnsupportedDataTypeException:** Signals that
 requested operation does not support the requested data type.
 
-class MimeType: A Multipurpose Internet Extension
+**class MimeType:** A Multipurpose Internet Extension
 (MIME) type, as defined in RFC 2045 and 2046.
 
-class com.sun.activation.viewers.*: A few simple
+**class com.sun.activation.viewers.*:** A few simple
 example viewer Beans (text and image).
 
 == Document Change History
 
-
-May 13,1997 : Initial Public Draft 1
-
-Aug 1, 1997: Internal Review Draft 2
-
-*  Added Integration Points section
-* Minor API changes
-
-
-
-Sept 16 1997: Second Public Draft 3
-
-* Edited document to reflect change to Standard
-Extension
-* Removed URL/URLConnection section
-* Minor API changes
-
-Oct 28 1997: Third Public Draft 4
-
-* Minor API changes
-* Add additional class descriptions
-* Fixed minor errata
-
-Dec 9, 1997: Fourth Public Draft 5
-
-* Minor API changes
-* Add additional class descriptions
-* Fixed minor errata
-* Includes Frozen API
-
-Feb. 20, 1998: Version 0.6
-
-* Minor typos fixed.
-* Change bars removed.
-
-Mar. 16, 1998: Version 1.0
-
-*  Version 1.0
-
-Mar. 6, 1999: Version 1.0a
-
-* Fixed minor typos.
-* Synchronized with updated javadocs
-
-May 16, 2005
-
-* Updated for 1.1 release
-* Removed all detailed API specifications; refer to the
-javadocs
-
-July 11, 2017
-
-* Updated for 1.2 release
-
-
+Oct 21, 2019: First complete Jakarta EE version.
