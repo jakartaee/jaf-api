@@ -25,7 +25,7 @@
 	<relativePath/>
     </parent>
     <artifactId>activation-spec</artifactId>
-    <version>1.2</version>
+    <version>1.2-RevA</version>
     <packaging>pom</packaging>
     <name>Jakarta Activation Specification</name>
 
