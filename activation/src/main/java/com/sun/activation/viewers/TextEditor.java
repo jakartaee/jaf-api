@@ -13,8 +13,7 @@ package com.sun.activation.viewers;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.beans.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class TextEditor extends Panel implements CommandObject,
     ActionListener {

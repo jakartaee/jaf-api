@@ -8,8 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import java.io.*;
-import javax.activation.*;
+import jakarta.activation.*;
 import java.awt.datatransfer.*;
 
 public class DCHTest {

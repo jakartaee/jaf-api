@@ -8,10 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import java.io.*;
-import java.beans.*;
-import com.sun.activation.registries.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 /**
  * Dump out everything we know about a MailcapCommandMap.

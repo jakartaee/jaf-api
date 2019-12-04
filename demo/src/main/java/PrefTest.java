@@ -8,9 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import java.io.*;
-import java.beans.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class PrefTest {
 

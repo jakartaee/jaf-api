@@ -10,8 +10,7 @@
 
 import java.awt.*;
 import java.io.*;
-import java.beans.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class TextInternalizer extends Panel implements Externalizable {
     // UI Vars...

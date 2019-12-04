@@ -10,7 +10,6 @@
 
 package com.sun.activation.registries;
 
-import java.io.*;
 import java.util.logging.*;
 
 /**

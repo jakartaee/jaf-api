@@ -12,8 +12,7 @@ package com.sun.activation.viewers;
 
 import java.awt.*;
 import java.io.*;
-import java.beans.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class ImageViewer extends Panel implements CommandObject {
     // UI Vars...

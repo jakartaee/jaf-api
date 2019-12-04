@@ -10,7 +10,7 @@
 
 import java.io.*;
 import java.awt.datatransfer.DataFlavor;
-import javax.activation.*;
+import jakarta.activation.*;
 
 
 public class PlainDCH implements DataContentHandler {

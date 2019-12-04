@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 /**
  * This interface defines a factory for <code>DataContentHandlers</code>. An

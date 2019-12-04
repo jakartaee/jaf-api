@@ -10,8 +10,6 @@
 
 package com.sun.activation.registries;
 
-import java.lang.*;
-
 public class MimeTypeEntry {
     private String type;
     private String extension;

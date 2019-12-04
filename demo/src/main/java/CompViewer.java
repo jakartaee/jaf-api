@@ -9,8 +9,6 @@
  */
 
 import java.awt.*;
-import java.beans.*;
-import java.lang.reflect.Method;
 import java.io.*;
 import java.awt.event.*;
 

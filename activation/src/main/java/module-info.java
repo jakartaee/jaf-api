@@ -9,7 +9,7 @@
  */
 
 module jakarta.activation {
-    exports javax.activation;
+    exports jakarta.activation;
     requires java.logging;
     requires java.desktop;	// for image/jpeg handler
 }

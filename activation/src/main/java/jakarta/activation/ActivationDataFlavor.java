@@ -8,11 +8,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.awt.datatransfer.DataFlavor;
-import java.io.IOException;
-import javax.activation.MimeType;
 
 /**
  * The ActivationDataFlavor class is a special subclass of

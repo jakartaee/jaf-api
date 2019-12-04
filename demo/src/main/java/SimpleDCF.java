@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import javax.activation.*;
+import jakarta.activation.*;
 import java.util.StringTokenizer;
 import java.util.Hashtable;
 

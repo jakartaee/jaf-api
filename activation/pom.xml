@@ -18,7 +18,7 @@
     <parent>
 	<groupId>com.sun.activation</groupId>
 	<artifactId>all</artifactId>
-	<version>1.2.2</version>
+	<version>2.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
@@ -37,10 +37,10 @@
 	    Jakarta Activation Specification
 	</activation.specificationTitle>
 	<activation.implementationTitle>
-	    javax.activation
+	    jakarta.activation
 	</activation.implementationTitle>
 	<activation.packages.export>
-	    javax.activation.*; version=${activation.spec.version},
+	    jakarta.activation.*; version=${activation.spec.version},
 	    com.sun.activation.*; version=${activation.osgiversion}
 	</activation.packages.export>
 	<findbugs.skip>
@@ -134,7 +134,7 @@
 			    <groups>
 				<group>
 				    <title>Jakarta Activation API Packages</title>
-				    <packages>javax.*</packages>
+				    <packages>jakarta.*</packages>
 				</group>
 			    </groups>
 			    <!--

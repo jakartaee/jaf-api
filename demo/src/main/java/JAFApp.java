@@ -10,9 +10,8 @@
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
 import java.io.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class JAFApp extends Frame implements WindowListener, ItemListener, ActionListener {
 

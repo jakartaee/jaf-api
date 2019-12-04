@@ -10,7 +10,7 @@
 
 import java.net.*;
 import java.io.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class DHURL {
     URL url = null;

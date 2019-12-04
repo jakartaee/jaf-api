@@ -9,9 +9,7 @@
  */
 
 import java.awt.*;
-import java.beans.*;
-import java.net.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class FileView {
     private Frame frame;
