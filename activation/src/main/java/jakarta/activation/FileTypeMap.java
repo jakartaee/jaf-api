@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.io.File;
 import java.util.Map;
@@ -25,9 +25,9 @@ import java.util.WeakHashMap;
  * FileDataSource class uses the default FileTypeMap (a MimetypesFileTypeMap
  * unless changed) to determine the content type of files.
  *
- * @see javax.activation.FileTypeMap
- * @see javax.activation.FileDataSource
- * @see javax.activation.MimetypesFileTypeMap
+ * @see jakarta.activation.FileTypeMap
+ * @see jakarta.activation.FileDataSource
+ * @see jakarta.activation.MimetypesFileTypeMap
  */
 
 public abstract class FileTypeMap {
@@ -97,7 +97,7 @@ public abstract class FileTypeMap {
      * <code>MimetypesFileTypeMap</code>.
      *
      * @return The default FileTypeMap
-     * @see javax.activation.FileTypeMap#setDefaultFileTypeMap
+     * @see jakarta.activation.FileTypeMap#setDefaultFileTypeMap
      */
     public static synchronized FileTypeMap getDefaultFileTypeMap() {
 	if (defaultMap != null)

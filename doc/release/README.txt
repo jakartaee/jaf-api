@@ -12,7 +12,7 @@ RELNOTES.txt   : The release notes for this release including,
 
 LICENSE.txt    : The license covering this software.
 
-javax.activation.jar : This JAR file contains the classes that
+jakarta.activation.jar : This JAR file contains the classes that
                  make up JavaBeans(tm) Activation Framework.
 
 demo           : This directory contains some simple *unsupported*

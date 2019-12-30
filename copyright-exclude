@@ -2,7 +2,9 @@ copyright-exclude
 LICENSE
 CONTRIBUTING.md
 README
+NOTICE.md
 /META-INF/
 /speclicense.html
 doc/release/
 doc/spec/
+spec/src/main/asciidoc/license-efsl.adoc

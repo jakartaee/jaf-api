@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -17,9 +17,6 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 
 /**
  * The DataHandler class provides a consistent interface to data
@@ -28,14 +25,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
  * using DataContentHandlers.
  * It provides access to commands that can operate on the data.
  * The commands are found using a CommandMap. <p>
- *
- * <b>DataHandler and the Transferable Interface</b><p>
- * DataHandler implements the Transferable interface so that data can
- * be used in AWT data transfer operations, such as cut and paste and
- * drag and drop. The implementation of the Transferable interface
- * relies on the availability of an installed DataContentHandler
- * object corresponding to the MIME type of the data represented in
- * the specific instance of the DataHandler.<p>
  *
  * <b>DataHandler and CommandMaps</b><p>
  * The DataHandler keeps track of the current CommandMap that it uses to
@@ -51,13 +40,13 @@ import java.awt.datatransfer.UnsupportedFlavorException;
  * The current DataHandler implementation creates a private
  * instance of URLDataSource when it is constructed with a URL.
  *
- * @see javax.activation.CommandMap
- * @see javax.activation.DataContentHandler
- * @see javax.activation.DataSource
- * @see javax.activation.URLDataSource
+ * @see jakarta.activation.CommandMap
+ * @see jakarta.activation.DataContentHandler
+ * @see jakarta.activation.DataSource
+ * @see jakarta.activation.URLDataSource
  */
 
-public class DataHandler implements Transferable {
+public class DataHandler {
 
     // Use the datasource to indicate whether we were started via the
     // DataSource constructor or the object constructor.
@@ -74,8 +63,9 @@ public class DataHandler implements Transferable {
     private CommandMap currentCommandMap = null;
 
     // our transfer flavors
-    private static final DataFlavor emptyFlavors[] = new DataFlavor[0];
-    private DataFlavor transferFlavors[] = emptyFlavors;
+    private static final ActivationDataFlavor emptyFlavors[] =
+						new ActivationDataFlavor[0];
+    private ActivationDataFlavor transferFlavors[] = emptyFlavors;
 
     // our DataContentHandler
     private DataContentHandler dataContentHandler = null;
@@ -211,8 +201,8 @@ public class DataHandler implements Transferable {
      * @return	the InputStream representing this data
      * @exception IOException	if an I/O error occurs
      *
-     * @see javax.activation.DataContentHandler#writeTo
-     * @see javax.activation.UnsupportedDataTypeException
+     * @see jakarta.activation.DataContentHandler#writeTo
+     * @see jakarta.activation.UnsupportedDataTypeException
      */
     public InputStream getInputStream() throws IOException {
 	InputStream ins = null;
@@ -311,8 +301,8 @@ public class DataHandler implements Transferable {
      * @return the OutputStream
      * @exception	IOException	for failures creating the OutputStream
      *
-     * @see javax.activation.DataSource#getOutputStream
-     * @see javax.activation.URLDataSource
+     * @see jakarta.activation.DataSource#getOutputStream
+     * @see jakarta.activation.URLDataSource
      */
     public OutputStream getOutputStream() throws IOException {
 	if (dataSource != null)
@@ -322,9 +312,9 @@ public class DataHandler implements Transferable {
     }
 
     /**
-     * Return the DataFlavors in which this data is available. <p>
+     * Return the ActivationDataFlavors in which this data is available. <p>
      *
-     * Returns an array of DataFlavor objects indicating the flavors
+     * Returns an array of ActivationDataFlavor objects indicating the flavors
      * the data can be provided in. The array is usually ordered
      * according to preference for providing the data, from most
      * richly descriptive to least richly descriptive.<p>
@@ -336,16 +326,16 @@ public class DataHandler implements Transferable {
      *
      * If a DataContentHandler can <i>not</i> be located, and if the
      * DataHandler was created with a DataSource (or URL), one
-     * DataFlavor is returned that represents this object's MIME type
+     * ActivationDataFlavor is returned that represents this object's MIME type
      * and the <code>java.io.InputStream</code> class.  If the
      * DataHandler was created with an object and a MIME type,
-     * getTransferDataFlavors returns one DataFlavor that represents
+     * getTransferDataFlavors returns one ActivationDataFlavor that represents
      * this object's MIME type and the object's class.
      *
      * @return	an array of data flavors in which this data can be transferred
-     * @see javax.activation.DataContentHandler#getTransferDataFlavors
+     * @see jakarta.activation.DataContentHandler#getTransferDataFlavors
      */
-    public synchronized DataFlavor[] getTransferDataFlavors() {
+    public synchronized ActivationDataFlavor[] getTransferDataFlavors() {
 	if (factory != oldFactory) // if the factory has changed, clear cache
 	    transferFlavors = emptyFlavors;
 
@@ -362,16 +352,16 @@ public class DataHandler implements Transferable {
      * Returns whether the specified data flavor is supported
      * for this object.<p>
      *
-     * This method iterates through the DataFlavors returned from
+     * This method iterates through the ActivationDataFlavors returned from
      * <code>getTransferDataFlavors</code>, comparing each with
      * the specified flavor.
      *
      * @param flavor	the requested flavor for the data
      * @return		true if the data flavor is supported
-     * @see javax.activation.DataHandler#getTransferDataFlavors
+     * @see jakarta.activation.DataHandler#getTransferDataFlavors
      */
-    public boolean isDataFlavorSupported(DataFlavor flavor) {
-	DataFlavor[] lFlavors = getTransferDataFlavors();
+    public boolean isDataFlavorSupported(ActivationDataFlavor flavor) {
+	ActivationDataFlavor[] lFlavors = getTransferDataFlavors();
 
 	for (int i = 0; i < lFlavors.length; i++) {
 	    if (lFlavors[i].equals(flavor))
@@ -388,33 +378,33 @@ public class DataHandler implements Transferable {
      * <b>For DataHandler's created with DataSources or URLs:</b><p>
      *
      * The DataHandler attempts to locate a DataContentHandler
-     * for this MIME type. If one is found, the passed in DataFlavor
+     * for this MIME type. If one is found, the passed in ActivationDataFlavor
      * and the type of the data are passed to its <code>getTransferData</code>
      * method. If the DataHandler fails to locate a DataContentHandler
      * and the flavor specifies this object's MIME type and the
      * <code>java.io.InputStream</code> class, this object's InputStream
      * is returned.
-     * Otherwise it throws an UnsupportedFlavorException. <p>
+     * Otherwise it throws an IOException. <p>
      *
      * <b>For DataHandler's created with Objects:</b><p>
      *
      * The DataHandler attempts to locate a DataContentHandler
-     * for this MIME type. If one is found, the passed in DataFlavor
+     * for this MIME type. If one is found, the passed in ActivationDataFlavor
      * and the type of the data are passed to its getTransferData
      * method. If the DataHandler fails to locate a DataContentHandler
      * and the flavor specifies this object's MIME type and its class,
      * this DataHandler's referenced object is returned.  
-     * Otherwise it throws an UnsupportedFlavorException.
+     * Otherwise it throws an IOException.
      *
      * @param flavor	the requested flavor for the data
      * @return		the object
-     * @exception UnsupportedFlavorException	if the data could not be
+     * @exception IOException	if the data could not be
      *			converted to the requested flavor
      * @exception IOException	if an I/O error occurs
-     * @see javax.activation.ActivationDataFlavor
+     * @see jakarta.activation.ActivationDataFlavor
      */
-    public Object getTransferData(DataFlavor flavor)
-				throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(ActivationDataFlavor flavor)
+				throws IOException {
 	return getDataContentHandler().getTransferData(flavor, dataSource);
     }
 
@@ -428,7 +418,7 @@ public class DataHandler implements Transferable {
      *
      * @param commandMap	the CommandMap to use in this DataHandler
      *
-     * @see javax.activation.CommandMap#setDefaultCommandMap
+     * @see jakarta.activation.CommandMap#setDefaultCommandMap
      */
     public synchronized void setCommandMap(CommandMap commandMap) {
 	if (commandMap != currentCommandMap || commandMap == null) {
@@ -451,7 +441,7 @@ public class DataHandler implements Transferable {
      *
      * @return	the CommandInfo objects representing the preferred commands
      *
-     * @see javax.activation.CommandMap#getPreferredCommands
+     * @see jakarta.activation.CommandMap#getPreferredCommands
      */
     public CommandInfo[] getPreferredCommands() {
 	if (dataSource != null)
@@ -471,7 +461,7 @@ public class DataHandler implements Transferable {
      *
      * @return	the CommandInfo objects representing all the commands
      *
-     * @see javax.activation.CommandMap#getAllCommands
+     * @see jakarta.activation.CommandMap#getAllCommands
      */
     public CommandInfo[] getAllCommands() {
 	if (dataSource != null)
@@ -490,7 +480,7 @@ public class DataHandler implements Transferable {
      * @param cmdName	the command name
      * @return	the CommandInfo corresponding to the command
      *
-     * @see javax.activation.CommandMap#getCommand
+     * @see jakarta.activation.CommandMap#getCommand
      */
     public CommandInfo getCommand(String cmdName) {
 	if (dataSource != null)
@@ -531,7 +521,7 @@ public class DataHandler implements Transferable {
      * <p>
      * This method calls the CommandInfo's <code>getCommandObject</code>
      * method with the <code>ClassLoader</code> used to load
-     * the <code>javax.activation.DataHandler</code> class itself.
+     * the <code>jakarta.activation.DataHandler</code> class itself.
      *
      * @param cmdinfo	the CommandInfo corresponding to a command
      * @return	the instantiated command object
@@ -642,7 +632,7 @@ public class DataHandler implements Transferable {
      * @param newFactory	the DataContentHandlerFactory
      * @exception Error	if the factory has already been defined.
      *
-     * @see javax.activation.DataContentHandlerFactory
+     * @see jakarta.activation.DataContentHandlerFactory
      */
     public static synchronized void setDataContentHandlerFactory(
 					 DataContentHandlerFactory newFactory) {
@@ -724,7 +714,7 @@ class DataHandlerDataSource implements DataSource {
  */
 class DataSourceDataContentHandler implements DataContentHandler {
     private DataSource ds = null;
-    private DataFlavor transferFlavors[] = null;
+    private ActivationDataFlavor transferFlavors[] = null;
     private DataContentHandler dch = null;
 
     /**
@@ -736,16 +726,17 @@ class DataSourceDataContentHandler implements DataContentHandler {
     }
 
     /**
-     * Return the DataFlavors for this <code>DataContentHandler</code>.
-     * @return	the DataFlavors
+     * Return the ActivationDataFlavors for this
+     * <code>DataContentHandler</code>.
+     * @return	the ActivationDataFlavors
      */
-    public DataFlavor[] getTransferDataFlavors() {
+    public ActivationDataFlavor[] getTransferDataFlavors() {
 
 	if (transferFlavors == null) {
 	    if (dch != null) { // is there a dch?
 		transferFlavors = dch.getTransferDataFlavors();
 	    } else {
-		transferFlavors = new DataFlavor[1];
+		transferFlavors = new ActivationDataFlavor[1];
 		transferFlavors[0] =
 		    new ActivationDataFlavor(ds.getContentType(),
 					     ds.getContentType());
@@ -755,20 +746,20 @@ class DataSourceDataContentHandler implements DataContentHandler {
     }
 
     /**
-     * Return the Transfer Data of type DataFlavor from InputStream.
-     * @param df	the DataFlavor
+     * Return the Transfer Data of type ActivationDataFlavor from InputStream.
+     * @param df	the ActivationDataFlavor
      * @param ds	the DataSource
      * @return		the constructed Object
      */
-    public Object getTransferData(DataFlavor df, DataSource ds) throws
-				UnsupportedFlavorException, IOException {
+    public Object getTransferData(ActivationDataFlavor df, DataSource ds)
+				throws IOException {
 
 	if (dch != null)
 	    return dch.getTransferData(df, ds);
 	else if (df.equals(getTransferDataFlavors()[0])) // only have one now
 	    return ds.getInputStream();
 	else
-	    throw new UnsupportedFlavorException(df);
+	    throw new IOException("Unsupported DataFlavor: " + df);
     }
 
     public Object getContent(DataSource ds) throws IOException {
@@ -800,7 +791,7 @@ class DataSourceDataContentHandler implements DataContentHandler {
  * with an object.
  */
 class ObjectDataContentHandler implements DataContentHandler {
-    private DataFlavor transferFlavors[] = null;
+    private ActivationDataFlavor transferFlavors[] = null;
     private Object obj;
     private String mimeType;
     private DataContentHandler dch = null;
@@ -824,15 +815,16 @@ class ObjectDataContentHandler implements DataContentHandler {
     }
 
     /**
-     * Return the DataFlavors for this <code>DataContentHandler</code>.
-     * @return	the DataFlavors
+     * Return the ActivationDataFlavors for this
+     * <code>DataContentHandler</code>.
+     * @return	the ActivationDataFlavors
      */
-    public synchronized DataFlavor[] getTransferDataFlavors() {
+    public synchronized ActivationDataFlavor[] getTransferDataFlavors() {
 	if (transferFlavors == null) {
 	    if (dch != null) {
 		transferFlavors = dch.getTransferDataFlavors();
 	    } else {
-		transferFlavors = new DataFlavor[1];
+		transferFlavors = new ActivationDataFlavor[1];
 		transferFlavors[0] = new ActivationDataFlavor(obj.getClass(),
 					     mimeType, mimeType);
 	    }
@@ -841,20 +833,20 @@ class ObjectDataContentHandler implements DataContentHandler {
     }
 
     /**
-     * Return the Transfer Data of type DataFlavor from InputStream.
-     * @param df	the DataFlavor
+     * Return the Transfer Data of type ActivationDataFlavor from InputStream.
+     * @param df	the ActivationDataFlavor
      * @param ds	the DataSource
      * @return		the constructed Object
      */
-    public Object getTransferData(DataFlavor df, DataSource ds)
-				throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(ActivationDataFlavor df, DataSource ds)
+				throws IOException {
 
 	if (dch != null)
 	    return dch.getTransferData(df, ds);
 	else if (df.equals(getTransferDataFlavors()[0])) // only have one now
 	    return obj;
 	else
-	    throw new UnsupportedFlavorException(df);
+	    throw new IOException("Unsupported DataFlavor: " + df);
 
     }
 

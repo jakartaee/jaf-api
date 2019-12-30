@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -9,36 +9,34 @@
  */
 
 import java.io.*;
-import java.awt.datatransfer.DataFlavor;
-import javax.activation.*;
+import jakarta.activation.*;
 
 
 public class PlainDCH implements DataContentHandler {
     /**
-     * return the DataFlavors for this <code>DataContentHandler</code>
-     * @return The DataFlavors.
+     * return the ActivationDataFlavors for this <code>DataContentHandler</code>
+     * @return The ActivationDataFlavors.
      */
-    public DataFlavor[] getTransferDataFlavors() { // throws Exception;
-	DataFlavor flavors[] = new DataFlavor[2];
+    public ActivationDataFlavor[] getTransferDataFlavors() {
+	ActivationDataFlavor flavors[] = new ActivationDataFlavor[2];
 	
 
 	try {
-	    flavors[0] = new ActivationDataFlavor(Class.forName("java.lang.String"),
-					   "text/plain",
-					   "text string");
+	    flavors[0] = new ActivationDataFlavor(
+		Class.forName("java.lang.String"), "text/plain", "text string");
 	} catch(Exception e)
 	    { System.out.println(e); }
 
-	flavors[1] = new DataFlavor("text/plain", "Plain Text");
+	flavors[1] = new ActivationDataFlavor("text/plain", "Plain Text");
 	return flavors;
     }
     /**
-     * return the Transfer Data of type DataFlavor from InputStream
-     * @param df The DataFlavor.
+     * return the Transfer Data of type ActivationDataFlavor from InputStream
+     * @param df The ActivationDataFlavor.
      * @param ins The InputStream corresponding to the data.
      * @return The constructed Object.
      */
-    public Object getTransferData(DataFlavor df, DataSource ds) {
+    public Object getTransferData(ActivationDataFlavor df, DataSource ds) {
 	
 	// this is sort of hacky, but will work for the
 	// sake of testing...

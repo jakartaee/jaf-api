@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -14,6 +14,8 @@ package	com.sun.activation.registries;
  *	A class to encapsulate Mailcap parsing related exceptions
  */
 public class MailcapParseException extends Exception {
+
+    private static final long serialVersionUID = -1445946122972156790L;
 
     public MailcapParseException() {
 	super();

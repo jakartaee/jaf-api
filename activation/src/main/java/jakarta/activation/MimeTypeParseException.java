@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,12 +8,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 /**
  * A class to encapsulate MimeType parsing related exceptions.
  */
 public class MimeTypeParseException extends Exception {
+
+    private static final long serialVersionUID = 1855296571002626216L;
 
     /**
      * Constructs a MimeTypeParseException with no specified detail message. 

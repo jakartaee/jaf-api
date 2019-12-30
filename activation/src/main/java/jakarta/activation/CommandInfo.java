@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -79,7 +79,7 @@ public class CommandInfo {
      * On Java SE 9 and newer, if the component class is in a named module,
      * it needs to be in an exported package.
      * <p>
-     * If the bean implements the <code>javax.activation.CommandObject</code>
+     * If the bean implements the <code>jakarta.activation.CommandObject</code>
      * interface, call its <code>setCommandContext</code> method.
      * <p>
      * If the DataHandler parameter is null, then the bean is
@@ -104,7 +104,7 @@ public class CommandInfo {
      * @exception	ClassNotFoundException	if command object class can't
      *						be found
      * @see java.beans.Beans#instantiate
-     * @see javax.activation.CommandObject
+     * @see jakarta.activation.CommandObject
      */
     public Object getCommandObject(DataHandler dh, ClassLoader loader)
 			throws IOException, ClassNotFoundException {
@@ -203,7 +203,7 @@ public class CommandInfo {
                 }
                 Class<?> beanClass = Class.forName(cn, true, loader);
                 try {
-                    return beanClass.newInstance();
+                    return beanClass.getDeclaredConstructor().newInstance();
                 } catch (Exception ex) {
                     throw new ClassNotFoundException(beanClass + ": " + ex, ex);
                 }

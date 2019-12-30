@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -9,8 +9,7 @@
  */
 
 import java.io.*;
-import javax.activation.*;
-import java.awt.datatransfer.*;
+import jakarta.activation.*;
 
 public class DCHTest2 {
     private FileDataSource fds = null;
@@ -37,7 +36,7 @@ public class DCHTest2 {
     }
 
     private void doit() {
-	DataFlavor xfer_flavors[];
+	ActivationDataFlavor xfer_flavors[];
 	Object content = null;
 
 	// now let's create a DataHandler

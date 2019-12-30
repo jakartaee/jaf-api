@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,14 +8,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 /**
  * The DataContentHandler interface is implemented by objects that can
@@ -34,34 +32,35 @@ import javax.activation.DataSource;
 
 public interface DataContentHandler {
     /**
-     * Returns an array of DataFlavor objects indicating the flavors the
-     * data can be provided in. The array should be ordered according to
+     * Returns an array of ActivationDataFlavor objects indicating the flavors
+     * the data can be provided in. The array should be ordered according to
      * preference for providing the data (from most richly descriptive to
      * least descriptive).
      *
-     * @return The DataFlavors.
+     * @return The ActivationDataFlavors.
      */
-    public DataFlavor[] getTransferDataFlavors();
+    public ActivationDataFlavor[] getTransferDataFlavors();
 
     /**
      * Returns an object which represents the data to be transferred.
      * The class of the object returned is defined by the representation class
      * of the flavor.
      *
-     * @param df The DataFlavor representing the requested type.
+     * @param df The ActivationDataFlavor representing the requested type.
      * @param ds The DataSource representing the data to be converted.
      * @return The constructed Object.
-     * @exception UnsupportedFlavorException	if the handler doesn't
+     * @exception IOException	if the handler doesn't
      *						support the requested flavor
      * @exception IOException	if the data can't be accessed
      */
-    public Object getTransferData(DataFlavor df, DataSource ds)
-				throws UnsupportedFlavorException, IOException;
+    public Object getTransferData(ActivationDataFlavor df, DataSource ds)
+				throws IOException;
 
     /**
      * Return an object representing the data in its most preferred form.
-     * Generally this will be the form described by the first DataFlavor
-     * returned by the <code>getTransferDataFlavors</code> method.
+     * Generally this will be the form described by the first
+     * ActivationDataFlavor returned by the
+     * <code>getTransferDataFlavors</code> method.
      *
      * @param ds The DataSource representing the data to be converted.
      * @return The constructed Object.
