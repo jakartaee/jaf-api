@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -24,8 +24,8 @@ import java.io.IOException;
  * DataHandler object creates a URLDataSource internally,
  * when it is constructed with a URL.</i>
  *
- * @see javax.activation.DataSource
- * @see javax.activation.DataHandler
+ * @see jakarta.activation.DataSource
+ * @see jakarta.activation.DataHandler
  */
 public class URLDataSource implements DataSource {
     private URL url = null;

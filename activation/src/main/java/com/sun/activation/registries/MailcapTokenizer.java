@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -127,7 +127,7 @@ public class MailcapTokenizer {
 		if (isAutoquoting) {
 		    if (c == ';' || c == '=') {
 			currentToken = c;
-			currentTokenValue = new Character(c).toString();
+			currentTokenValue = Character.valueOf(c).toString();
 			++dataIndex;
 		    } else {
 			processAutoquoteToken();
@@ -137,11 +137,11 @@ public class MailcapTokenizer {
 			processStringToken();
 		    } else if ((c == '/') || (c == ';') || (c == '=')) {
 			currentToken = c;
-			currentTokenValue = new Character(c).toString();
+			currentTokenValue = Character.valueOf(c).toString();
 			++dataIndex;
 		    } else {
 			currentToken = UNKNOWN_TOKEN;
-			currentTokenValue = new Character(c).toString();
+			currentTokenValue = Character.valueOf(c).toString();
 			++dataIndex;
 		    }
 		}

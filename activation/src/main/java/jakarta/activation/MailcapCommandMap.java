@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.util.*;
 import java.io.*;
@@ -401,8 +401,7 @@ public class MailcapCommandMap extends CommandMap {
     private boolean checkForVerb(List cmdList, String verb) {
 	Iterator ee = cmdList.iterator();
 	while (ee.hasNext()) {
-	    String enum_verb =
-		(String)((CommandInfo)ee.next()).getCommandName();
+	    String enum_verb = ((CommandInfo)ee.next()).getCommandName();
 	    if (enum_verb.equals(verb))
 		return true;
 	}
@@ -453,7 +452,7 @@ public class MailcapCommandMap extends CommandMap {
 	while (verb_enum.hasNext()) {
 	    String verb = (String)verb_enum.next();
 	    List cmdList2 = (List)typeHash.get(verb);
-	    Iterator cmd_enum = ((List)cmdList2).iterator();
+	    Iterator cmd_enum = cmdList2.iterator();
 
 	    while (cmd_enum.hasNext()) {
 		String cmd = (String)cmd_enum.next();
@@ -598,14 +597,9 @@ public class MailcapCommandMap extends CommandMap {
 		cl = Class.forName(name);
 	    }
 	    if (cl != null)		// XXX - always true?
-		return (DataContentHandler)cl.newInstance();
-	} catch (IllegalAccessException e) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("Can't load DCH " + name, e);
-	} catch (ClassNotFoundException e) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("Can't load DCH " + name, e);
-	} catch (InstantiationException e) {
+		return (DataContentHandler)
+			    cl.getDeclaredConstructor().newInstance();
+	} catch (ReflectiveOperationException e) {
 	    if (LogSupport.isLoggable())
 		LogSupport.log("Can't load DCH " + name, e);
 	}

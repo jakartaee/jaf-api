@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.*;
-import javax.activation.*;
+import jakarta.activation.*;
 
 public class JAFApp extends Frame implements WindowListener, ItemListener, ActionListener {
 
@@ -274,7 +274,7 @@ public class JAFApp extends Frame implements WindowListener, ItemListener, Actio
 		    
 			    // if it isn't a CommandObject we still
 			    // have to give it it's data...
-// 			    if(!(my_bean instanceof javax.activation.CommandObject))
+// 			    if(!(my_bean instanceof jakarta.activation.CommandObject))
 // 				{
 // 				    System.out.println("WHOOOAAA!");
 // 				    if(my_bean instanceof 

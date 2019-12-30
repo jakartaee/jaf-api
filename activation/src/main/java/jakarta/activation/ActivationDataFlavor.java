@@ -8,61 +8,55 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
-import java.awt.datatransfer.DataFlavor;
 import java.io.IOException;
-import javax.activation.MimeType;
+import jakarta.activation.MimeType;
 
 /**
- * The ActivationDataFlavor class is a special subclass of
- * <code>java.awt.datatransfer.DataFlavor</code>. It allows the JAF to
+ * The ActivationDataFlavor class is similar to the JDK's
+ * <code>java.awt.datatransfer.DataFlavor</code> class. It allows
+ * Jakarta Activation to
  * set all three values stored by the DataFlavor class via a new
  * constructor. It also contains improved MIME parsing in the <code>equals
  * </code> method. Except for the improved parsing, its semantics are
  * identical to that of the JDK's DataFlavor class.
  */
 
-public class ActivationDataFlavor extends DataFlavor {
+public class ActivationDataFlavor {
 
     /*
      * Raison d'etre:
      *
      * The DataFlavor class included in JDK 1.1 has several limitations
-     * including piss poor MIME type parsing, and the limitation of
+     * including poor MIME type parsing, and the limitation of
      * only supporting serialized objects and InputStreams as
      * representation objects. This class 'fixes' that.
      */
 
-    // I think for now I'll keep copies of all the variables and
-    // then later I may choose try to better coexist with the base
-    // class *sigh*
     private String mimeType = null;
     private MimeType mimeObject = null;
     private String humanPresentableName = null;
     private Class representationClass = null;
 
     /**
-     * Construct a DataFlavor that represents an arbitrary
-     * Java object. This constructor is an extension of the
-     * JDK's DataFlavor in that it allows the explicit setting
-     * of all three DataFlavor attributes.
+     * Construct an ActivationDataFlavor that represents an arbitrary
+     * Java object.
      * <p>
-     * The returned DataFlavor will have the following characteristics:
+     * The returned ActivationDataFlavor will have the following
+     * characteristics:
      * <p>
      * representationClass = representationClass<br>
      * mimeType            = mimeType<br>
      * humanName           = humanName
      * <p>
      *
-     * @param representationClass the class used in this DataFlavor
+     * @param representationClass the class used in this ActivationDataFlavor
      * @param mimeType the MIME type of the data represented by this class
      * @param humanPresentableName the human presentable name of the flavor
      */
     public ActivationDataFlavor(Class representationClass,
 		      String mimeType, String humanPresentableName) {
-	super(mimeType, humanPresentableName); // need to call super
-
 	// init private variables:
 	this.mimeType = mimeType;
 	this.humanPresentableName = humanPresentableName;
@@ -70,38 +64,39 @@ public class ActivationDataFlavor extends DataFlavor {
     }
 
     /**
-     * Construct a DataFlavor that represents a MimeType.
+     * Construct an ActivationDataFlavor that represents a MimeType.
      * <p>
-     * The returned DataFlavor will have the following characteristics:
+     * The returned ActivationDataFlavor will have the following
+     * characteristics:
      * <p>
      * If the mimeType is "application/x-java-serialized-object;
      * class=", the result is the same as calling new
-     * DataFlavor(Class.forName()) as above.
+     * ActivationDataFlavor(Class.forName()) as above.
      * <p>
      * otherwise:
      * <p>
      * representationClass = InputStream<p>
      * mimeType = mimeType<p>
      *
-     * @param representationClass the class used in this DataFlavor
+     * @param representationClass the class used in this ActivationDataFlavor
      * @param humanPresentableName the human presentable name of the flavor
      */
     public ActivationDataFlavor(Class representationClass,
 				String humanPresentableName) {
-	super(representationClass, humanPresentableName);
-	this.mimeType = super.getMimeType();
+	this.mimeType = "application/x-java-serialized-object";
 	this.representationClass = representationClass;
       	this.humanPresentableName = humanPresentableName;
     }
 
     /**
-     * Construct a DataFlavor that represents a MimeType.
+     * Construct an ActivationDataFlavor that represents a MimeType.
      * <p>
-     * The returned DataFlavor will have the following characteristics:
+     * The returned ActivationDataFlavor will have the following
+     * characteristics:
      * <p>
      * If the mimeType is "application/x-java-serialized-object; class=",
-     * the result is the same as calling new DataFlavor(Class.forName()) as
-     * above, otherwise:
+     * the result is the same as calling new
+     * ActivationDataFlavor(Class.forName()) as above, otherwise:
      * <p>
      * representationClass = InputStream<p>
      * mimeType = mimeType
@@ -110,7 +105,6 @@ public class ActivationDataFlavor extends DataFlavor {
      * @param humanPresentableName the human presentable name of the flavor
      */
     public ActivationDataFlavor(String mimeType, String humanPresentableName) {
-	super(mimeType, humanPresentableName);
 	this.mimeType = mimeType;
 	try {
 	    this.representationClass = Class.forName("java.io.InputStream");
@@ -121,7 +115,7 @@ public class ActivationDataFlavor extends DataFlavor {
     }
 
     /**
-     * Return the MIME type for this DataFlavor.
+     * Return the MIME type for this ActivationDataFlavor.
      *
      * @return	the MIME type
      */
@@ -157,26 +151,77 @@ public class ActivationDataFlavor extends DataFlavor {
     }
 
     /**
-     * Compares the DataFlavor passed in with this DataFlavor; calls
-     * the <code>isMimeTypeEqual</code> method.
+     * Compares the ActivationDataFlavor passed in with this
+     * ActivationDataFlavor; calls the <code>isMimeTypeEqual</code> method.
      *
-     * @param dataFlavor	the DataFlavor to compare with
+     * @param dataFlavor	the ActivationDataFlavor to compare with
      * @return			true if the MIME type and representation class
      *				are the same
      */
-    public boolean equals(DataFlavor dataFlavor) {
-	return (isMimeTypeEqual(dataFlavor) &&
+    public boolean equals(ActivationDataFlavor dataFlavor) {
+	return (isMimeTypeEqual(dataFlavor.mimeType) &&
 	 	dataFlavor.getRepresentationClass() == representationClass);
     }
 
     /**
+     * @param o		the <code>Object</code> to compare with
+     * @return		true if the object is also an ActivationDataFlavor
+     *			and is equal to this
+     */
+    public boolean equals(Object o) {
+	return ((o instanceof ActivationDataFlavor) &&
+		equals((ActivationDataFlavor)o));
+    }
+
+    /**
+     * Compares only the <code>mimeType</code> against the passed in
+     * <code>String</code> and <code>representationClass</code> is
+     * not considered in the comparison.
+     *
+     * If <code>representationClass</code> needs to be compared, then
+     * <code>equals(new DataFlavor(s))</code> may be used.
+     * @deprecated As inconsistent with <code>hashCode()</code> contract,
+     *             use <code>isMimeTypeEqual(String)</code> instead.
+     * @param s the {@code mimeType} to compare.
+     * @return true if the String (MimeType) is equal; false otherwise or if
+     *         {@code s} is {@code null}
+     */
+    @Deprecated
+    public boolean equals(String s) {
+        if (s == null || mimeType == null)
+            return false;
+        return isMimeTypeEqual(s);
+    }
+
+    /**
+     * Returns hash code for this <code>ActivationDataFlavor</code>.
+     * For two equal <code>ActivationDataFlavor</code>s, hash codes are equal.
+     * For the <code>String</code>
+     * that matches <code>ActivationDataFlavor.equals(String)</code>, it is not
+     * guaranteed that <code>ActivationDataFlavor</code>'s hash code is equal
+     * to the hash code of the <code>String</code>.
+     *
+     * @return a hash code for this <code>ActivationDataFlavor</code>
+     */
+    public int hashCode() {
+        int total = 0;
+
+        if (representationClass != null) {
+            total += representationClass.hashCode();
+        }
+
+	// XXX - MIME type equality is too complicated so we don't
+	// include it in the hashCode
+
+        return total;
+    }
+
+    /**
      * Is the string representation of the MIME type passed in equivalent
-     * to the MIME type of this DataFlavor. <p>
+     * to the MIME type of this ActivationDataFlavor. <p>
      *
      * ActivationDataFlavor delegates the comparison of MIME types to
      * the MimeType class included as part of Jakarta Activation.
-     * This provides a more robust comparison than is normally
-     * available in the DataFlavor class.
      *
      * @param mimeType	the MIME type
      * @return		true if the same MIME type
@@ -196,10 +241,10 @@ public class ActivationDataFlavor extends DataFlavor {
     }
 
     /**
-     * Called on DataFlavor for every MIME Type parameter to allow DataFlavor
-     * subclasses to handle special parameters like the text/plain charset
-     * parameters, whose values are case insensitive.  (MIME type parameter
-     * values are supposed to be case sensitive).
+     * Called on ActivationDataFlavor for every MIME Type parameter to allow
+     * ActivationDataFlavor subclasses to handle special parameters like the
+     * text/plain charset parameters, whose values are case insensitive.
+     * (MIME type parameter values are supposed to be case sensitive).
      * <p>
      * This method is called for each parameter name/value pair and should
      * return the normalized representation of the parameterValue.
@@ -210,14 +255,15 @@ public class ActivationDataFlavor extends DataFlavor {
      * @return			the normalized parameter value
      * @deprecated
      */
+    @Deprecated
     protected String normalizeMimeTypeParameter(String parameterName,
 						String parameterValue) {
 	return parameterValue;
     }
 
     /**
-     * Called for each MIME type string to give DataFlavor subtypes the
-     * opportunity to change how the normalization of MIME types is
+     * Called for each MIME type string to give ActivationDataFlavor subtypes
+     * the opportunity to change how the normalization of MIME types is
      * accomplished.
      * One possible use would be to add default parameter/value pairs in cases
      * where none are present in the MIME type string passed in.
@@ -227,6 +273,7 @@ public class ActivationDataFlavor extends DataFlavor {
      * @return		the normalized MIME type
      * @deprecated
      */
+    @Deprecated
     protected String normalizeMimeType(String mimeType) {
 	return mimeType;
     }

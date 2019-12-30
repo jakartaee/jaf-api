@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -19,7 +19,7 @@ import java.util.Locale;
  * as defined in RFC 2045 and 2046. The Primary type of the
  * object must already be stripped off.
  *
- * @see javax.activation.MimeType
+ * @see jakarta.activation.MimeType
  */
 public class MimeTypeParameterList {
     private Hashtable parameters;

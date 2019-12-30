@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package javax.activation;
+package jakarta.activation;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,9 +34,9 @@ import com.sun.activation.registries.MimeTypeFile;
  * FileTypeMap is set, the FileDataSource will call the FileTypeMap's
  * getDefaultFileTypeMap method to get the System's default FileTypeMap.
  *
- * @see javax.activation.DataSource
- * @see javax.activation.FileTypeMap
- * @see javax.activation.MimetypesFileTypeMap
+ * @see jakarta.activation.DataSource
+ * @see jakarta.activation.FileTypeMap
+ * @see jakarta.activation.MimetypesFileTypeMap
  */
 public class FileDataSource implements DataSource {
 
@@ -101,7 +101,7 @@ public class FileDataSource implements DataSource {
      * default, the FileTypeMap used will be a MimetypesFileTypeMap.</i>
      *
      * @return the MIME Type
-     * @see javax.activation.FileTypeMap#getDefaultFileTypeMap
+     * @see jakarta.activation.FileTypeMap#getDefaultFileTypeMap
      */
     public String getContentType() {
 	// check to see if the type map is null?
@@ -116,7 +116,7 @@ public class FileDataSource implements DataSource {
      * will return the file name of the object.
      *
      * @return the name of the object.
-     * @see javax.activation.DataSource
+     * @see jakarta.activation.DataSource
      */
     public String getName() {
 	return _file.getName();

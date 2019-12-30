@@ -12,9 +12,9 @@
 -->
 <!--
     This project builds the Activation API jar file, which contains only
-    the javax.activation.* API definitions and is *only* intended to be used
+    the jakarta.activation.* API definitions and is *only* intended to be used
     for programs to compile against.  Note that it includes none of the
-    implementation-specific classes that the javax.activation.* classes rely on.
+    implementation-specific classes that the jakarta.activation.* classes rely on.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.sun.activation</groupId>
         <artifactId>all</artifactId>
-        <version>1.2.2</version>
+        <version>2.0.0-rc1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>jakarta.activation</groupId>
@@ -37,7 +37,7 @@
             jakarta.activation
         </activation.moduleName>
         <activation.packages.export>
-            javax.activation.*; version=${activation.spec.version},
+            jakarta.activation.*; version=${activation.spec.version},
 	    !com.sun.*
         </activation.packages.export>
         <activation.packages.import>
