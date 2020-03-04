@@ -34,7 +34,7 @@
             jakarta.activation
         </activation.extensionName>
         <activation.moduleName>
-            jakarta.activation
+            jakarta.activation.api
         </activation.moduleName>
         <activation.packages.export>
             jakarta.activation.*; version=${activation.spec.version},
