@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -71,7 +71,7 @@ public class CommandInfo {
      * Return the instantiated JavaBean component.
      * <p>
      * If the current runtime environment supports
-     * {@link java.beans.Beans#instantiate Beans.instantiate},
+     * <code>Beans.instantiate</code>,
      * use it to instantiate the JavaBeans component.  Otherwise, use
      * {@link java.lang.Class#forName Class.forName}.
      * <p>
@@ -103,7 +103,6 @@ public class CommandInfo {
      * @exception	IOException	for failures reading data
      * @exception	ClassNotFoundException	if command object class can't
      *						be found
-     * @see java.beans.Beans#instantiate
      * @see jakarta.activation.CommandObject
      */
     public Object getCommandObject(DataHandler dh, ClassLoader loader)
