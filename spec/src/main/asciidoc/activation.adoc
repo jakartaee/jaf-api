@@ -497,7 +497,7 @@ cycle semantics are the same as those for all Beans. In the case of
 Beans that implement the CommandObject interface we encourage
 application developers to not parent Beans subclassed from
 java.awt.Component to an AWT container until after they have called the
-javax.activation.CommandObject.setCommandContext method.
+jakarta.activation.CommandObject.setCommandContext method.
 
 === Command Verbs
 
@@ -725,7 +725,7 @@ Jakarta Activation is implemented as a Standard Extension to the
 Java™ Platform.
 The following are some more details about the package:
 
-* The package name is javax.activation.
+* The package name is jakarta.activation.
 * The Jakarta Activation implementation does not include
 DataContentHandlers for any MIME data types; applications must include
 the DataContentHandlers they need. Note that the Jakarta Mail
@@ -835,3 +835,5 @@ example viewer Beans (text and image).
 == Document Change History
 
 Oct 21, 2019: First complete Jakarta EE version.
+
+Apr 15, 2020: Jakarta EE 9 version. Package namespace changed to jakarta.*.

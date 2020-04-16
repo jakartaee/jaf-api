@@ -1,8 +1,8 @@
 //
-// Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
+// Copyright (c) 2017, 2020 Contributors to the Eclipse Foundation
 //
 
-= Jakarta Activation 1.2
+= Jakarta Activation 2.0
 :authors: Jakarta Activation Team, https://projects.eclipse.org/projects/ee4j.jaf
 :email: https://dev.eclipse.org/mailman/listinfo/jaf-dev
 :version-label!:
