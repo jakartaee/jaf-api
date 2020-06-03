@@ -19,6 +19,11 @@ for data content handling.
 
 # <a name="Latest_News"></a>Latest News
 
+## June 30, 2020 - Jakarta Activation 2.0.0 Final Release ##
+
+The 2.0.0 release is the first release under the `jakarta` namespace.
+It is also the first release containing full module metadata.
+
 ## July 25, 2019 - Jakarta Activation is the new name for JAF ##
 
 The JavaBeans Activation Framework has been renamed to Jakarta Activation
@@ -58,6 +63,7 @@ The JavaBeans Activation Framework API documentation is available
 The following documents summarize the API changes in each release of
 the JavaBeans Activation Framework API specification:
 
+-   [JAF 2.0](docs/JAF-2.0-changes.txt)
 -   [JAF 1.2](docs/JAF-1.2-changes.txt)
 -   [JAF 1.1](docs/JAF-1.1-changes.txt)
 

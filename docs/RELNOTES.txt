@@ -16,9 +16,9 @@ Installation:
 
 There is effectively *no* installation of the JAF. The classes that
 make up the JAF are contained in the included Java(tm) Archive (JAR) file,
-"javax.activation.jar". This file can be placed anywhere accessible to the
+"jakarta.activation.jar". This file can be placed anywhere accessible to the
 Java virtual machine running on your system. The only requirement is
-that the javax.activation.jar be included in your system's class path so
+that the jakarta.activation.jar be included in your system's class path so
 Java can find the JAF classes.
 
 Related Web Sites:
