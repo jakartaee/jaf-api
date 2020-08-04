@@ -89,7 +89,7 @@
 	    true
 	</findbugs.skip>
 	<findbugs.exclude/>
-        <copyright-plugin.version>2.2</copyright-plugin.version>
+        <copyright-plugin.version>2.3</copyright-plugin.version>
     </properties>
 
     <developers>
@@ -426,14 +426,60 @@
 		    </excludes>
 		</configuration>
 	    </plugin>
-	</plugins>
 
-	<pluginManagement>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <author>false</author>
+                    <description>
+                        Jakarta Activation API documentation
+                    </description>
+                    <doctitle>
+                        Jakarta Activation API documentation
+                    </doctitle>
+                    <windowtitle>
+                        Jakarta Activation API documentation
+                    </windowtitle>
+                    <splitindex>true</splitindex>
+                    <use>true</use>
+                    <notimestamp>true</notimestamp>
+                    <serialwarn>true</serialwarn>
+                    <quiet>true</quiet>
+                    <bottom>
+<![CDATA[Copyright &#169; 2019, 2020 Eclipse Foundation.
+    Use is subject to
+    <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.
+]]>
+                    </bottom>
+                    <groups>
+                        <group>
+                            <title>Jakarta Activation API Packages</title>
+                            <packages>jakarta.*</packages>
+                        </group>
+                    </groups>
+                    <!--
+                    <subpackages>jakarta.activation</subpackages>
+                    -->
+                    <!--
+                        Force javadoc to produce non-module docs
+                        since the module definition isn't part of
+                        the API specification.
+                    -->
+                    <!-- force the doc-files directory to be copied -->
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
 	    <plugins>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-compiler-plugin</artifactId>
-		    <version>3.7.0</version>
+		    <version>3.8.1</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
@@ -443,7 +489,7 @@
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-jar-plugin</artifactId>
-		    <version>2.4</version>
+		    <version>3.2.0</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.codehaus.mojo</groupId>
