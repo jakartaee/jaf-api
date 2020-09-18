@@ -70,7 +70,7 @@
 			<configuration>
 			    <!--
 				ignore some of the errors that are
-				too hard to fix for now
+				too hard to fix for now.
 			    -->
 			    <compilerArguments>
 				<arg>-Xlint:all</arg>
