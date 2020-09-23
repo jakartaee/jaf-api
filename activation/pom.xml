@@ -73,10 +73,10 @@
 				too hard to fix for now
 			    -->
 			    <compilerArguments>
-				<Xlint:all/>
-				<Xlint:-rawtypes/>
-				<Xlint:-unchecked/>
-				<Xlint:-finally/>
+				<arg>-Xlint:all</arg>
+				<arg>-Xlint:-rawtypes</arg>
+				<arg>-Xlint:-unchecked</arg>
+				<arg>-Xlint:-finally</arg>
 			    </compilerArguments>
 			    <showWarnings>true</showWarnings>
 			</configuration>
