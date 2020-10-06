@@ -21,6 +21,7 @@ more.
 The project maintains the following source code repositories
 
 * https://github.com/eclipse-ee4j/jaf
+* https://github.com/eclipse-ee4j/jaf-tck
 
 ## Eclipse Contributor Agreement
 
