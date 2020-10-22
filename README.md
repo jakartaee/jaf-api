@@ -19,7 +19,7 @@ for data content handling.
 
 # <a name="Latest_News"></a>Latest News
 
-## June 30, 2020 - Jakarta Activation 2.0.0 Final Release ##
+## October 22, 2020 - Jakarta Activation 2.0.0 Final Release ##
 
 The 2.0.0 release is the first release under the `jakarta` namespace.
 It is also the first release containing full module metadata.
