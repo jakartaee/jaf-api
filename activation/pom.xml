@@ -72,12 +72,12 @@
 				ignore some of the errors that are
 				too hard to fix for now
 			    -->
-			    <compilerArguments>
+			    <compilerArgs>
 				<arg>-Xlint:all</arg>
 				<arg>-Xlint:-rawtypes</arg>
 				<arg>-Xlint:-unchecked</arg>
 				<arg>-Xlint:-finally</arg>
-			    </compilerArguments>
+			    </compilerArgs>
 			    <showWarnings>true</showWarnings>
 			</configuration>
 		    </execution>
