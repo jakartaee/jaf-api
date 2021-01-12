@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!--
 
-    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -446,11 +446,12 @@
                     <notimestamp>true</notimestamp>
                     <serialwarn>true</serialwarn>
                     <quiet>true</quiet>
+                    <header><![CDATA[<br>Jakarta Activation API v${project.version}]]></header>
                     <bottom>
-<![CDATA[Copyright &#169; 2019, 2020 Eclipse Foundation.
-    Use is subject to
-    <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.
-]]>
+                        <![CDATA[
+Comments to : <a href="mailto:jaf-dev@eclipse.org">jaf-dev@eclipse.org</a>.<br>
+Copyright &#169; 2019, 2021 Eclipse Foundation. All rights reserved.<br>
+Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.]]>
                     </bottom>
                     <groups>
                         <group>
@@ -527,12 +528,12 @@
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-enforcer-plugin</artifactId>
-		    <version>1.0</version>
+		    <version>3.0.0-M3</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.apache.felix</groupId>
 		    <artifactId>maven-bundle-plugin</artifactId>
-		    <version>4.2.1</version>
+		    <version>5.1.1</version>
 		</plugin>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
