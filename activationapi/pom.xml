@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -23,19 +23,27 @@
         <groupId>com.sun.activation</groupId>
         <artifactId>all</artifactId>
     <version>2.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>jakarta.activation</groupId>
     <artifactId>jakarta.activation-api</artifactId>
-    <packaging>jar</packaging>
+    <!-- TODO remove it is default-->
+<!--    <packaging>jar</packaging>-->
     <name>Jakarta Activation API jar</name>
     <properties>
+        <!-- TODO optimize/move to main project pom-->
+<!--
         <activation.extensionName>
             jakarta.activation
         </activation.extensionName>
+-->
+        <!-- TODO remove because module-info.java-->
+<!--
         <activation.moduleName>
             jakarta.activation
         </activation.moduleName>
+-->
         <activation.packages.export>
             jakarta.activation.*; version=${activation.spec.version},
 	    !com.sun.*
@@ -50,6 +58,7 @@
     <build>
         <plugins>
             <plugin>
+                <!--TODO refactor like https://github.com/eclipse-ee4j/mail/blob/master/mailapijar/pom.xml -->
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -75,7 +84,8 @@
                                     <version>${project.version}</version>
                                     <classifier>sources</classifier>
                                     <outputDirectory>
-                                        ${project.build.directory}/sources
+<!--                                        ${project.build.directory}/sources-->
+                                        ${project.build.directory}/generated-sources/sources
                                     </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
@@ -111,6 +121,7 @@
 		 Skip compiling since the dependency plugin pulled in
 		 the sources and class files.
 	    -->
+            <!--TODO refactor like https://github.com/eclipse-ee4j/mail/blob/master/mailapijar/pom.xml -->
 	    <plugin>
 		<artifactId>maven-compiler-plugin</artifactId>
 		<executions>
@@ -126,6 +137,7 @@
 	    <!--
 		Don't include the implementation classes in the jar files.
 	    -->
+            <!--TODO refactor like https://github.com/eclipse-ee4j/mail/blob/master/mailapijar/pom.xml -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -136,6 +148,7 @@
                 </configuration>
             </plugin>
 
+            <!--TODO refactor like https://github.com/eclipse-ee4j/mail/blob/master/mailapijar/pom.xml -->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>

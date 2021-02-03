@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -19,36 +19,43 @@
 	<groupId>com.sun.activation</groupId>
 	<artifactId>all</artifactId>
     <version>2.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
     <artifactId>jakarta.activation</artifactId>
-    <packaging>jar</packaging>
+	<!-- TODO remove it is default-->
+<!--    <packaging>jar</packaging>-->
     <name>Jakarta Activation</name>
 
     <properties>
-	<activation.extensionName>
-	    jakarta.activation
-	</activation.extensionName>
-	<activation.moduleName>
-	    jakarta.activation
-	</activation.moduleName>
-	<activation.specificationTitle>
-	    Jakarta Activation Specification
-	</activation.specificationTitle>
-	<activation.implementationTitle>
-	    jakarta.activation
-	</activation.implementationTitle>
+		<!-- TODO optimize/move to main project pom-->
+<!--
+        <activation.extensionName>
+            jakarta.activation
+        </activation.extensionName>
+-->
+		<!-- TODO remove because module-info.java-->
+<!--
+        <activation.moduleName>
+            jakarta.activation
+        </activation.moduleName>
+-->
+        <activation.specificationTitle>
+            Jakarta Activation Specification
+        </activation.specificationTitle>
+        <activation.implementationTitle>
+            jakarta.activation
+        </activation.implementationTitle>
+
+            <!--TODO should match module-info maybe remove -->
 	<activation.packages.export>
 	    jakarta.activation.*; version=${activation.spec.version},
 	    com.sun.activation.*; version=${activation.osgiversion}
 	</activation.packages.export>
-	<findbugs.skip>
+	<spotbugs.skip>
 	    false
-	</findbugs.skip>
-	<findbugs.exclude>
-	    ${project.basedir}/exclude.xml
-	</findbugs.exclude>
+	</spotbugs.skip>
     </properties>
 
     <build>
@@ -72,13 +79,7 @@
 				ignore some of the errors that are
 				too hard to fix for now
 			    -->
-			    <compilerArgs>
-				<arg>-Xlint:all</arg>
-				<arg>-Xlint:-rawtypes</arg>
-				<arg>-Xlint:-unchecked</arg>
-				<arg>-Xlint:-finally</arg>
-			    </compilerArgs>
-			    <showWarnings>true</showWarnings>
+				<!--TODO move to main project pom to apply to all modules to default execution-->
 			</configuration>
 		    </execution>
 		</executions>
@@ -101,15 +102,11 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <!--
-                        Force javadoc to produce non-module docs
-                        since the module definition isn't part of
-                        the API specification.
-                    -->
-                    <release>8</release>
+                    <release>11</release>
                     <sourceFileExcludes>
-                        <sourceFileExclude>module-info.java</sourceFileExclude>
-                        <sourceFileExclude>com/**</sourceFileExclude>
+						<!--TODO with module-info-->
+<!--                        <sourceFileExclude>module-info.java</sourceFileExclude>-->
+<!--                        <sourceFileExclude>com/**</sourceFileExclude>-->
                     </sourceFileExcludes>
                 </configuration>
             </plugin>
@@ -120,9 +117,7 @@
 	<dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
-	    <version>4.13.1</version>
 	    <scope>test</scope>
-	    <optional>true</optional>
 	</dependency>
     </dependencies>
 </project>
