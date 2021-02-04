@@ -55,25 +55,20 @@
 	<activation.extensionName>jakarta.activation</activation.extensionName>
 	<activation.specificationTitle>${project.groupId}.${project.artifactId}</activation.specificationTitle>
 	<activation.implementationTitle>${project.groupId}.${project.artifactId}</activation.implementationTitle>
-	<activation.bundle.symbolicName>${project.groupId}.${project.artifactId}</activation.bundle.symbolicName>
-	<activation.bundle.symbolicName>${project.groupId}.${project.artifactId}</activation.bundle.symbolicName>
-	<activation.packages.export>jakarta.activation.*; version=${activation.spec.version}</activation.packages.export>
-	<activation.packages.import>*</activation.packages.import>
-	<activation.packages.private>com.sun.activation.*</activation.packages.private>
+	<activation.recompile.skip>false</activation.recompile.skip>
 	<!-- for the osgiversion-maven-plugin -->
-	<hk2.plugin.version>3.0.1</hk2.plugin.version>
-	<!--TODO UTF-8 ?-->
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+		<javadoc.title>Jakarta Activation API documentation</javadoc.title>
 		<copyright.exclude>copyright-exclude</copyright.exclude>
 		<copyright.ignoreyear>false</copyright.ignoreyear>
 		<copyright.scmonly>true</copyright.scmonly>
 		<copyright.update>false</copyright.update>
-
 	<spotbugs.skip>true</spotbugs.skip>
 	<spotbugs.threshold>High</spotbugs.threshold>
-	<spotbugs.version>4.2.0</spotbugs.version>
-
+		<!--Maven plugins version-->
+		<hk2.plugin.version>3.0.1</hk2.plugin.version>
+	<spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
+	<!--Dependencies version-->
 	<junit.version>4.13.1</junit.version>
     </properties>
 
@@ -161,53 +156,44 @@
 		</executions>
 	    </plugin>
 
-	    <!--
-		This plugin is reponsible for packaging artifacts
-		as OSGi bundles.  Please refer to
-		http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
-		for more information about how to use this plugin.
-	    -->
-	    <plugin>
-		<groupId>org.apache.felix</groupId>
-		<artifactId>maven-bundle-plugin</artifactId>
-		<configuration>
-			<!--TODO add nice MANIFEST=  true to format during build for developer-->
-			<niceManifest>true</niceManifest>
-		    <instructions>
-				<!--TODO keep non default instructions-->
-			<Bundle-SymbolicName>
-			    ${activation.bundle.symbolicName}
-			</Bundle-SymbolicName>
-			<Export-Package>
-			    ${activation.packages.export}
-			</Export-Package>
-			<Import-Package>
-			    ${activation.packages.import}
-			</Import-Package>
-			<Private-Package>
-			    ${activation.packages.private}
-			</Private-Package>
-			<DynamicImport-Package>
-			    *
-			</DynamicImport-Package>
-		    </instructions>
-		</configuration>
 		<!--
-		    Since we don't change the packaging type to bundle, we
-		    need to configure the plugin to execute the manifest goal
-		    during the process-classes phase of the build life cycle.
-		-->
-		<executions>
-		    <execution>
-			<id>osgi-manifest</id>
-			<phase>process-classes</phase>
-			<goals>
-			    <goal>manifest</goal>
-			</goals>
-		    </execution>
-		</executions>
-	    </plugin>
-
+        This plugin is responsible for packaging artifacts
+        as OSGi bundles.  Please refer to
+        http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
+        for more information about how to use this plugin.
+        -->
+		<plugin>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>maven-bundle-plugin</artifactId>
+			<configuration>
+				<niceManifest>true</niceManifest>
+				<instructions>
+					<Export-Package>
+						${activation.packages.export}
+					</Export-Package>
+					<Import-Package>
+						${activation.packages.import}
+					</Import-Package>
+					<DynamicImport-Package>
+						*
+					</DynamicImport-Package>
+				</instructions>
+			</configuration>
+			<!--
+                Since we don't change the packaging type to bundle, we
+                need to configure the plugin to execute the manifest goal
+                during the process-classes phase of the build life cycle.
+            -->
+			<executions>
+				<execution>
+					<id>osgi-manifest</id>
+					<phase>process-classes</phase>
+					<goals>
+						<goal>manifest</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 	    <!--
 		Since we don't want a qualifier like b05 or SNAPSHOT to
 		appear in the OSGi package version attribute, we use
@@ -240,6 +226,7 @@
 	    <plugin>
 		<artifactId>maven-compiler-plugin</artifactId>
 			<configuration>
+				<skipMain>${activation.recompile.skip}</skipMain>
 				<release>9</release>
 				<compilerArgs>
 					<arg>-Xlint:all</arg>
@@ -248,9 +235,7 @@
 					<arg>-Xlint:-finally</arg>
 				</compilerArgs>
 				<showWarnings>true</showWarnings>
-
 			</configuration>
-
 		<executions>
 		    <execution>
 			<id>base-compile</id>
@@ -281,7 +266,6 @@
 			<manifestFile>
 			  ${project.build.outputDirectory}/META-INF/MANIFEST.MF
 			</manifestFile>
-				<!--TODO remove defaults -->
 			<manifestEntries>
 			    <Extension-Name>
 				${activation.extensionName}
@@ -309,12 +293,6 @@
 			    </Implementation-Vendor-Id>
 			</manifestEntries>
 		    </archive>
-<!--
-		    <excludes>
-				&lt;!&ndash;TODO check why *.java in binary archive, should be removed&ndash;&gt;
-			<exclude>**/*.java</exclude>
-		    </excludes>
--->
 		</configuration>
 	    </plugin>
 
@@ -322,13 +300,12 @@
 		Tell the source plugin about the sources that may have
 		been downloaded by the maven-dependency-plugin.
 	    -->
-
 	    <plugin>
 		<groupId>org.codehaus.mojo</groupId>
 		<artifactId>build-helper-maven-plugin</artifactId>
 		<executions>
 			<execution>
-				<id>timestamp-property</id>
+				<id>currentyear-property</id>
 				<goals>
 					<goal>timestamp-property</goal>
 				</goals>
@@ -348,8 +325,6 @@
 			<configuration>
 			    <sources>
 				<source> <!-- for dependencies -->
-					<!--TODO change into ${project.build.directory}/generated-sources/sources change references-->
-<!--				    ${project.build.directory}/sources-->
 					${project.build.directory}/generated-sources/sources
 				</source>
 			    </sources>
@@ -416,21 +391,6 @@
 			</goals>
 		    </execution>
 		</executions>
-			<!--TODO should be removed-->
-		<configuration>
-		    <includePom>true</includePom>
-		    <!--
-			Since we added the classes directory using the
-			build-helper-maven-plugin above, we need to exclude
-			the class files from the source jar file.
-		    -->
-<!--
-		    <excludes>
-				&lt;!&ndash;TODO check why *.class in sources archive, should be removed&ndash;&gt;
-			<exclude>**/*.class</exclude>
-		    </excludes>
--->
-		</configuration>
 	    </plugin>
 
             <plugin>
@@ -438,16 +398,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <author>false</author>
-                    <description>
-						<!--TODO optional maybe property-->
-                        Jakarta Activation API documentation
-                    </description>
-                    <doctitle>
-                        Jakarta Activation API documentation
-                    </doctitle>
-                    <windowtitle>
-                        Jakarta Activation API documentation
-                    </windowtitle>
+                    <description>${javadoc.title}</description>
+                    <doctitle>${javadoc.title}</doctitle>
+                    <windowtitle>${javadoc.title}</windowtitle>
                     <splitindex>true</splitindex>
                     <use>true</use>
                     <notimestamp>true</notimestamp>
@@ -455,7 +408,6 @@
                     <quiet>true</quiet>
                     <header><![CDATA[<br>Jakarta Activation API v${project.version}]]></header>
                     <bottom>
-						<!--TODO current year from property and replace there-->
                         <![CDATA[
 Comments to : <a href="mailto:jaf-dev@eclipse.org">jaf-dev@eclipse.org</a>.<br>
 Copyright &#169; 2019, ${current.year} Eclipse Foundation. All rights reserved.<br>
@@ -467,18 +419,9 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                             <packages>jakarta.*</packages>
                         </group>
                     </groups>
-                    <!--
-                    <subpackages>jakarta.activation</subpackages>
-                    -->
-                    <!--
-                        Force javadoc to produce non-module docs
-                        since the module definition isn't part of
-                        the API specification.
-                    -->
                     <!-- force the doc-files directory to be copied -->
                     <docfilessubdirs>true</docfilessubdirs>
-					<!--TODO optional should remove ${main.basedir} ?-->
-                    <javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
+					<javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
                     <detectJavaApiLink>false</detectJavaApiLink>
                 </configuration>
             </plugin>
@@ -546,7 +489,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
 		    -->
 		    <groupId>com.github.spotbugs</groupId>
 		    <artifactId>spotbugs-maven-plugin</artifactId>
-		    <version>${spotbugs.version}</version>
+		    <version>${spotbugs.plugin.version}</version>
 		    <configuration>
 			<skip>${spotbugs.skip}</skip>
 			<threshold>${spotbugs.threshold}</threshold>
@@ -624,7 +567,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
 	    <plugin>
 		<groupId>com.github.spotbugs</groupId>
 		<artifactId>spotbugs-maven-plugin</artifactId>
-		<version>${spotbugs.version}</version>
+		<version>${spotbugs.plugin.version}</version>
 		<configuration>
 		    <skip>${spotbugs.skip}</skip>
 		    <threshold>${spotbugs.threshold}</threshold>

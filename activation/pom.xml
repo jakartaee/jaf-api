@@ -24,23 +24,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
     <artifactId>jakarta.activation</artifactId>
-	<!-- TODO remove it is default-->
-<!--    <packaging>jar</packaging>-->
     <name>Jakarta Activation</name>
 
     <properties>
-		<!-- TODO optimize/move to main project pom-->
-<!--
-        <activation.extensionName>
-            jakarta.activation
-        </activation.extensionName>
--->
-		<!-- TODO remove because module-info.java-->
-<!--
-        <activation.moduleName>
-            jakarta.activation
-        </activation.moduleName>
--->
         <activation.specificationTitle>
             Jakarta Activation Specification
         </activation.specificationTitle>
@@ -48,11 +34,11 @@
             jakarta.activation
         </activation.implementationTitle>
 
-            <!--TODO should match module-info maybe remove -->
 	<activation.packages.export>
 	    jakarta.activation.*; version=${activation.spec.version},
 	    com.sun.activation.*; version=${activation.osgiversion}
 	</activation.packages.export>
+	<activation.packages.import>*</activation.packages.import>
 	<spotbugs.skip>
 	    false
 	</spotbugs.skip>
@@ -66,25 +52,6 @@
 	    </resource>
 	</resources>
 	<plugins>
-	    <!--
-		Configure compiler plugin to print lint warnings.
-	    -->
-	    <plugin>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>default-compile</id>
-			<configuration>
-			    <!--
-				ignore some of the errors that are
-				too hard to fix for now
-			    -->
-				<!--TODO move to main project pom to apply to all modules to default execution-->
-			</configuration>
-		    </execution>
-		</executions>
-	    </plugin>
-
 	    <!--
 		Configure test plugin to find *TestSuite classes.
 	    -->
@@ -103,11 +70,6 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <release>11</release>
-                    <sourceFileExcludes>
-						<!--TODO with module-info-->
-<!--                        <sourceFileExclude>module-info.java</sourceFileExclude>-->
-<!--                        <sourceFileExclude>com/**</sourceFileExclude>-->
-                    </sourceFileExcludes>
                 </configuration>
             </plugin>
         </plugins>
