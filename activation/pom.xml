@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -12,117 +12,66 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 			    http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-	<groupId>com.sun.activation</groupId>
-	<artifactId>all</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>all</artifactId>
+        <version>2.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
     <artifactId>jakarta.activation</artifactId>
-    <packaging>jar</packaging>
     <name>Jakarta Activation</name>
 
     <properties>
-	<activation.extensionName>
-	    jakarta.activation
-	</activation.extensionName>
-	<activation.moduleName>
-	    jakarta.activation
-	</activation.moduleName>
-	<activation.specificationTitle>
-	    Jakarta Activation Specification
-	</activation.specificationTitle>
-	<activation.implementationTitle>
-	    jakarta.activation
-	</activation.implementationTitle>
-	<activation.packages.export>
-	    jakarta.activation.*; version=${activation.spec.version},
-	    com.sun.activation.*; version=${activation.osgiversion}
-	</activation.packages.export>
-	<findbugs.skip>
-	    false
-	</findbugs.skip>
-	<findbugs.exclude>
-	    ${project.basedir}/exclude.xml
-	</findbugs.exclude>
+        <activation.specificationTitle>Jakarta Activation Specification</activation.specificationTitle>
+        <activation.implementationTitle>jakarta.activation</activation.implementationTitle>
+        <activation.packages.export>
+            jakarta.activation.*; version=${activation.spec.version},
+            com.sun.activation.*; version=${activation.osgiversion}
+        </activation.packages.export>
+        <activation.packages.import>*</activation.packages.import>
+        <spotbugs.skip>false</spotbugs.skip>
     </properties>
 
     <build>
-	<resources>
-	    <resource>
-		<directory>src/main/resources</directory>
-		<filtering>true</filtering>
-	    </resource>
-	</resources>
-	<plugins>
-	    <!--
-		Configure compiler plugin to print lint warnings.
-	    -->
-	    <plugin>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>default-compile</id>
-			<configuration>
-			    <!--
-				ignore some of the errors that are
-				too hard to fix for now
-			    -->
-			    <compilerArgs>
-				<arg>-Xlint:all</arg>
-				<arg>-Xlint:-rawtypes</arg>
-				<arg>-Xlint:-unchecked</arg>
-				<arg>-Xlint:-finally</arg>
-			    </compilerArgs>
-			    <showWarnings>true</showWarnings>
-			</configuration>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <!--
-		Configure test plugin to find *TestSuite classes.
-	    -->
-	    <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-surefire-plugin</artifactId>
-		<configuration>
-		    <includes>
-			<include>**/*Test.java</include>
-			<include>**/*TestSuite.java</include>
-		    </includes>
-		</configuration>
-	    </plugin>
-
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <!--
+            Configure test plugin to find *TestSuite classes.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <!--
-                        Force javadoc to produce non-module docs
-                        since the module definition isn't part of
-                        the API specification.
-                    -->
-                    <release>8</release>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>module-info.java</sourceFileExclude>
-                        <sourceFileExclude>com/**</sourceFileExclude>
-                    </sourceFileExcludes>
+                    <release>11</release>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.13.1</version>
-	    <scope>test</scope>
-	    <optional>true</optional>
-	</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

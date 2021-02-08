@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
@@ -12,8 +12,8 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 			    http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
@@ -33,8 +33,8 @@
         <connection>scm:git:ssh://git@github.com/eclipse/jaf.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/eclipse/jaf.git</developerConnection>
         <url>https://github.com/eclipse-ee4j/jaf</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>github</system>
@@ -50,397 +50,331 @@
     </licenses>
 
     <properties>
-	<activation.spec.version>2.0</activation.spec.version>
-	<!-- defaults that are overridden in activation module -->
-	<activation.extensionName>
-	    ${project.groupId}.${project.artifactId}
-	</activation.extensionName>
-	<activation.specificationTitle>
-	    ${project.groupId}.${project.artifactId}
-	</activation.specificationTitle>
-	<activation.implementationTitle>
-	    ${project.groupId}.${project.artifactId}
-	</activation.implementationTitle>
-	<activation.bundle.symbolicName>
-	    ${project.groupId}.${project.artifactId}
-	</activation.bundle.symbolicName>
-	<activation.bundle.symbolicName>
-	    ${project.groupId}.${project.artifactId}
-	</activation.bundle.symbolicName>
-	<activation.packages.export>
-	    jakarta.activation.*; version=${activation.spec.version}
-	</activation.packages.export>
-	<activation.packages.import>
-	    *
-	</activation.packages.import>
-	<activation.packages.private>
-	    com.sun.activation.*
-	</activation.packages.private>
-	<!-- for the osgiversion-maven-plugin -->
-	<hk2.plugin.version>2.0.0</hk2.plugin.version>
-	<project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
-	<findbugs.threshold>
-	    High
-	</findbugs.threshold>
-	<findbugs.version>
-	    3.0.1
-	</findbugs.version>
-	<findbugs.skip>
-	    true
-	</findbugs.skip>
-	<findbugs.exclude/>
-        <copyright-plugin.version>2.3</copyright-plugin.version>
+        <activation.spec.version>2.0</activation.spec.version>
+        <!-- defaults that are overridden in activation module -->
+        <activation.extensionName>jakarta.activation</activation.extensionName>
+        <activation.specificationTitle>${project.groupId}.${project.artifactId}</activation.specificationTitle>
+        <activation.implementationTitle>${project.groupId}.${project.artifactId}</activation.implementationTitle>
+        <activation.recompile.skip>false</activation.recompile.skip>
+        <!-- for the osgiversion-maven-plugin -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javadoc.title>Jakarta Activation API documentation</javadoc.title>
+        <copyright.exclude>copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.skip>true</spotbugs.skip>
+        <spotbugs.threshold>High</spotbugs.threshold>
+        <!--Maven plugins version-->
+        <hk2.plugin.version>3.0.1</hk2.plugin.version>
+        <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
+        <!--Dependencies version-->
+        <junit.version>4.13.1</junit.version>
     </properties>
 
     <developers>
-	<developer>
-	    <id>shannon</id>
-	    <name>Bill Shannon</name>
-	    <email>bill.shannon@oracle.com</email>
-	    <organization>Oracle</organization>
-	    <roles>
-		<role>lead</role>
-	    </roles>
-	</developer>
+        <developer>
+            <id>shannon</id>
+            <name>Bill Shannon</name>
+            <email>bill.shannon@oracle.com</email>
+            <organization>Oracle</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
     </developers>
 
     <!-- following to enable use of "mvn site:stage" -->
     <distributionManagement>
-	<site>
-	    <id>oracle.com</id>
-	    <url>file:/tmp</url> <!-- not used -->
-	</site>
+        <site>
+            <id>oracle.com</id>
+            <url>file:/tmp</url> <!-- not used -->
+        </site>
     </distributionManagement>
 
     <modules>
-	<module>activation</module>
-	<module>activationapi</module>
+        <module>activation</module>
+        <module>activationapi</module>
     </modules>
 
     <profiles>
-	<!--
-	    This profile contains modules that should only be built
-	    but not installed or deployed.
-	-->
-	<profile>
-	    <id>build-only</id>
-	    <modules>
-		<module>demo</module>
-	    </modules>
-	    <activation>
-		<activeByDefault>true</activeByDefault>
-	    </activation>
-	</profile>
+        <!--
+            This profile contains modules that should only be built
+            but not installed or deployed.
+        -->
+        <profile>
+            <id>build-only</id>
+            <modules>
+                <module>demo</module>
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!--
+            This profile is used for deploying a Jakarta Activation
+            final release.
 
-	<!--
-	    This profile is used for deploying a Jakarta Activation
-	    final release.
-
-	    Activating this profile manually for deployment causes
-	    the above profile to be deactivated, which works around
-	    an apparent bug in maven that prevents me from manually
-	    deactivating a profile.  This profile purposely has none
-	    of the modules I don't want to be deployed.
-	-->
-	<profile>
-	    <id>oss-release</id>
-	</profile>
+            Activating this profile manually for deployment causes
+            the above profile to be deactivated, which works around
+            an apparent bug in maven that prevents me from manually
+            deactivating a profile.  This profile purposely has none
+            of the modules I don't want to be deployed.
+        -->
+        <profile>
+            <id>oss-release</id>
+        </profile>
     </profiles>
 
     <build>
-	<defaultGoal>install</defaultGoal>
-	<plugins>
-	    <!--
-		Make sure we're using the correct version of maven.
-	    -->
-	    <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-enforcer-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>enforce-version</id>
-			<goals>
-			    <goal>enforce</goal>
-			</goals>
-			<configuration>
-			    <rules>
-				<requireMavenVersion>
-				    <version>[3.0.3,)</version>
-				</requireMavenVersion>
-				<requireJavaVersion>
-				    <version>[9,)</version>
-				</requireJavaVersion>
-			    </rules>
-			</configuration>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <!--
-		This plugin is reponsible for packaging artifacts
-		as OSGi bundles.  Please refer to
-		http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
-		for more information about how to use this plugin.
-	    -->
-	    <plugin>
-		<groupId>org.apache.felix</groupId>
-		<artifactId>maven-bundle-plugin</artifactId>
-		<configuration>
-		    <instructions>
-			<Bundle-SymbolicName>
-			    ${activation.bundle.symbolicName}
-			</Bundle-SymbolicName>
-			<Export-Package>
-			    ${activation.packages.export}
-			</Export-Package>
-			<Import-Package>
-			    ${activation.packages.import}
-			</Import-Package>
-			<Private-Package>
-			    ${activation.packages.private}
-			</Private-Package>
-			<DynamicImport-Package>
-			    *
-			</DynamicImport-Package>
-		    </instructions>
-		</configuration>
-		<!--
-		    Since we don't change the packaging type to bundle, we
-		    need to configure the plugin to execute the manifest goal
-		    during the process-classes phase of the build life cycle.
-		-->
-		<executions>
-		    <execution>
-			<id>osgi-manifest</id>
-			<phase>process-classes</phase>
-			<goals>
-			    <goal>manifest</goal>
-			</goals>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <!--
-		Since we don't want a qualifier like b05 or SNAPSHOT to
-		appear in the OSGi package version attribute, we use
-		the following plugin to populate a project property
-		with an OSGi version that is equivalent to the maven
-		version without the qualifier.
-	    -->
-	    <plugin>
-		<groupId>org.glassfish.hk2</groupId>
-		<artifactId>osgiversion-maven-plugin</artifactId>
-		<version>${hk2.plugin.version}</version>
-		<configuration>
-		    <dropVersionComponent>qualifier</dropVersionComponent>
-		    <versionPropertyName>activation.osgiversion</versionPropertyName>
-		</configuration>
-		<executions>
-		    <execution>
-			<id>compute-osgi-version</id>
-			<goals>
-			    <goal>compute-osgi-version</goal>
-			</goals>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <!--
-		Use the JDK 9+ compiler but with -source 1.8 for all
-		but the module-info.java file.
-	    -->
-	    <plugin>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>default-compile</id>
-			<configuration>
-			    <source>1.8</source>
-			    <target>1.8</target>
-			    <excludes>
-				<exclude>module-info.java</exclude>
-			    </excludes>
-			</configuration>
-		    </execution>
-		    <execution>
-			<id>module-info-compile</id>
-			<goals>
-			    <goal>compile</goal>
-			</goals>
-			<configuration>
-			    <release>9</release>
-			    <includes>
-				<include>module-info.java</include>
-			    </includes>
-			</configuration>
-		    </execution>
-		    <execution>
-			<id>default-testCompile</id>
-			<configuration>
-			    <release>9</release>
-			</configuration>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <plugin>
-		<artifactId>maven-jar-plugin</artifactId>
-		<!-- need at least this version to make excludes work -->
-		<configuration>
-		    <finalName>${project.artifactId}</finalName>
-		    <archive>
-			<!--
-			    Configure the maven-jar-plugin to pick up
-			    META-INF/MANIFEST.MF that's generated by
-			    the maven-bundle-plugin.
-			-->
-			<manifestFile>
-			  ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-			</manifestFile>
-			<manifestEntries>
-			    <Extension-Name>
-				${activation.extensionName}
-			    </Extension-Name>
-			    <Specification-Title>
-				${activation.specificationTitle}
-			    </Specification-Title>
-			    <Specification-Version>
-				${activation.spec.version}
-			    </Specification-Version>
-			    <Specification-Vendor>
-				${project.organization.name}
-			    </Specification-Vendor>
-			    <Implementation-Title>
-				${activation.implementationTitle}
-			    </Implementation-Title>
-			    <Implementation-Version>
-				${project.version}
-			    </Implementation-Version>
-			    <Implementation-Vendor>
-				${project.organization.name}
-			    </Implementation-Vendor>
-			    <Implementation-Vendor-Id>
-				com.sun
-			    </Implementation-Vendor-Id>
-			</manifestEntries>
-		    </archive>
-		    <excludes>
-			<exclude>**/*.java</exclude>
-		    </excludes>
-		</configuration>
-	    </plugin>
-
-	    <!--
-		Tell the source plugin about the sources that may have
-		been downloaded by the maven-dependency-plugin.
-	    -->
-
-	    <plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>build-helper-maven-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>add-source</id>
-			<phase>generate-sources</phase>
-			<goals>
-			    <goal>add-source</goal>
-			</goals>
-			<configuration>
-			    <sources>
-				<source> <!-- for dependencies -->
-				    ${project.build.directory}/sources
-				</source>
-			    </sources>
-			</configuration>
-		    </execution>
-		    <execution>
-			<id>add-resource</id>
-			<phase>generate-resources</phase>
-			<goals>
-			    <goal>add-resource</goal>
-			</goals>
-			<configuration>
-			    <resources>
-				<resource>
-				    <directory>${main.basedir}</directory>
-				    <targetPath>META-INF</targetPath>
-				    <includes>
-					<include>LICENSE.md</include>
-					<include>NOTICE.md</include>
-				    </includes>
-				</resource>
-			    </resources>
-			</configuration>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <!--
-		Directory plugin to find parent root directory absolute path.
-		Sets ${main.basedir}, used above with build-helper-maven-plugin
-		to include LICENSE.md and NOTICE.md in jar files.
-	    -->
-	    <plugin>
-		<groupId>org.commonjava.maven.plugins</groupId>
-		<artifactId>directory-maven-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>directories</id>
-			<goals>
-			    <goal>highest-basedir</goal>
-			</goals>
-			<phase>initialize</phase>
-			<configuration>
-			    <property>main.basedir</property>
-			</configuration>
-		    </execution>
-		</executions>
-	    </plugin>
-
-	    <!--
-		Configure the source plugin here so that it will know
-		about the sources that may have been downloaded by the
-		maven-dependency-plugin and configured by the
-		build-helper-maven-plugin.
-	    -->
-	    <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-source-plugin</artifactId>
-		<executions>
-		    <execution>
-			<id>attach-sources</id>
-			<goals>
-			    <goal>jar-no-fork</goal> 
-			</goals>
-		    </execution>
-		</executions>
-		<configuration>
-		    <includePom>true</includePom>
-		    <!--
-			Since we added the classes directory using the
-			build-helper-maven-plugin above, we need to exclude
-			the class files from the source jar file.
-		    -->
-		    <excludes>
-			<exclude>**/*.class</exclude>
-		    </excludes>
-		</configuration>
-	    </plugin>
-
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <!--
+            Make sure we're using the correct version of maven.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.6.3,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[11,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            This plugin is responsible for packaging artifacts
+            as OSGi bundles.  Please refer to
+            http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
+            for more information about how to use this plugin.
+            -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <niceManifest>true</niceManifest>
+                    <instructions>
+                        <Export-Package>
+                            ${activation.packages.export}
+                        </Export-Package>
+                        <Import-Package>
+                            ${activation.packages.import}
+                        </Import-Package>
+                        <DynamicImport-Package>
+                            *
+                        </DynamicImport-Package>
+                    </instructions>
+                </configuration>
+                <!--
+                    Since we don't change the packaging type to bundle, we
+                    need to configure the plugin to execute the manifest goal
+                    during the process-classes phase of the build life cycle.
+                -->
+                <executions>
+                    <execution>
+                        <id>osgi-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            Since we don't want a qualifier like b05 or SNAPSHOT to
+            appear in the OSGi package version attribute, we use
+            the following plugin to populate a project property
+            with an OSGi version that is equivalent to the maven
+            version without the qualifier.
+            -->
+            <plugin>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>osgiversion-maven-plugin</artifactId>
+                <version>${hk2.plugin.version}</version>
+                <configuration>
+                    <dropVersionComponent>qualifier</dropVersionComponent>
+                    <versionPropertyName>activation.osgiversion</versionPropertyName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compute-osgi-version</id>
+                        <goals>
+                            <goal>compute-osgi-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            Use the JDK 9+ compiler but with -source 1.8 for all
+            but the module-info.java file.
+            -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <skipMain>${activation.recompile.skip}</skipMain>
+                    <release>9</release>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Xlint:-rawtypes</arg>
+                        <arg>-Xlint:-unchecked</arg>
+                        <arg>-Xlint:-finally</arg>
+                    </compilerArgs>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>8</release>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <!-- need at least this version to make excludes work -->
+                <configuration>
+                    <finalName>${project.artifactId}</finalName>
+                    <archive>
+                        <!--
+                            Configure the maven-jar-plugin to pick up
+                            META-INF/MANIFEST.MF that's generated by
+                            the maven-bundle-plugin.
+                        -->
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Extension-Name>${activation.extensionName}</Extension-Name>
+                            <Specification-Title>${activation.specificationTitle}</Specification-Title>
+                            <Specification-Version>${activation.spec.version}</Specification-Version>
+                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Implementation-Title>${activation.implementationTitle}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                            <Implementation-Vendor-Id>com.sun</Implementation-Vendor-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!--
+            Tell the source plugin about the sources that may have
+            been downloaded by the maven-dependency-plugin.
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>currentyear-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>current.year</name>
+                            <locale>en,US</locale>
+                            <pattern>yyyy</pattern>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source> <!-- for dependencies -->
+                                    ${project.build.directory}/generated-sources/sources
+                                </source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${main.basedir}</directory>
+                                    <targetPath>META-INF</targetPath>
+                                    <includes>
+                                        <include>LICENSE.md</include>
+                                        <include>NOTICE.md</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            Directory plugin to find parent root directory absolute path.
+            Sets ${main.basedir}, used above with build-helper-maven-plugin
+            to include LICENSE.md and NOTICE.md in jar files.
+            -->
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>directories</id>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <property>main.basedir</property>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            Configure the source plugin here so that it will know
+            about the sources that may have been downloaded by the
+            maven-dependency-plugin and configured by the
+            build-helper-maven-plugin.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <author>false</author>
-                    <description>
-                        Jakarta Activation API documentation
-                    </description>
-                    <doctitle>
-                        Jakarta Activation API documentation
-                    </doctitle>
-                    <windowtitle>
-                        Jakarta Activation API documentation
-                    </windowtitle>
+                    <description>${javadoc.title}</description>
+                    <doctitle>${javadoc.title}</doctitle>
+                    <windowtitle>${javadoc.title}</windowtitle>
                     <splitindex>true</splitindex>
                     <use>true</use>
                     <notimestamp>true</notimestamp>
@@ -450,7 +384,7 @@
                     <bottom>
                         <![CDATA[
 Comments to : <a href="mailto:jaf-dev@eclipse.org">jaf-dev@eclipse.org</a>.<br>
-Copyright &#169; 2019, 2021 Eclipse Foundation. All rights reserved.<br>
+Copyright &#169; 2019, ${current.year} Eclipse Foundation. All rights reserved.<br>
 Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.]]>
                     </bottom>
                     <groups>
@@ -459,141 +393,159 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                             <packages>jakarta.*</packages>
                         </group>
                     </groups>
-                    <!--
-                    <subpackages>jakarta.activation</subpackages>
-                    -->
-                    <!--
-                        Force javadoc to produce non-module docs
-                        since the module definition isn't part of
-                        the API specification.
-                    -->
                     <!-- force the doc-files directory to be copied -->
                     <docfilessubdirs>true</docfilessubdirs>
                     <javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
                     <detectJavaApiLink>false</detectJavaApiLink>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFile>${copyright.exclude}</excludeFile>
+                    <!-- skip files not under SCM-->
+                    <scmOnly>${copyright.scmonly}</scmOnly>
+                    <!-- for use with repair -->
+                    <update>${copyright.update}</update>
+                    <!-- check that year is correct -->
+                    <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <pluginManagement>
-	    <plugins>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-compiler-plugin</artifactId>
-		    <version>3.8.1</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-surefire-plugin</artifactId>
-		    <version>2.4.3</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-jar-plugin</artifactId>
-		    <version>3.2.0</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.codehaus.mojo</groupId>
-		    <artifactId>build-helper-maven-plugin</artifactId>
-		    <version>1.7</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.commonjava.maven.plugins</groupId>
-		    <artifactId>directory-maven-plugin</artifactId>
-		    <version>0.3</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-assembly-plugin</artifactId>
-		    <version>2.4</version>
-		</plugin>
-		<plugin>
-		    <!--
-			By default, disable the FindBugs plugin for all modules.
-			It's enabled in the modules where we actually want to
-			run it.
-		    -->
-		    <groupId>org.codehaus.mojo</groupId>
-		    <artifactId>findbugs-maven-plugin</artifactId>
-		    <version>${findbugs.version}</version>
-		    <configuration>
-			<skip>${findbugs.skip}</skip>
-			<threshold>${findbugs.threshold}</threshold>
-			<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-			<excludeFilterFile>
-			    ${findbugs.exclude}
-			</excludeFilterFile>
-		    </configuration>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-enforcer-plugin</artifactId>
-		    <version>3.0.0-M3</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.felix</groupId>
-		    <artifactId>maven-bundle-plugin</artifactId>
-		    <version>5.1.1</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-source-plugin</artifactId>
-		    <version>2.1.2</version>
-		 </plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-javadoc-plugin</artifactId>
-		    <version>3.1.1</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-project-info-reports-plugin</artifactId>
-		    <version>2.7</version>
-		</plugin>
-		<plugin>
-		    <groupId>org.glassfish.copyright</groupId>
-		    <artifactId>glassfish-copyright-maven-plugin</artifactId>
-		    <version>${copyright-plugin.version}</version>
-		    <configuration>
-			<scm>git</scm>
-			<scmOnly>true</scmOnly> 
-			<excludeFile>
-			    copyright-exclude
-			</excludeFile>
-		    </configuration>
-		</plugin>
-	    </plugins>
-	</pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.commonjava.maven.plugins</groupId>
+                    <artifactId>directory-maven-plugin</artifactId>
+                    <version>0.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <!--
+                    By default, disable the SpotBugs plugin for all modules.
+                    It's enabled in the modules where we actually want to
+                    run it.
+                    -->
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.plugin.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <scm>git</scm>
+                        <scmOnly>true</scmOnly>
+                        <excludeFile>
+                            copyright-exclude
+                        </excludeFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.8.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencyManagement>
-	<dependencies>
-	    <dependency>
-		<groupId>com.sun.activation</groupId>
-		<artifactId>jakarta.activation</artifactId>
-		<version>${project.version}</version>
-	    </dependency>
-	</dependencies>
+        <dependencies>
+            <!--Our artifacts-->
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>jakarta.activation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Test dependencies-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 
     <reporting>
-	<plugins>
-	    <!--
-		Configure FindBugs to run with "mvn site" and
-		generate html output that can be viewed directly.
-	    -->
-	    <plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>findbugs-maven-plugin</artifactId>
-		<version>${findbugs.version}</version>
-		<configuration>
-		    <skip>${findbugs.skip}</skip>
-		    <threshold>${findbugs.threshold}</threshold>
-		    <excludeFilterFile>
-			${findbugs.exclude}
-		    </excludeFilterFile>
-		</configuration>
-	    </plugin>
-	</plugins>
+        <plugins>
+            <!--
+            Configure SpotBugs to run with "mvn site" and
+            generate html output that can be viewed directly.
+            -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.plugin.version}</version>
+                <configuration>
+                    <skip>${spotbugs.skip}</skip>
+                    <threshold>${spotbugs.threshold}</threshold>
+                </configuration>
+            </plugin>
+        </plugins>
     </reporting>
 </project>
