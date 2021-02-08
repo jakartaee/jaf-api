@@ -12,14 +12,14 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 			    http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-	<groupId>com.sun.activation</groupId>
-	<artifactId>all</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>all</artifactId>
+        <version>2.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.activation</groupId>
@@ -27,45 +27,37 @@
     <name>Jakarta Activation</name>
 
     <properties>
-        <activation.specificationTitle>
-            Jakarta Activation Specification
-        </activation.specificationTitle>
-        <activation.implementationTitle>
-            jakarta.activation
-        </activation.implementationTitle>
-
-	<activation.packages.export>
-	    jakarta.activation.*; version=${activation.spec.version},
-	    com.sun.activation.*; version=${activation.osgiversion}
-	</activation.packages.export>
-	<activation.packages.import>*</activation.packages.import>
-	<spotbugs.skip>
-	    false
-	</spotbugs.skip>
+        <activation.specificationTitle>Jakarta Activation Specification</activation.specificationTitle>
+        <activation.implementationTitle>jakarta.activation</activation.implementationTitle>
+        <activation.packages.export>
+            jakarta.activation.*; version=${activation.spec.version},
+            com.sun.activation.*; version=${activation.osgiversion}
+        </activation.packages.export>
+        <activation.packages.import>*</activation.packages.import>
+        <spotbugs.skip>false</spotbugs.skip>
     </properties>
 
     <build>
-	<resources>
-	    <resource>
-		<directory>src/main/resources</directory>
-		<filtering>true</filtering>
-	    </resource>
-	</resources>
-	<plugins>
-	    <!--
-		Configure test plugin to find *TestSuite classes.
-	    -->
-	    <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-surefire-plugin</artifactId>
-		<configuration>
-		    <includes>
-			<include>**/*Test.java</include>
-			<include>**/*TestSuite.java</include>
-		    </includes>
-		</configuration>
-	    </plugin>
-
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <!--
+            Configure test plugin to find *TestSuite classes.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -76,10 +68,10 @@
     </build>
 
     <dependencies>
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <scope>test</scope>
-	</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
