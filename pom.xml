@@ -68,8 +68,6 @@
         <!--Maven plugins version-->
         <hk2.plugin.version>3.0.1</hk2.plugin.version>
         <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
-        <!--Dependencies version-->
-        <junit.version>4.13.1</junit.version>
     </properties>
 
     <developers>
@@ -431,11 +429,6 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
@@ -521,12 +514,6 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                 <groupId>com.sun.activation</groupId>
                 <artifactId>jakarta.activation</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <!--Test dependencies-->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
