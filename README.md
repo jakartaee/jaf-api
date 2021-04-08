@@ -19,6 +19,10 @@ for data content handling.
 
 # <a name="Latest_News"></a>Latest News
 
+## April 6, 2021 - Jakarta Activation 2.0.1 Final Release ##
+
+The 2.0.1 release is the bug fix release of 2.0.0.
+
 ## October 22, 2020 - Jakarta Activation 2.0.0 Final Release ##
 
 The 2.0.0 release is the first release under the `jakarta` namespace.
