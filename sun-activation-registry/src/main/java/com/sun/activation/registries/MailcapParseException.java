@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package	com.sun.activation.registries;
+package com.sun.activation.registries;
 
 /**
  *	A class to encapsulate Mailcap parsing related exceptions

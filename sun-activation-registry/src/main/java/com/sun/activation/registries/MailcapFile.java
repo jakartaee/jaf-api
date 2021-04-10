@@ -10,10 +10,12 @@
 
 package com.sun.activation.registries;
 
+import jakarta.activation.MailcapRegistry;
+
 import java.io.*;
 import java.util.*;
 
-public class MailcapFile {
+public class MailcapFile implements MailcapRegistry {
 
     /**
      * A Map indexed by MIME type (string) that references

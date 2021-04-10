@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-package	com.sun.activation.registries;
+package com.sun.activation.registries;
 
 /**
  *	A tokenizer for strings in the form of "foo/bar; prop1=val1; ... ".

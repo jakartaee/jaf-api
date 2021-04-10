@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,13 +10,13 @@
 
 package jakarta.activation;
 
+import jakarta.activation.spi.MailcapRegistryProvider;
+
 import java.util.*;
 import java.io.*;
 import java.net.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import com.sun.activation.registries.MailcapFile;
-import com.sun.activation.registries.LogSupport;
 
 /**
  * MailcapCommandMap extends the CommandMap
@@ -111,7 +111,7 @@ public class MailcapCommandMap extends CommandMap {
     /*
      * We manage a collection of databases, searched in order.
      */
-    private MailcapFile[] DB;
+    private MailcapRegistry[] DB;
     private static final int PROG = 0;	// programmatically added entries
 
     private static final String confDir;
@@ -143,7 +143,7 @@ public class MailcapCommandMap extends CommandMap {
     public MailcapCommandMap() {
 	super();
 	List dbv = new ArrayList(5);	// usually 5 or less databases
-	MailcapFile mf = null;
+	MailcapRegistry mf = null;
 	dbv.add(null);		// place holder for PROG entry
 
 	LogSupport.log("MailcapCommandMap: load HOME");
@@ -178,19 +178,20 @@ public class MailcapCommandMap extends CommandMap {
 	if (mf != null)
 	    dbv.add(mf);
 
-	DB = new MailcapFile[dbv.size()];
-	DB = (MailcapFile[])dbv.toArray(DB);
+	DB = new MailcapRegistry[dbv.size()];
+	DB = (MailcapRegistry[])dbv.toArray(DB);
     }
 
     /**
      * Load from the named resource.
      */
-    private MailcapFile loadResource(String name) {
+    private MailcapRegistry loadResource(String name) {
 	InputStream clis = null;
 	try {
 	    clis = SecuritySupport.getResourceAsStream(this.getClass(), name);
 	    if (clis != null) {
-		MailcapFile mf = new MailcapFile(clis);
+			MailcapRegistry mf = ServiceLoader
+					.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(clis);
 		if (LogSupport.isLoggable())
 		    LogSupport.log("MailcapCommandMap: successfully loaded " +
 			"mailcap file: " + name);
@@ -242,7 +243,7 @@ public class MailcapCommandMap extends CommandMap {
 		    try {
 			clis = SecuritySupport.openStream(url);
 			if (clis != null) {
-			    v.add(new MailcapFile(clis));
+			    v.add(ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(clis));
 			    anyLoaded = true;
 			    if (LogSupport.isLoggable())
 				LogSupport.log("MailcapCommandMap: " +
@@ -280,7 +281,7 @@ public class MailcapCommandMap extends CommandMap {
 	if (!anyLoaded) {
 	    if (LogSupport.isLoggable())
 		LogSupport.log("MailcapCommandMap: !anyLoaded");
-	    MailcapFile mf = loadResource("/" + name);
+		MailcapRegistry mf = loadResource("/" + name);
 	    if (mf != null)
 		v.add(mf);
 	}
@@ -289,11 +290,11 @@ public class MailcapCommandMap extends CommandMap {
     /**
      * Load from the named file.
      */
-    private MailcapFile loadFile(String name) {
-	MailcapFile mtf = null;
+    private MailcapRegistry loadFile(String name) {
+		MailcapRegistry mtf = null;
 
 	try {
-	    mtf = new MailcapFile(name);
+	    mtf = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(name);
 	} catch (IOException e) {
 	    //	e.printStackTrace();
 	}
@@ -313,7 +314,7 @@ public class MailcapCommandMap extends CommandMap {
 	if (LogSupport.isLoggable())
 	    LogSupport.log("MailcapCommandMap: load PROG from " + fileName);
 	if (DB[PROG] == null) {
-	    DB[PROG] = new MailcapFile(fileName);
+	    DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(fileName);
 	}
     }
 
@@ -330,7 +331,7 @@ public class MailcapCommandMap extends CommandMap {
 	LogSupport.log("MailcapCommandMap: load PROG");
 	if (DB[PROG] == null) {
 	    try {
-		DB[PROG] = new MailcapFile(is);
+		DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(is);
 	    } catch (IOException ex) {
 		// XXX - should throw it
 	    }
@@ -522,7 +523,7 @@ public class MailcapCommandMap extends CommandMap {
 	// check to see if one exists
 	LogSupport.log("MailcapCommandMap: add to PROG");
 	if (DB[PROG] == null)
-	    DB[PROG] = new MailcapFile();
+	    DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getDefault();
 
 	DB[PROG].appendToMailcap(mail_cap);
     }

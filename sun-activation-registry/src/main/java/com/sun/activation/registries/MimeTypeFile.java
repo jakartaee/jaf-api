@@ -10,10 +10,13 @@
 
 package com.sun.activation.registries;
 
+import jakarta.activation.MimeTypeEntry;
+import jakarta.activation.MimeTypeRegistry;
+
 import java.io.*;
 import java.util.*;
 
-public class MimeTypeFile {
+public class MimeTypeFile implements MimeTypeRegistry {
     private String fname = null;
     private Hashtable type_hash = new Hashtable();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,13 +10,13 @@
 
 package jakarta.activation;
 
+import jakarta.activation.spi.MimeTypeRegistryProvider;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import com.sun.activation.registries.MimeTypeFile;
-import com.sun.activation.registries.LogSupport;
 
 /**
  * This class extends FileTypeMap and provides data typing of files
@@ -61,7 +61,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /*
      * We manage a collection of databases, searched in order.
      */
-    private MimeTypeFile[] DB;
+    private MimeTypeRegistry[] DB;
     private static final int PROG = 0;	// programmatically added entries
 
     private static final String defaultType = "application/octet-stream";
@@ -94,7 +94,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      */
     public MimetypesFileTypeMap() {
 	Vector dbv = new Vector(5);	// usually 5 or less databases
-	MimeTypeFile mf = null;
+	MimeTypeRegistry mf = null;
 	dbv.addElement(null);		// place holder for PROG entry
 
 	LogSupport.log("MimetypesFileTypeMap: load HOME");
@@ -129,19 +129,19 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 	if (mf != null)
 	    dbv.addElement(mf);
 
-	DB = new MimeTypeFile[dbv.size()];
+	DB = new MimeTypeRegistry[dbv.size()];
 	dbv.copyInto(DB);
     }
 
     /**
      * Load from the named resource.
      */
-    private MimeTypeFile loadResource(String name) {
+    private MimeTypeRegistry loadResource(String name) {
 	InputStream clis = null;
 	try {
 	    clis = SecuritySupport.getResourceAsStream(this.getClass(), name);
 	    if (clis != null) {
-		MimeTypeFile mf = new MimeTypeFile(clis);
+		MimeTypeRegistry mf = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByInputStream(clis);
 		if (LogSupport.isLoggable())
 		    LogSupport.log("MimetypesFileTypeMap: successfully " +
 			"loaded mime types file: " + name);
@@ -193,7 +193,9 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 		    try {
 			clis = SecuritySupport.openStream(url);
 			if (clis != null) {
-			    v.addElement(new MimeTypeFile(clis));
+			    v.addElement(
+			    		ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByInputStream(clis)
+				);
 			    anyLoaded = true;
 			    if (LogSupport.isLoggable())
 				LogSupport.log("MimetypesFileTypeMap: " +
@@ -229,7 +231,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 	// if failed to load anything, fall back to old technique, just in case
 	if (!anyLoaded) {
 	    LogSupport.log("MimetypesFileTypeMap: !anyLoaded");
-	    MimeTypeFile mf = loadResource("/" + name);
+	    MimeTypeRegistry mf = loadResource("/" + name);
 	    if (mf != null)
 		v.addElement(mf);
 	}
@@ -238,11 +240,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load the named file.
      */
-    private MimeTypeFile loadFile(String name) {
-	MimeTypeFile mtf = null;
+    private MimeTypeRegistry loadFile(String name) {
+	MimeTypeRegistry mtf = null;
 
 	try {
-	    mtf = new MimeTypeFile(name);
+	    mtf = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByFileName(name);
 	} catch (IOException e) {
 	    //	e.printStackTrace();
 	}
@@ -258,7 +260,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      */
     public MimetypesFileTypeMap(String mimeTypeFileName) throws IOException {
 	this();
-	DB[PROG] = new MimeTypeFile(mimeTypeFileName);
+	DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByFileName(mimeTypeFileName);
     }
 
     /**
@@ -270,7 +272,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     public MimetypesFileTypeMap(InputStream is) {
 	this();
 	try {
-	    DB[PROG] = new MimeTypeFile(is);
+	    DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByInputStream(is);
 	} catch (IOException ex) {
 	    // XXX - really should throw it
 	}
@@ -284,7 +286,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     public synchronized void addMimeTypes(String mime_types) {
 	// check to see if we have created the registry
 	if (DB[PROG] == null)
-	    DB[PROG] = new MimeTypeFile(); // make one
+	    DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getDefault();
 
 	DB[PROG].appendToRegistry(mime_types);
     }
