@@ -23,11 +23,3 @@ SPDX-License-Identifier: BSD-3-Clause
 The project maintains the following source code repositories:
 
 * https://github.com/eclipse-ee4j/jaf
-
-## Third-party Content
-
-This project leverages the following third party content.
-
-JUnit (4.12)
-
-* License: Eclipse Public License
