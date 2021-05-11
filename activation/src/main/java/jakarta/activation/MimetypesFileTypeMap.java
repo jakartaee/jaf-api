@@ -157,6 +157,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 	} catch (SecurityException sex) {
 	    if (LogSupport.isLoggable())
 		LogSupport.log("MimetypesFileTypeMap: can't load " + name, sex);
+	} catch (NoSuchElementException | ServiceConfigurationError e) {
+		if (LogSupport.isLoggable()) {
+			LogSupport.log("ServiceLoader cannot find or load an implementation for MimeTypeRegistryProvider." +
+					"MimeTypeRegistry: can't load " + name, e);
+		}
 	} finally {
 	    try {
 		if (clis != null)
@@ -215,7 +220,12 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 			if (LogSupport.isLoggable())
 			    LogSupport.log("MimetypesFileTypeMap: can't load " +
 						url, sex);
-		    } finally {
+		    } catch (NoSuchElementException | ServiceConfigurationError e) {
+				if (LogSupport.isLoggable()) {
+					LogSupport.log("ServiceLoader cannot find or load an implementation for MimeTypeRegistryProvider." +
+							"MimeTypeRegistry: can't load " + url, e);
+				}
+			} finally {
 			try {
 			    if (clis != null)
 				clis.close();
@@ -247,6 +257,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 	    mtf = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByFileName(name);
 	} catch (IOException e) {
 	    //	e.printStackTrace();
+	} catch (NoSuchElementException | ServiceConfigurationError e) {
+		if (LogSupport.isLoggable()) {
+			LogSupport.log("ServiceLoader cannot find or load an implementation for MimeTypeRegistryProvider." +
+					"MimeTypeRegistry: can't load " + name, e);
+		}
 	}
 	return mtf;
     }
@@ -259,8 +274,17 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      * @exception	IOException	for errors reading the file
      */
     public MimetypesFileTypeMap(String mimeTypeFileName) throws IOException {
-	this();
-	DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByFileName(mimeTypeFileName);
+		this();
+		try {
+			DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByFileName(mimeTypeFileName);
+		} catch (NoSuchElementException | ServiceConfigurationError e) {
+			String errorMessage = "ServiceLoader cannot find or load an implementation for MimeTypeRegistryProvider." +
+					"MimeTypeRegistry: can't load " + mimeTypeFileName;
+			if (LogSupport.isLoggable()) {
+				LogSupport.log(errorMessage, e);
+			}
+			throw new IOException(errorMessage, e);
+		}
     }
 
     /**
@@ -270,12 +294,17 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      * @param is	the input stream to read from
      */
     public MimetypesFileTypeMap(InputStream is) {
-	this();
-	try {
-	    DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByInputStream(is);
-	} catch (IOException ex) {
-	    // XXX - really should throw it
-	}
+		this();
+		try {
+			DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getByInputStream(is);
+		} catch (IOException ex) {
+			// XXX - really should throw it
+		} catch (NoSuchElementException | ServiceConfigurationError e) {
+			if (LogSupport.isLoggable()) {
+				LogSupport.log("ServiceLoader cannot find or load an implementation for MimeTypeRegistryProvider." +
+						"MimeTypeRegistry: can't load InputStream", e);
+			}
+		}
     }
 
     /**
@@ -284,11 +313,19 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      * @param mime_types A .mime.types formatted string of entries.
      */
     public synchronized void addMimeTypes(String mime_types) {
-	// check to see if we have created the registry
-	if (DB[PROG] == null)
-	    DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getDefault();
-
-	DB[PROG].appendToRegistry(mime_types);
+    	try {
+			// check to see if we have created the registry
+			if (DB[PROG] == null) {
+				DB[PROG] = ServiceLoader.load(MimeTypeRegistryProvider.class).iterator().next().getInMemory();
+			}
+			DB[PROG].appendToRegistry(mime_types);
+		} catch (NoSuchElementException | ServiceConfigurationError e) {
+			if (LogSupport.isLoggable()) {
+				LogSupport.log("ServiceLoader cannot find or load an implementation for MimeTypeRegistryProvider." +
+						"MimeTypeRegistry: can't add " + mime_types, e);
+			}
+			throw e;
+		}
     }
 
     /**

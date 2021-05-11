@@ -29,7 +29,7 @@ import java.security.PrivilegedAction;
  * <b>Mailcap file search order:</b><p>
  * The MailcapCommandMap looks in various places in the user's
  * system for mailcap file entries. When requests are made
- * to search for commands in the MailcapCommandMap, it searches  
+ * to search for commands in the MailcapCommandMap, it searches
  * mailcap files in the following order:
  * <ol>
  * <li> Programatically added entries to the MailcapCommandMap instance.
@@ -51,11 +51,11 @@ import java.security.PrivilegedAction;
  *
  * Mailcap files must conform to the mailcap
  * file specification (RFC 1524, <i>A User Agent Configuration Mechanism
- * For Multimedia Mail Format Information</i>). 
+ * For Multimedia Mail Format Information</i>).
  * The file format consists of entries corresponding to
- * particular MIME types. In general, the specification 
+ * particular MIME types. In general, the specification
  * specifies <i>applications</i> for clients to use when they
- * themselves cannot operate on the specified MIME type. The 
+ * themselves cannot operate on the specified MIME type. The
  * MailcapCommandMap extends this specification by using a parameter mechanism
  * in mailcap files that allows JavaBeans(tm) components to be specified as
  * corresponding to particular commands for a MIME type.<p>
@@ -70,7 +70,7 @@ import java.security.PrivilegedAction;
  * with the name <i>name</i>. When the <i>name</i> is <code>
  * content-handler</code> the MailcapCommandMap recognizes the class
  * signified by this parameter as a <i>DataContentHandler</i>.
- * All other commands are handled generically regardless of command 
+ * All other commands are handled generically regardless of command
  * name. The command implementation is specified by a fully qualified
  * class name of a JavaBean(tm) component. For example; a command for viewing
  * some data can be specified as: <code>x-java-view=com.foo.ViewBean</code>.<p>
@@ -85,8 +85,8 @@ import java.security.PrivilegedAction;
  * specifies a view command to be used for any text MIME type.  This
  * view command would only be used if a non-fallback view command for
  * the MIME type could not be found.<p>
- * 
- * MailcapCommandMap aware mailcap files have the 
+ *
+ * MailcapCommandMap aware mailcap files have the
  * following general form:<p>
  * <code>
  * # Comments begin with a '#' and continue to the end of the line.<br>
@@ -186,119 +186,136 @@ public class MailcapCommandMap extends CommandMap {
      * Load from the named resource.
      */
     private MailcapRegistry loadResource(String name) {
-	InputStream clis = null;
-	try {
-	    clis = SecuritySupport.getResourceAsStream(this.getClass(), name);
-	    if (clis != null) {
-			MailcapRegistry mf = ServiceLoader
-					.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(clis);
-		if (LogSupport.isLoggable())
-		    LogSupport.log("MailcapCommandMap: successfully loaded " +
-			"mailcap file: " + name);
-		return mf;
-	    } else {
-		if (LogSupport.isLoggable())
-		    LogSupport.log("MailcapCommandMap: not loading " +
-			"mailcap file: " + name);
-	    }
-	} catch (IOException e) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("MailcapCommandMap: can't load " + name, e);
-	} catch (SecurityException sex) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("MailcapCommandMap: can't load " + name, sex);
-	} finally {
-	    try {
-		if (clis != null)
-		    clis.close();
-	    } catch (IOException ex) { }	// ignore it
-	}
-	return null;
+        InputStream clis = null;
+        try {
+            clis = SecuritySupport.getResourceAsStream(this.getClass(), name);
+            if (clis != null) {
+                MailcapRegistry mf = ServiceLoader
+                        .load(MailcapRegistryProvider.class).iterator().next().getByInputStream(clis);
+                if (LogSupport.isLoggable())
+                    LogSupport.log("MailcapCommandMap: successfully loaded " +
+                            "mailcap file: " + name);
+                return mf;
+            } else {
+                if (LogSupport.isLoggable())
+                    LogSupport.log("MailcapCommandMap: not loading " +
+                            "mailcap file: " + name);
+            }
+        } catch (IOException e) {
+            if (LogSupport.isLoggable())
+                LogSupport.log("MailcapCommandMap: can't load " + name, e);
+        } catch (SecurityException sex) {
+            if (LogSupport.isLoggable())
+                LogSupport.log("MailcapCommandMap: can't load " + name, sex);
+        } catch (NoSuchElementException | ServiceConfigurationError e) {
+            if (LogSupport.isLoggable()) {
+                LogSupport.log("ServiceLoader cannot find or load an implementation for MailcapRegistryProvider. " +
+                        "MailcapRegistry: can't load " + name, e);
+            }
+        } finally {
+            try {
+                if (clis != null)
+                    clis.close();
+            } catch (IOException ex) {
+            }    // ignore it
+        }
+        return null;
     }
 
     /**
      * Load all of the named resource.
      */
     private void loadAllResources(List v, String name) {
-	boolean anyLoaded = false;
-	try {
-	    URL[] urls;
-	    ClassLoader cld = null;
-	    // First try the "application's" class loader.
-	    cld = SecuritySupport.getContextClassLoader();
-	    if (cld == null)
-		cld = this.getClass().getClassLoader();
-	    if (cld != null)
-		urls = SecuritySupport.getResources(cld, name);
-	    else
-		urls = SecuritySupport.getSystemResources(name);
-	    if (urls != null) {
-		if (LogSupport.isLoggable())
-		    LogSupport.log("MailcapCommandMap: getResources");
-		for (int i = 0; i < urls.length; i++) {
-		    URL url = urls[i];
-		    InputStream clis = null;
-		    if (LogSupport.isLoggable())
-			LogSupport.log("MailcapCommandMap: URL " + url);
-		    try {
-			clis = SecuritySupport.openStream(url);
-			if (clis != null) {
-			    v.add(ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(clis));
-			    anyLoaded = true;
-			    if (LogSupport.isLoggable())
-				LogSupport.log("MailcapCommandMap: " +
-				    "successfully loaded " +
-				    "mailcap file from URL: " +
-				    url);
-			} else {
-			    if (LogSupport.isLoggable())
-				LogSupport.log("MailcapCommandMap: " +
-				    "not loading mailcap " +
-				    "file from URL: " + url);
-			}
-		    } catch (IOException ioex) {
-			if (LogSupport.isLoggable())
-			    LogSupport.log("MailcapCommandMap: can't load " +
-						url, ioex);
-		    } catch (SecurityException sex) {
-			if (LogSupport.isLoggable())
-			    LogSupport.log("MailcapCommandMap: can't load " +
-						url, sex);
-		    } finally {
-			try {
-			    if (clis != null)
-				clis.close();
-			} catch (IOException cex) { }
-		    }
-		}
-	    }
-	} catch (Exception ex) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("MailcapCommandMap: can't load " + name, ex);
-	}
+        boolean anyLoaded = false;
+        try {
+            URL[] urls;
+            ClassLoader cld = null;
+            // First try the "application's" class loader.
+            cld = SecuritySupport.getContextClassLoader();
+            if (cld == null)
+                cld = this.getClass().getClassLoader();
+            if (cld != null)
+                urls = SecuritySupport.getResources(cld, name);
+            else
+                urls = SecuritySupport.getSystemResources(name);
+            if (urls != null) {
+                if (LogSupport.isLoggable())
+                    LogSupport.log("MailcapCommandMap: getResources");
+                for (int i = 0; i < urls.length; i++) {
+                    URL url = urls[i];
+                    InputStream clis = null;
+                    if (LogSupport.isLoggable())
+                        LogSupport.log("MailcapCommandMap: URL " + url);
+                    try {
+                        clis = SecuritySupport.openStream(url);
+                        if (clis != null) {
+                            v.add(ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(clis));
+                            anyLoaded = true;
+                            if (LogSupport.isLoggable())
+                                LogSupport.log("MailcapCommandMap: " +
+                                        "successfully loaded " +
+                                        "mailcap file from URL: " +
+                                        url);
+                        } else {
+                            if (LogSupport.isLoggable())
+                                LogSupport.log("MailcapCommandMap: " +
+                                        "not loading mailcap " +
+                                        "file from URL: " + url);
+                        }
+                    } catch (IOException ioex) {
+                        if (LogSupport.isLoggable())
+                            LogSupport.log("MailcapCommandMap: can't load " +
+                                    url, ioex);
+                    } catch (SecurityException sex) {
+                        if (LogSupport.isLoggable())
+                            LogSupport.log("MailcapCommandMap: can't load " +
+                                    url, sex);
+                    } catch (NoSuchElementException | ServiceConfigurationError e) {
+                        if (LogSupport.isLoggable()) {
+                            LogSupport.log("ServiceLoader cannot find or load an implementation for MailcapRegistryProvider. " +
+                                    "MailcapRegistry: can't load " + name, e);
+                        }
+                    } finally {
+                        try {
+                            if (clis != null)
+                                clis.close();
+                        } catch (IOException cex) {
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            if (LogSupport.isLoggable())
+                LogSupport.log("MailcapCommandMap: can't load " + name, ex);
+        }
 
-	// if failed to load anything, fall back to old technique, just in case
-	if (!anyLoaded) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("MailcapCommandMap: !anyLoaded");
-		MailcapRegistry mf = loadResource("/" + name);
-	    if (mf != null)
-		v.add(mf);
-	}
+        // if failed to load anything, fall back to old technique, just in case
+        if (!anyLoaded) {
+            if (LogSupport.isLoggable())
+                LogSupport.log("MailcapCommandMap: !anyLoaded");
+            MailcapRegistry mf = loadResource("/" + name);
+            if (mf != null)
+                v.add(mf);
+        }
     }
 
     /**
      * Load from the named file.
      */
     private MailcapRegistry loadFile(String name) {
-		MailcapRegistry mtf = null;
+        MailcapRegistry mtf = null;
 
-	try {
-	    mtf = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(name);
-	} catch (IOException e) {
-	    //	e.printStackTrace();
-	}
-	return mtf;
+        try {
+            mtf = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(name);
+        } catch (IOException e) {
+            //	e.printStackTrace();
+        } catch (NoSuchElementException | ServiceConfigurationError e) {
+            if (LogSupport.isLoggable()) {
+                LogSupport.log("ServiceLoader cannot find or load an implementation for MailcapRegistryProvider. " +
+                        "MailcapRegistry: can't load " + name, e);
+            }
+        }
+        return mtf;
     }
 
     /**
@@ -306,16 +323,25 @@ public class MailcapCommandMap extends CommandMap {
      * of a <i>mailcap</i> file.
      *
      * @param fileName The name of the <i>mailcap</i> file to open
-     * @exception	IOException	if the file can't be accessed
+     * @exception IOException    if the file can't be accessed
      */
     public MailcapCommandMap(String fileName) throws IOException {
-	this();
-
-	if (LogSupport.isLoggable())
-	    LogSupport.log("MailcapCommandMap: load PROG from " + fileName);
-	if (DB[PROG] == null) {
-	    DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(fileName);
-	}
+        this();
+        if (DB[PROG] == null) {
+            try {
+                DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(fileName);
+            } catch (NoSuchElementException | ServiceConfigurationError e) {
+                String message = "ServiceLoader cannot find or load an implementation for MailcapRegistryProvider. " +
+                        "MailcapRegistry: can't load " + fileName;
+                if (LogSupport.isLoggable()) {
+                    LogSupport.log(message, e);
+                }
+                throw new IOException(message, e);
+            }
+        }
+        if (DB[PROG] != null && LogSupport.isLoggable()) {
+            LogSupport.log("MailcapCommandMap: load PROG from " + fileName);
+        }
     }
 
 
@@ -323,19 +349,26 @@ public class MailcapCommandMap extends CommandMap {
      * Constructor that allows the caller to specify an <i>InputStream</i>
      * containing a mailcap file.
      *
-     * @param is	InputStream of the <i>mailcap</i> file to open
+     * @param is InputStream of the <i>mailcap</i> file to open
      */
     public MailcapCommandMap(InputStream is) {
-	this();
+        this();
 
-	LogSupport.log("MailcapCommandMap: load PROG");
-	if (DB[PROG] == null) {
-	    try {
-		DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(is);
-	    } catch (IOException ex) {
-		// XXX - should throw it
-	    }
-	}
+        if (DB[PROG] == null) {
+            try {
+                DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByInputStream(is);
+            } catch (IOException ex) {
+                // XXX - should throw it
+            } catch (NoSuchElementException | ServiceConfigurationError e) {
+                if (LogSupport.isLoggable()) {
+                    LogSupport.log("ServiceLoader cannot find or load an implementation for MailcapRegistryProvider." +
+                            "MailcapRegistry: can't load InputStream", e);
+                }
+            }
+        }
+        if (DB[PROG] != null && LogSupport.isLoggable()) {
+            LogSupport.log("MailcapCommandMap: load PROG");
+        }
     }
 
     /**
@@ -344,7 +377,7 @@ public class MailcapCommandMap extends CommandMap {
      * <i>Mailcap file search order</i>.<p>
      *
      * The result of the search is a proper subset of available
-     * commands in all mailcap files known to this instance of 
+     * commands in all mailcap files known to this instance of
      * MailcapCommandMap.  The first entry for a particular command
      * is considered the preferred command.
      *
@@ -511,7 +544,7 @@ public class MailcapCommandMap extends CommandMap {
     }
 
     /**
-     * Add entries to the registry.  Programmatically 
+     * Add entries to the registry.  Programmatically
      * added entries are searched before other entries.<p>
      *
      * The string that is passed in should be in mailcap
@@ -520,12 +553,20 @@ public class MailcapCommandMap extends CommandMap {
      * @param mail_cap a correctly formatted mailcap string
      */
     public synchronized void addMailcap(String mail_cap) {
-	// check to see if one exists
-	LogSupport.log("MailcapCommandMap: add to PROG");
-	if (DB[PROG] == null)
-	    DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getDefault();
-
-	DB[PROG].appendToMailcap(mail_cap);
+        // check to see if one exists
+        LogSupport.log("MailcapCommandMap: add to PROG");
+        try {
+            if (DB[PROG] == null) {
+                DB[PROG] = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getInMemory();
+            }
+            DB[PROG].appendToMailcap(mail_cap);
+        } catch (NoSuchElementException | ServiceConfigurationError e) {
+            if (LogSupport.isLoggable()) {
+                LogSupport.log("ServiceLoader cannot find or load an implementation for MailcapRegistryProvider. " +
+                        "MailcapRegistry: can't load", e);
+            }
+            throw e;
+        }
     }
 
     /**

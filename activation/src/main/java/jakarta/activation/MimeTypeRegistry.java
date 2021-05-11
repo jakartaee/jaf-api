@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,6 +10,16 @@
 
 package jakarta.activation;
 
+/**
+ * The MimeTypeRegistry interface is implemented by objects that can
+ * be used to store and retrieve MimeTypeEntries.
+ * <p>
+ * Application must implement {@link jakarta.activation.spi.MimeTypeRegistryProvider}
+ * to create new instances of the MimeTypeRegistry. Implementation of the MimeTypeRegistry
+ * can store MimeTypeEntries in different ways and that storage must be accessible through the
+ * {@link jakarta.activation.spi.MimeTypeRegistryProvider} methods.
+ * Implementation of the MimeTypeRegistry must contain in-memory storage for MimeTypeEntries.
+ */
 public interface MimeTypeRegistry {
 
     /**

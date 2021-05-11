@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -12,6 +12,16 @@ package jakarta.activation;
 
 import java.util.Map;
 
+/**
+ * The MailcapRegistry interface is implemented by objects that can
+ * be used to store and retrieve MailcapEntries.
+ * <p>
+ * Application must implement {@link jakarta.activation.spi.MailcapRegistryProvider}
+ * to create new instances of the MailcapRegistry. Implementation of the MailcapRegistry
+ * can store MailcapEntries in different ways and that storage must be accessible through the
+ * {@link jakarta.activation.spi.MailcapRegistryProvider} methods.
+ * Implementation of the MailcapRegistry must contain in-memory storage for MailcapEntries.
+ */
 public interface MailcapRegistry {
 
     /**
