@@ -92,7 +92,7 @@
 
     <modules>
         <module>activation</module>
-        <module>activationapi</module>
+        <module>sun-activation-registry</module>
     </modules>
 
     <profiles>
@@ -511,8 +511,8 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
         <dependencies>
             <!--Our artifacts-->
             <dependency>
-                <groupId>com.sun.activation</groupId>
-                <artifactId>jakarta.activation</artifactId>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

@@ -60,8 +60,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>jakarta.activation</artifactId>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
+		<dependency>
+			<groupId>com.sun.activation</groupId>
+			<artifactId>sun-activation-registry</artifactId>
+			<version>${project.version}</version>
+		</dependency>
     </dependencies>
 </project>

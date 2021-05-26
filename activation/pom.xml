@@ -21,20 +21,35 @@
         <version>2.0.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sun.activation</groupId>
-    <artifactId>jakarta.activation</artifactId>
-    <name>Jakarta Activation</name>
+    <groupId>jakarta.activation</groupId>
+    <artifactId>jakarta.activation-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Jakarta Activation API jar</name>
 
     <properties>
-        <activation.specificationTitle>Jakarta Activation Specification</activation.specificationTitle>
-        <activation.implementationTitle>jakarta.activation</activation.implementationTitle>
+        <activation.extensionName>
+            jakarta.activation
+        </activation.extensionName>
+        <activation.moduleName>
+            jakarta.activation
+        </activation.moduleName>
+        <activation.specificationTitle>
+            Jakarta Activation Specification
+        </activation.specificationTitle>
+        <activation.implementationTitle>
+            jakarta.activation
+        </activation.implementationTitle>
         <activation.packages.export>
-            jakarta.activation.*; version=${activation.spec.version},
-            com.sun.activation.*; version=${activation.osgiversion}
+            jakarta.activation.*; version=${activation.spec.version}
         </activation.packages.export>
-        <activation.packages.import>*</activation.packages.import>
-        <spotbugs.skip>false</spotbugs.skip>
+        <findbugs.skip>
+            false
+        </findbugs.skip>
+        <findbugs.exclude>
+            ${project.basedir}/exclude.xml
+        </findbugs.exclude>
     </properties>
 
     <build>
@@ -42,6 +57,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>META-INF/*.default</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
