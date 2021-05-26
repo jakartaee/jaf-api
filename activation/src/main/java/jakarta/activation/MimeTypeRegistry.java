@@ -25,7 +25,7 @@ public interface MimeTypeRegistry {
     /**
      * get the MimeTypeEntry based on the file extension
      *
-     * @param    file_ext    the file extension
+     * @param file_ext the file extension
      * @return the MimeTypeEntry
      */
     MimeTypeEntry getMimeTypeEntry(String file_ext);
@@ -33,16 +33,16 @@ public interface MimeTypeRegistry {
     /**
      * Get the MIME type string corresponding to the file extension.
      *
-     * @param    file_ext    the file extension
+     * @param file_ext the file extension
      * @return the MIME type string
      */
     default String getMIMETypeString(String file_ext) {
         MimeTypeEntry entry = this.getMimeTypeEntry(file_ext);
 
-        if (entry != null)
+        if (entry != null) {
             return entry.getMIMEType();
-        else
-            return null;
+        }
+        return null;
     }
 
     /**
@@ -50,5 +50,5 @@ public interface MimeTypeRegistry {
      *
      * @param mime_types the mime.types string
      */
-     void appendToRegistry(String mime_types);
+    void appendToRegistry(String mime_types);
 }

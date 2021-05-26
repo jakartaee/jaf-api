@@ -308,7 +308,9 @@ public class MailcapCommandMap extends CommandMap {
         try {
             mtf = ServiceLoader.load(MailcapRegistryProvider.class).iterator().next().getByFileName(name);
         } catch (IOException e) {
-            //	e.printStackTrace();
+            if (LogSupport.isLoggable()) {
+                LogSupport.log("MailcapRegistry: can't load from file - " + name, e);
+            }
         } catch (NoSuchElementException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("ServiceLoader cannot find or load an implementation for MailcapRegistryProvider. " +
