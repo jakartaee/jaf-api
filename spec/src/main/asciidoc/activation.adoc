@@ -135,6 +135,11 @@ which uses the CommandMap to retrieve the appropriate Bean that is used
 to operate on the data. The container (user of the framework) makes the
 association between the data and the Bean.
 
+MimeTypeRegistry, MailcapRegistry, MailcapRegistryProvider and
+MimeTypeRegistryProvider must be implemented when the application wishes
+to get access to the available MIME types and CommandMap whose configuration
+is based on mailcap storage like mailcap files (RFC 1524).
+
 == Usage Scenarios
 
 
@@ -205,6 +210,12 @@ data from the DataSource object and queries the CommandMap for
 operations that are available on that type. The application interprets
 the list and presents it to the user on a popup menu. The user then
 selects one of the operations from that list.
+
+Application can use its own CommandMap implementation or use the
+implementation that is included in Jakarta Activation (MailcapCommandMap).
+When the second option is used MimeTypeRegistry, MailcapRegistry,
+MailcapRegistryProvider and MimeTypeRegistryProvider must be
+implemented.
 
 [source, java]
 ----
@@ -731,6 +742,9 @@ DataContentHandlers for any MIME data types; applications must include
 the DataContentHandlers they need. Note that the Jakarta Mail
 implementation includes DataContentHandlers for some basic data types
 used in mail messages.
+* The Jakarta Activation does not include the implementation for the
+following interfaces : MimeTypeRegistry, MailcapRegistry,
+MailcapRegistryProvider and MimeTypeRegistryProvider.
 
 === Framework Core Classes
 
@@ -828,6 +842,32 @@ requested operation does not support the requested data type.
 
 **class MimeType:** A Multipurpose Internet Extension
 (MIME) type, as defined in RFC 2045 and 2046.
+
+**interface MailcapRegistry:** The MailcapRegistry is used to store
+and retrieve MailcapEntries. Application must implement
+MailcapRegistryProvider to create new instances of the MailcapRegistry.
+Implementation of the MailcapRegistry can store MailcapEntries in
+different ways and that storage must be accessible through the
+methods of the MailcapRegistryProvider. Implementation of the
+MailcapRegistry must contain in-memory storage for MailcapEntries.
+
+**interface MailcapRegistryProvider:** This interface defines a factory
+for MailcapRegistry. Jakarta Activation uses Service Provider Interface
+and ServiceLoader to obtain an instance of the implementation of the
+MailcapRegistryProvider.
+
+**interface MimeTypeRegistry:** The MimeTypeRegistry interface is used
+to store and retrieve MimeTypeEntries. Application must implement
+MimeTypeRegistryProvider to create new instances of the MimeTypeRegistry.
+Implementation of the MimeTypeRegistry can store MimeTypeEntries in
+different ways and that storage must be accessible through the methods
+of the MimeTypeRegistryProvider. Implementation of the MimeTypeRegistry
+must contain in-memory storage for MimeTypeEntries.
+
+**interface MimeTypeRegistryProvider:** This interface defines a factory
+for MimeTypeRegistry. Jakarta Activation uses Service Provider Interface
+and ServiceLoader to obtain an instance of the implementation of the
+MimeTypeRegistryProvider.
 
 **class com.sun.activation.viewers.*:** A few simple
 example viewer Beans (text and image).
