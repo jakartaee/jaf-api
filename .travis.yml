@@ -6,15 +6,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-
-dist: focal
-
-sudo: required
-
 language: java
-
-services:
-  - docker
 
 jdk:
   - openjdk11
