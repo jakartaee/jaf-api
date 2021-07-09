@@ -880,3 +880,6 @@ MimeTypeRegistryProvider.
 Oct 21, 2019: First complete Jakarta EE version.
 
 Apr 15, 2020: Jakarta EE 9 version. Package namespace changed to jakarta.*.
+
+Jul 09, 2021: Jakarta Activation is splitted into the API module and the
+implementation of the API module.
