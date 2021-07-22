@@ -12,4 +12,6 @@ module com.sun.activation.registries {
     exports com.sun.activation.registries;
     requires java.logging;
     requires transitive jakarta.activation;
+    provides jakarta.activation.spi.MailcapRegistryProvider with com.sun.activation.registries.MailcapRegistryProviderImpl;
+    provides jakarta.activation.spi.MimeTypeRegistryProvider with com.sun.activation.registries.MimeTypeRegistryProviderImpl;
 }
