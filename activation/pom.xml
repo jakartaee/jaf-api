@@ -61,6 +61,13 @@
                     <exclude>META-INF/*.default</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>META-INF/*.default</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
