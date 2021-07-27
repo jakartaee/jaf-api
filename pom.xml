@@ -24,7 +24,7 @@
     <groupId>com.sun.activation</groupId>
     <artifactId>all</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
     <name>Jakarta Activation distribution</name>
     <description>${project.name}</description>
     <url>https://github.com/eclipse-ee4j/jaf</url>
@@ -92,37 +92,7 @@
 
     <modules>
         <module>activation</module>
-        <module>sun-activation-registry</module>
     </modules>
-
-    <profiles>
-        <!--
-            This profile contains modules that should only be built
-            but not installed or deployed.
-        -->
-        <profile>
-            <id>build-only</id>
-            <modules>
-                <module>demo</module>
-            </modules>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <!--
-            This profile is used for deploying a Jakarta Activation
-            final release.
-
-            Activating this profile manually for deployment causes
-            the above profile to be deactivated, which works around
-            an apparent bug in maven that prevents me from manually
-            deactivating a profile.  This profile purposely has none
-            of the modules I don't want to be deployed.
-        -->
-        <profile>
-            <id>oss-release</id>
-        </profile>
-    </profiles>
 
     <build>
         <defaultGoal>install</defaultGoal>
