@@ -15,19 +15,40 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 			    http://maven.apache.org/maven-v4_0_0.xsd">
+
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sun.activation</groupId>
-    <artifactId>all</artifactId>
-    <packaging>pom</packaging>
+    <groupId>jakarta.activation</groupId>
+    <artifactId>jakarta.activation-api</artifactId>
     <version>2.1.0-SNAPSHOT</version>
-    <name>Jakarta Activation distribution</name>
-    <description>${project.name}</description>
+    <packaging>jar</packaging>
+    <name>Jakarta Activation API</name>
+    <description>${project.name} ${spec.version} Specification</description>
     <url>https://github.com/eclipse-ee4j/jaf</url>
+
+    <properties>
+        <spec.version>2.1</spec.version>
+        <spec.title>Jakarta Activation Specification</spec.title>
+        <activation.recompile.skip>false</activation.recompile.skip>
+        <!-- for the osgiversion-maven-plugin -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javadoc.title>Jakarta Activation API documentation</javadoc.title>
+        <copyright.exclude>${project.basedir}/../etc/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.skip>true</spotbugs.skip>
+        <spotbugs.threshold>High</spotbugs.threshold>
+        <!--Maven plugins version-->
+        <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
+        <findbugs.skip>false</findbugs.skip>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+    </properties>
 
     <scm>
         <connection>scm:git:ssh://git@github.com/eclipse/jaf.git</connection>
@@ -49,27 +70,6 @@
         </license>
     </licenses>
 
-    <properties>
-        <activation.spec.version>2.0</activation.spec.version>
-        <!-- defaults that are overridden in activation module -->
-        <activation.extensionName>jakarta.activation</activation.extensionName>
-        <activation.specificationTitle>${project.groupId}.${project.artifactId}</activation.specificationTitle>
-        <activation.implementationTitle>${project.groupId}.${project.artifactId}</activation.implementationTitle>
-        <activation.recompile.skip>false</activation.recompile.skip>
-        <!-- for the osgiversion-maven-plugin -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javadoc.title>Jakarta Activation API documentation</javadoc.title>
-        <copyright.exclude>copyright-exclude</copyright.exclude>
-        <copyright.ignoreyear>false</copyright.ignoreyear>
-        <copyright.scmonly>true</copyright.scmonly>
-        <copyright.update>false</copyright.update>
-        <spotbugs.skip>true</spotbugs.skip>
-        <spotbugs.threshold>High</spotbugs.threshold>
-        <!--Maven plugins version-->
-        <hk2.plugin.version>3.0.1</hk2.plugin.version>
-        <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
-    </properties>
-
     <developers>
         <developer>
             <id>shannon</id>
@@ -90,12 +90,121 @@
         </site>
     </distributionManagement>
 
-    <modules>
-        <module>activation</module>
-    </modules>
-
     <build>
-        <defaultGoal>install</defaultGoal>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>META-INF/*.default</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>META-INF/*.default</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.1</version>
+                    <configuration>
+                        <instructions>
+                            <_noextraheaders>true</_noextraheaders>
+                        </instructions>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.commonjava.maven.plugins</groupId>
+                    <artifactId>directory-maven-plugin</artifactId>
+                    <version>0.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <!--
+                    By default, disable the SpotBugs plugin for all modules.
+                    It's enabled in the modules where we actually want to
+                    run it.
+                    -->
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.plugin.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <scm>git</scm>
+                        <scmOnly>true</scmOnly>
+                        <excludeFile>
+                            copyright-exclude
+                        </excludeFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.9.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <!--
             Make sure we're using the correct version of maven.
@@ -119,68 +228,6 @@
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--
-            This plugin is responsible for packaging artifacts
-            as OSGi bundles.  Please refer to
-            http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
-            for more information about how to use this plugin.
-            -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <niceManifest>true</niceManifest>
-                    <instructions>
-                        <Export-Package>
-                            ${activation.packages.export}
-                        </Export-Package>
-                        <Import-Package>
-                            ${activation.packages.import}
-                        </Import-Package>
-                        <DynamicImport-Package>
-                            *
-                        </DynamicImport-Package>
-                    </instructions>
-                </configuration>
-                <!--
-                    Since we don't change the packaging type to bundle, we
-                    need to configure the plugin to execute the manifest goal
-                    during the process-classes phase of the build life cycle.
-                -->
-                <executions>
-                    <execution>
-                        <id>osgi-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--
-            Since we don't want a qualifier like b05 or SNAPSHOT to
-            appear in the OSGi package version attribute, we use
-            the following plugin to populate a project property
-            with an OSGi version that is equivalent to the maven
-            version without the qualifier.
-            -->
-            <plugin>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>osgiversion-maven-plugin</artifactId>
-                <version>${hk2.plugin.version}</version>
-                <configuration>
-                    <dropVersionComponent>qualifier</dropVersionComponent>
-                    <versionPropertyName>activation.osgiversion</versionPropertyName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compute-osgi-version</id>
-                        <goals>
-                            <goal>compute-osgi-version</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -217,27 +264,57 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <!-- need at least this version to make excludes work -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                            <shortRevisionLength>7</shortRevisionLength>
+                            <revisionOnScmFailure>false</revisionOnScmFailure>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
-                    <finalName>${project.artifactId}</finalName>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Specification-Title>${spec.title}</Specification-Title>
+                        <Specification-Version>${.spec.version}</Specification-Version>
+                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                        <Extension-Name>${project.groupId}</Extension-Name>
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-Build-Id>${scmBranch}-${buildNumber}</Implementation-Build-Id>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
                     <archive>
-                        <!--
-                            Configure the maven-jar-plugin to pick up
-                            META-INF/MANIFEST.MF that's generated by
-                            the maven-bundle-plugin.
-                        -->
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        <manifestEntries>
-                            <Extension-Name>${activation.extensionName}</Extension-Name>
-                            <Specification-Title>${activation.specificationTitle}</Specification-Title>
-                            <Specification-Version>${activation.spec.version}</Specification-Version>
-                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                            <Implementation-Title>${activation.implementationTitle}</Implementation-Title>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                            <Implementation-Vendor-Id>com.sun</Implementation-Vendor-Id>
-                        </manifestEntries>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
@@ -363,8 +440,8 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </groups>
                     <!-- force the doc-files directory to be copied -->
                     <docfilessubdirs>true</docfilessubdirs>
-                    <javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
                     <detectJavaApiLink>false</detectJavaApiLink>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -390,103 +467,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             </plugin>
         </plugins>
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.commonjava.maven.plugins</groupId>
-                    <artifactId>directory-maven-plugin</artifactId>
-                    <version>0.3.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.1.1</version>
-                </plugin>
-                <plugin>
-                    <!--
-                    By default, disable the SpotBugs plugin for all modules.
-                    It's enabled in the modules where we actually want to
-                    run it.
-                    -->
-                    <groupId>com.github.spotbugs</groupId>
-                    <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>${spotbugs.plugin.version}</version>
-                    <configuration>
-                        <skip>${spotbugs.skip}</skip>
-                        <threshold>${spotbugs.threshold}</threshold>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M3</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>5.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.1.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.glassfish.copyright</groupId>
-                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <scm>git</scm>
-                        <scmOnly>true</scmOnly>
-                        <excludeFile>
-                            copyright-exclude
-                        </excludeFile>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.8.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
-
-    <dependencyManagement>
-        <dependencies>
-            <!--Our artifacts-->
-            <dependency>
-                <groupId>jakarta.activation</groupId>
-                <artifactId>jakarta.activation-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <reporting>
         <plugins>
@@ -505,4 +486,5 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             </plugin>
         </plugins>
     </reporting>
+
 </project>
