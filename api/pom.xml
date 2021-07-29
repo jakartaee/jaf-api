@@ -28,10 +28,11 @@
     <version>2.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Jakarta Activation API</name>
+    <description>${project.name} ${spec.version} Specification</description>
     <url>https://github.com/eclipse-ee4j/jaf</url>
 
     <properties>
-        <spec.version>2.0</spec.version>
+        <spec.version>2.1</spec.version>
         <spec.title>Jakarta Activation Specification</spec.title>
         <activation.recompile.skip>false</activation.recompile.skip>
         <!-- for the osgiversion-maven-plugin -->
@@ -45,13 +46,8 @@
         <spotbugs.threshold>High</spotbugs.threshold>
         <!--Maven plugins version-->
         <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
-
-        <findbugs.skip>
-            false
-        </findbugs.skip>
-        <findbugs.exclude>
-            ${project.basedir}/exclude.xml
-        </findbugs.exclude>
+        <findbugs.skip>false</findbugs.skip>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
     </properties>
 
     <scm>
@@ -115,11 +111,6 @@
 
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.glassfish.hk2</groupId>
-                    <artifactId>osgiversion-maven-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -241,29 +232,6 @@
                 </executions>
             </plugin>
             <!--
-            Since we don't want a qualifier like b05 or SNAPSHOT to
-            appear in the OSGi package version attribute, we use
-            the following plugin to populate a project property
-            with an OSGi version that is equivalent to the maven
-            version without the qualifier.
-            -->
-            <plugin>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>osgiversion-maven-plugin</artifactId>
-                <configuration>
-                    <dropVersionComponent>qualifier</dropVersionComponent>
-                    <versionPropertyName>activation.osgiversion</versionPropertyName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compute-osgi-version</id>
-                        <goals>
-                            <goal>compute-osgi-version</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--
             Use the JDK 9+ compiler but with -source 1.8 for all
             but the module-info.java file.
             -->
@@ -318,7 +286,6 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-Description>${project.name} ${spec.version} Specification</Bundle-Description>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Specification-Title>${spec.title}</Specification-Title>
                         <Specification-Version>${.spec.version}</Specification-Version>
@@ -473,7 +440,6 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </groups>
                     <!-- force the doc-files directory to be copied -->
                     <docfilessubdirs>true</docfilessubdirs>
-                    <javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <release>11</release>
                 </configuration>
