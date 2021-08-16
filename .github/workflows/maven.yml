@@ -10,7 +10,7 @@
 # SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
 #
 
-name: JAXB API
+name: Activation API
 
 on:
   pull_request:
@@ -34,4 +34,4 @@ jobs:
         distribution: 'zulu'
         java-version: ${{ matrix.java_version }}
     - name: Verify
-      run: mvn -B -V -U -C -Poss-release clean verify -Dgpg.skip=true -Dspotbugs.skip=false
+      run: cd api && mvn -B -V -U -C -Poss-release clean verify -Dgpg.skip=true -Dspotbugs.skip=false

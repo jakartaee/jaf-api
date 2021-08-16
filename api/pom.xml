@@ -47,7 +47,6 @@
         <spotbugs.exclude>${project.basedir}/exclude.xml</spotbugs.exclude>
         <!--Maven plugins version-->
         <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
-        <findbugs.skip>false</findbugs.skip>
     </properties>
 
     <scm>
