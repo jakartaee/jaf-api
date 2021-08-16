@@ -17,6 +17,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * The DataHandler class provides a consistent interface to data
@@ -864,7 +865,7 @@ class ObjectDataContentHandler implements DataContentHandler {
 	else if (obj instanceof byte[])
 	    os.write((byte[])obj);
 	else if (obj instanceof String) {
-	    OutputStreamWriter osw = new OutputStreamWriter(os);
+	    OutputStreamWriter osw = new OutputStreamWriter(os, Charset.defaultCharset());
 	    osw.write((String)obj);
 	    osw.flush();
 	} else
