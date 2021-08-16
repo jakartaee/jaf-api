@@ -46,7 +46,7 @@
         <spotbugs.threshold>High</spotbugs.threshold>
         <spotbugs.exclude>${project.basedir}/../etc/spotbugs-exclude.xml</spotbugs.exclude>
         <!--Maven plugins version-->
-        <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
+        <spotbugs.plugin.version>4.3.0</spotbugs.plugin.version>
     </properties>
 
     <scm>
