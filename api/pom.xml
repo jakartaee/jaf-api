@@ -44,10 +44,10 @@
         <copyright.update>false</copyright.update>
         <spotbugs.skip>true</spotbugs.skip>
         <spotbugs.threshold>High</spotbugs.threshold>
+        <spotbugs.exclude>${project.basedir}/exclude.xml</spotbugs.exclude>
         <!--Maven plugins version-->
         <spotbugs.plugin.version>4.2.0</spotbugs.plugin.version>
         <findbugs.skip>false</findbugs.skip>
-        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
     </properties>
 
     <scm>
@@ -168,7 +168,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -465,6 +465,22 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                    <excludeFilterFile>${spotbugs.exclude}</excludeFilterFile>
+                    <fork>true</fork>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
     </build>
@@ -478,7 +494,6 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>${spotbugs.plugin.version}</version>
                 <configuration>
                     <skip>${spotbugs.skip}</skip>
                     <threshold>${spotbugs.threshold}</threshold>

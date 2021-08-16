@@ -1,5 +1,8 @@
 # Jakarta Activation
 
+[![Build Status](https://github.com/eclipse-ee4j/jaf/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/eclipse-ee4j/jaf/actions/workflows/maven.yml?branch=master)
+[![Jakarta Staging (Snapshots)](https://img.shields.io/nexus/s/https/jakarta.oss.sonatype.org/jakarta.activation/jakarta.activation-api.svg)](https://jakarta.oss.sonatype.org/content/repositories/staging/jakarta/activation/jakarta.activation-api/)
+
 Jakarta Activation lets you take advantage of standard services to:
 determine the type of an arbitrary piece of data; encapsulate access to
 it; discover the operations available on it; and instantiate the
