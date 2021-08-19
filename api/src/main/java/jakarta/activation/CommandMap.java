@@ -27,6 +27,11 @@ public abstract class CommandMap {
     private static Map<ClassLoader,CommandMap> map =
 				new WeakHashMap<ClassLoader,CommandMap>();
 
+	/**
+	 * Default (empty) constructor.
+	 */
+	protected CommandMap() {
+	}
 
     /**
      * Get the default CommandMap.
