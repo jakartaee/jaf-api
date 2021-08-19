@@ -22,7 +22,7 @@ import java.util.Locale;
  * @see jakarta.activation.MimeType
  */
 public class MimeTypeParameterList {
-    private Hashtable parameters;
+    private Hashtable<String, String> parameters;
 
     /**
      * A string that holds all the special chars.
@@ -34,7 +34,7 @@ public class MimeTypeParameterList {
      * Default constructor.
      */
     public MimeTypeParameterList() {
-        parameters = new Hashtable();
+        parameters = new Hashtable<>();
     }
 
     /**
@@ -45,7 +45,7 @@ public class MimeTypeParameterList {
      */
     public MimeTypeParameterList(String parameterList)
 					throws MimeTypeParseException {
-        parameters = new Hashtable();
+        parameters = new Hashtable<>();
 
         //    now parse rawdata
         parse(parameterList);
@@ -189,7 +189,7 @@ public class MimeTypeParameterList {
      * @return		the parameter's value
      */
     public String get(String name) {
-        return (String)parameters.get(name.trim().toLowerCase(Locale.ENGLISH));
+        return parameters.get(name.trim().toLowerCase(Locale.ENGLISH));
     }
 
     /**
@@ -217,7 +217,7 @@ public class MimeTypeParameterList {
      *
      * @return	an enumeration of all parameter names
      */
-    public Enumeration getNames() {
+    public Enumeration<String> getNames() {
         return parameters.keys();
     }
 
@@ -229,13 +229,13 @@ public class MimeTypeParameterList {
         buffer.ensureCapacity(parameters.size() * 16);
 			//    heuristic: 8 characters per field
 
-        Enumeration keys = parameters.keys();
+        Enumeration<String> keys = parameters.keys();
         while (keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
+            String key = keys.nextElement();
             buffer.append("; ");
             buffer.append(key);
             buffer.append('=');
-	    buffer.append(quote((String)parameters.get(key)));
+	    buffer.append(quote(parameters.get(key)));
         }
 
         return buffer.toString();

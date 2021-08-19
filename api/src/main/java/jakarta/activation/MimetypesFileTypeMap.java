@@ -71,9 +71,9 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     static {
         String dir = null;
         try {
-            dir = (String) AccessController.doPrivileged(
-                    new PrivilegedAction() {
-                        public Object run() {
+            dir = AccessController.doPrivileged(
+                    new PrivilegedAction<String>() {
+                        public String run() {
                             String home = System.getProperty("java.home");
                             String newdir = home + File.separator + "conf";
                             File conf = new File(newdir);
@@ -94,7 +94,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      * The default constructor.
      */
     public MimetypesFileTypeMap() {
-        Vector dbv = new Vector(5);    // usually 5 or less databases
+        Vector<MimeTypeRegistry> dbv = new Vector<>(5);    // usually 5 or less databases
         MimeTypeRegistry mf = null;
         dbv.addElement(null);        // place holder for PROG entry
 
@@ -184,7 +184,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load all of the named resource.
      */
-    private void loadAllResources(Vector v, String name) {
+    private void loadAllResources(Vector<MimeTypeRegistry> v, String name) {
         boolean anyLoaded = false;
         try {
             URL[] urls;

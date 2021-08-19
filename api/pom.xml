@@ -230,10 +230,8 @@
                     <release>9</release>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
-                        <arg>-Xlint:-rawtypes</arg>
-                        <arg>-Xlint:-unchecked</arg>
-                        <arg>-Xlint:-finally</arg>
                     </compilerArgs>
+                    <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
                 <executions>
@@ -273,7 +271,14 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <niceManifest>true</niceManifest>
                     <instructions>
+                        <_noextraheaders>true</_noextraheaders>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Specification-Title>${spec.title}</Specification-Title>
                         <Specification-Version>${spec.version}</Specification-Version>
@@ -282,6 +287,7 @@
                         <Implementation-Title>${project.name}</Implementation-Title>
                         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
                         <Implementation-Build-Id>${buildNumber}</Implementation-Build-Id>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
                 <executions>

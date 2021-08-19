@@ -37,7 +37,7 @@ public class ActivationDataFlavor {
     private String mimeType = null;
     private MimeType mimeObject = null;
     private String humanPresentableName = null;
-    private Class representationClass = null;
+    private Class<?> representationClass = null;
 
     /**
      * Construct an ActivationDataFlavor that represents an arbitrary
@@ -55,7 +55,7 @@ public class ActivationDataFlavor {
      * @param mimeType the MIME type of the data represented by this class
      * @param humanPresentableName the human presentable name of the flavor
      */
-    public ActivationDataFlavor(Class representationClass,
+    public ActivationDataFlavor(Class<?> representationClass,
 		      String mimeType, String humanPresentableName) {
 	// init private variables:
 	this.mimeType = mimeType;
@@ -81,7 +81,7 @@ public class ActivationDataFlavor {
      * @param representationClass the class used in this ActivationDataFlavor
      * @param humanPresentableName the human presentable name of the flavor
      */
-    public ActivationDataFlavor(Class representationClass,
+    public ActivationDataFlavor(Class<?> representationClass,
 				String humanPresentableName) {
 	this.mimeType = "application/x-java-serialized-object";
 	this.representationClass = representationClass;
@@ -128,7 +128,7 @@ public class ActivationDataFlavor {
      *
      * @return	the representation class
      */
-    public Class getRepresentationClass() {
+    public Class<?> getRepresentationClass() {
 	return representationClass;
     }
 

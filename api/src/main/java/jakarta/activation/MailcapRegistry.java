@@ -10,6 +10,7 @@
 
 package jakarta.activation;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public interface MailcapRegistry {
      * @param	mime_type	the MIME type
      * @return	the map of MailcapEntries
      */
-    Map getMailcapList(String mime_type);
+    Map<String, List<String>> getMailcapList(String mime_type);
 
     /**
      * Get the Map of fallback MailcapEntries based on the MIME type.
@@ -48,7 +49,7 @@ public interface MailcapRegistry {
      * @param	mime_type	the MIME type
      * @return	the map of fallback MailcapEntries
      */
-    Map getMailcapFallbackList(String mime_type);
+    Map<String, List<String>> getMailcapFallbackList(String mime_type);
 
     /**
      * Return all the MIME types known to this mailcap file.
