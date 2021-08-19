@@ -4,9 +4,16 @@
 [![Jakarta Staging (Snapshots)](https://img.shields.io/nexus/s/https/jakarta.oss.sonatype.org/jakarta.activation/jakarta.activation-api.svg)](https://jakarta.oss.sonatype.org/content/repositories/staging/jakarta/activation/jakarta.activation-api/)
 
 Jakarta Activation lets you take advantage of standard services to:
-determine the type of an arbitrary piece of data; encapsulate access to
+determine the type of arbitrary piece of data; encapsulate access to
 it; discover the operations available on it; and instantiate the
 appropriate bean to perform the operation(s).
+
+**IMPORTANT:** Implementation of the Jakarta Activation API, aka JakartaActivation
+(formerly JavaActivation), is no longer part of this repository.
+As part of breaking tight integration between Jakarta Activation API and the implementation,
+implementation sources were moved to the new project - [Eclipse Angus](https://github.com/eclipse-ee4j/angus-activation) -
+and further development continues there. [Eclipse Angus](https://github.com/eclipse-ee4j/angus-activation)
+is direct accessor of JavaActivation/JakartaActivation.
 
 See the
 [Jakarta Activation web site](https://eclipse-ee4j.github.io/jaf/).
@@ -24,8 +31,8 @@ again, the license is in each source file.
 under the same licenses as the corresponding source code;
 see the file `META-INF/LICENSE.*` in each jar file.
 
-You?ll find the text of the licenses in the workspace in various `LICENSE.txt` or `LICENSE.md` files.
-Don?t let the presence of these license files in the workspace confuse you into thinking
+You'll find the text of the licenses in the workspace in various `LICENSE.txt` or `LICENSE.md` files.
+Don't let the presence of these license files in the workspace confuse you into thinking
 that they apply to all files in the workspace.
 
 You should always read the license file included with every download, and read
@@ -35,3 +42,10 @@ the license text included in every source file.
 
 We use [contribution policy](CONTRIBUTING.md), which means we can only accept contributions under
 the terms of [Eclipse Contributor Agreement](http://www.eclipse.org/legal/ECA.php).
+
+## Links
+* [Jakarta Activation web site](https://eclipse-ee4j.github.io/jaf/)
+* [Jakarta Activation TCK project](https://github.com/eclipse-ee4j/jaf-tck)
+* [Jakarta Activation API nightly build job](https://ci.eclipse.org/jaf/job/activation-build-snapshot/)
+* [Mailing list](https://accounts.eclipse.org/mailing-list/mail-dev)
+* [Eclipse Angus Activation project](https://github.com/eclipse-ee4j/angus-activation)
