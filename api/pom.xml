@@ -288,6 +288,11 @@
                         <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
                         <Implementation-Build-Id>${buildNumber}</Implementation-Build-Id>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <DynamicImport-Package>org.glassfish.hk2.osgiresourcelocator</DynamicImport-Package>
+                        <Import-Package>
+                            !org.glassfish.hk2.osgiresourcelocator,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
                 <executions>

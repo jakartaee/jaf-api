@@ -49,7 +49,6 @@ public class ActivationDataFlavor {
      * representationClass = representationClass<br>
      * mimeType            = mimeType<br>
      * humanName           = humanName
-     * <p>
      *
      * @param representationClass the class used in this ActivationDataFlavor
      * @param mimeType the MIME type of the data represented by this class
@@ -76,7 +75,7 @@ public class ActivationDataFlavor {
      * otherwise:
      * <p>
      * representationClass = InputStream<p>
-     * mimeType = mimeType<p>
+     * mimeType = mimeType
      *
      * @param representationClass the class used in this ActivationDataFlavor
      * @param humanPresentableName the human presentable name of the flavor
@@ -98,7 +97,7 @@ public class ActivationDataFlavor {
      * the result is the same as calling new
      * ActivationDataFlavor(Class.forName()) as above, otherwise:
      * <p>
-     * representationClass = InputStream<p>
+     * representationClass = InputStream<br>
      * mimeType = mimeType
      *
      * @param mimeType the MIME type of the data represented by this class
