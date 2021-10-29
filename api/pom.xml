@@ -397,6 +397,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     <docfilessubdirs>true</docfilessubdirs>
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <release>11</release>
+                    <quiet>true</quiet>
                 </configuration>
             </plugin>
             <plugin>
