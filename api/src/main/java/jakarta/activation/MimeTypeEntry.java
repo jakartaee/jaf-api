@@ -10,26 +10,40 @@
 
 package jakarta.activation;
 
-import java.lang.*;
-
+/**
+ * Represents mapping between the file extension and the MIME type string.
+ */
 public class MimeTypeEntry {
     private String type;
     private String extension;
 
+    /**
+     * Create new {@code MimeTypeEntry}
+     *
+     * @param mime_type the MIME type string
+     * @param file_ext the file extension
+     */
     public MimeTypeEntry(String mime_type, String file_ext) {
-	type = mime_type;
-	extension = file_ext;
+        type = mime_type;
+        extension = file_ext;
     }
 
+    /**
+     * @return the MIME type string
+     */
     public String getMIMEType() {
-	return type;
+        return type;
     }
 
+    /**
+     * @return the file extension
+     */
     public String getFileExtension() {
-	return extension;
+        return extension;
     }
 
+    @Override
     public String toString() {
-	return "MIMETypeEntry: " + type + ", " + extension;
+        return "MIMETypeEntry: " + type + ", " + extension;
     }
 }
