@@ -94,7 +94,7 @@ public class CommandInfo {
      * this method will check if it implements the
      * java.io.Externalizable interface. If it does, the bean's
      * readExternal method will be called if an InputStream
-     * can be acquired from the DataHandler.<p>
+     * can be acquired from the DataHandler.
      *
      * @param dh	The DataHandler that describes the data to be
      *			passed to the command.
@@ -142,9 +142,7 @@ public class CommandInfo {
             try {
                 Class<?> c = Class.forName("java.beans.Beans");
                 m = c.getDeclaredMethod("instantiate", ClassLoader.class, String.class);
-            } catch (ClassNotFoundException e) {
-                m = null;
-            } catch (NoSuchMethodException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
                 m = null;
             }
             instantiateMethod = m;
@@ -163,9 +161,7 @@ public class CommandInfo {
                 // invoke Beans.instantiate
                 try {
                     return instantiateMethod.invoke(null, loader, cn);
-                } catch (InvocationTargetException e) {
-                    exception = e;
-                } catch (IllegalAccessException e) {
+                } catch (InvocationTargetException | IllegalAccessException e) {
                     exception = e;
                 }
 

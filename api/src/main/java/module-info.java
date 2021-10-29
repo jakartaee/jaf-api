@@ -8,10 +8,15 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+/**
+ * Jakarta Activation API
+ */
 module jakarta.activation {
     uses jakarta.activation.spi.MailcapRegistryProvider;
     uses jakarta.activation.spi.MimeTypeRegistryProvider;
     exports jakarta.activation;
     exports jakarta.activation.spi;
     requires java.logging;
+    //reflective call to java.beans.Beans.instantiate
+    requires static java.desktop;
 }

@@ -197,7 +197,7 @@ public class DataHandler {
      * stream data into one end of the pipe.  The other end of the pipe
      * is returned to the caller.  Because a thread is created to copy
      * the data, IOExceptions that may occur during the copy can not be
-     * propagated back to the caller. The result is an empty stream.<p>
+     * propagated back to the caller. The result is an empty stream.
      *
      * @return	the InputStream representing this data
      * @exception IOException	if an I/O error occurs
