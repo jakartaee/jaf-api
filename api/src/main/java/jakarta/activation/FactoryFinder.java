@@ -50,7 +50,7 @@ class FactoryFinder {
      *                              that there is no default class name
      * @param tryFallback           whether to try the default class as a
      *                              fallback
-     * @exception RuntimeException if there is a SOAP error
+     * @exception RuntimeException if there is no factory found
      */
     static <T> T find(Class<T> factoryClass,
                       String defaultClassName,
@@ -85,9 +85,11 @@ class FactoryFinder {
             }
         }
 
-        // If not found and fallback should not be tried, return a null result.
-        if (!tryFallback)
-            return null;
+        // If not found and fallback should not be tried, throw RuntimeException.
+        if (!tryFallback) {
+            throw new RuntimeException(
+                    "Provider for " + factoryId + " cannot be found", null);
+        }
 
         // We didn't find the class through the usual means so try the default
         // (built in) factory if specified.
