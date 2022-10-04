@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,7 +10,6 @@
 
 package jakarta.activation;
 
-import jakarta.activation.spi.MailcapRegistryProvider;
 import jakarta.activation.spi.MimeTypeRegistryProvider;
 
 import java.io.*;
@@ -386,9 +385,19 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     }
 
     private MimeTypeRegistryProvider getImplementation() {
-        return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                "com.sun.activation.registries.MimeTypeRegistryProviderImpl",
-                false);
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged(new PrivilegedAction<MimeTypeRegistryProvider>() {
+                public MimeTypeRegistryProvider run() {
+                    return FactoryFinder.find(MimeTypeRegistryProvider.class,
+                            "com.sun.activation.registries.MimeTypeRegistryProviderImpl",
+                            false);
+                }
+            });
+        } else {
+            return FactoryFinder.find(MimeTypeRegistryProvider.class,
+                    "com.sun.activation.registries.MimeTypeRegistryProviderImpl",
+                    false);
+        }
     }
 
     /*
