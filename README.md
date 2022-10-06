@@ -1,3 +1,11 @@
+JBoss Jakarta Activation
+==================================
+
+What is this
+-----------------------
+
+This is fork of Jakarta Activation api project: https://github.com/eclipse-ee4j/jaf/
+
 # Jakarta Activation
 
 [![Build Status](https://github.com/eclipse-ee4j/jaf/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/eclipse-ee4j/jaf/actions/workflows/maven.yml?branch=master)
