@@ -617,7 +617,7 @@ public class MailcapCommandMap extends CommandMap {
 	    }
 	    if (cl != null)		// XXX - always true?
 		return (DataContentHandler)
-			    cl.getDeclaredConstructor().newInstance();
+			    cl.getConstructor().newInstance();
 	} catch (ReflectiveOperationException e) {
 	    if (LogSupport.isLoggable())
 		LogSupport.log("Can't load DCH " + name, e);
