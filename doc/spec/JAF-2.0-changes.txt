@@ -1,0 +1,32 @@
+
+		Jakarta Activation Framework 2.0
+		==================================
+
+Jakarta Activation 2.0 introduces incompatible changes to the Jakarta Activation specification in order
+to comply with Jakarta EE 9 requirements.  Following is
+a description of the changes that are being introduced in Jakarta Activation 2.0.
+The numbers in parentheses are bug numbers; you can find more information
+about the bug reports at:
+
+    https://github.com/eclipse-ee4j/jaf/issues
+
+The Jakarta Activation 2.0 will require Java SE 8 or later.  Jakarta Activation 2.0 will be
+part of Jakarta EE 9.
+
+
+===================================================================
+
+1.  Package name is changed from javax.activation to jakarta.activation
+----------------------------------------------------------------
+
+A specification move the API package names from the top level javax package
+to the top level jakarta package.
+
+===================================================================
+
+2.  Remove Jakarta Activation's API dependency on java.awt.datatransfer
+----------------------------------------------------------------------------
+
+Those who write their own DataContentHandlers will need to change any references
+to the DataFlavor class to instead reference the ActivationDataFlavor class,
+and to remove any references to the Transferrable interface.

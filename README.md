@@ -1,6 +1,6 @@
 # Jakarta Activation
 
-[![Build Status](https://github.com/eclipse-ee4j/jaf/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/eclipse-ee4j/jaf/actions/workflows/maven.yml?branch=master)
+[![Build Status](https://github.com/jakartaee/jaf-api/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/jakartaee/jaf-api/actions/workflows/maven.yml?branch=master)
 [![Jakarta Staging (Snapshots)](https://img.shields.io/nexus/s/https/jakarta.oss.sonatype.org/jakarta.activation/jakarta.activation-api.svg)](https://jakarta.oss.sonatype.org/content/repositories/staging/jakarta/activation/jakarta.activation-api/)
 
 Jakarta Activation lets you take advantage of standard services to:
@@ -11,12 +11,12 @@ appropriate bean to perform the operation(s).
 **IMPORTANT:** Implementation of the Jakarta Activation API, aka JakartaActivation
 (formerly JavaActivation), is no longer part of this repository.
 As part of breaking tight integration between Jakarta Activation API and the implementation,
-implementation sources were moved to the new project - [Eclipse Angus](https://github.com/eclipse-ee4j/angus-activation) -
-and further development continues there. [Eclipse Angus](https://github.com/eclipse-ee4j/angus-activation)
+implementation sources were moved to the new project - [Eclipse Angus](https://eclipse-ee4j.github.io/angus-activation/) -
+and further development continues there. [Eclipse Angus](https://eclipse-ee4j.github.io/angus-activation/)
 is direct accessor of JavaActivation/JakartaActivation.
 
 See the
-[Jakarta Activation web site](https://eclipse-ee4j.github.io/jaf/).
+[Jakarta Activation web site](https://jakartaee.github.io/jaf-api/).
 
 ## License
 
@@ -44,8 +44,8 @@ We use [contribution policy](CONTRIBUTING.md), which means we can only accept co
 the terms of [Eclipse Contributor Agreement](http://www.eclipse.org/legal/ECA.php).
 
 ## Links
-* [Jakarta Activation web site](https://eclipse-ee4j.github.io/jaf/)
-* [Jakarta Activation TCK project](https://github.com/eclipse-ee4j/jaf-tck)
+* [Jakarta Activation web site](https://jakartaee.github.io/jaf-api/)
+* [Jakarta Activation TCK project](https://github.com/jakartaee/jaf-api-tck)
 * [Jakarta Activation API nightly build job](https://ci.eclipse.org/jaf/job/activation-build-snapshot/)
-* [Mailing list](https://accounts.eclipse.org/mailing-list/mail-dev)
-* [Eclipse Angus Activation project](https://github.com/eclipse-ee4j/angus-activation)
+* [Mailing list](https://accounts.eclipse.org/mailing-list/jaf-dev)
+* [Eclipse Angus Activation project](https://eclipse-ee4j.github.io/angus-activation/)

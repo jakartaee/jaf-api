@@ -14,7 +14,13 @@ name: Activation API
 
 on:
   pull_request:
+    paths:
+      - '!doc/**'
+      - '!www/**'
   push:
+    paths:
+      - '!doc/**'
+      - '!www/**'
 
 jobs:
   build:
