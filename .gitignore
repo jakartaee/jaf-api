@@ -2,3 +2,10 @@
 target/
 *~
 *.iml
+
+_site
+www/.sass-cache
+www/.jekyll-cache
+www/.jekyll-metadata
+www/vendor
+www/api

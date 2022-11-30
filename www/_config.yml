@@ -1,0 +1,16 @@
+github: [metadata]
+remote_theme: jakartaee/jekyll-theme-jakarta-ee
+
+title: [Jakarta Activation]
+description: [Specification]
+
+links:
+  source: https://github.com/jakartaee/jaf-api
+  javadocs: api/
+  download: https://github.com/eclipse-ee4j/jaf/releases
+  mailinglist: https://accounts.eclipse.org/mailing-list/jaf-dev
+  #faq: FAQ
+  contrib: CONTRIBUTING
+
+include:
+  - CONTRIBUTING.md

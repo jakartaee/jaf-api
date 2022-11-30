@@ -1,0 +1,31 @@
+
+		Jakarta Activation Framework 2.1
+		==================================
+
+Jakarta Activation 2.1 breaks the tight integration between the Jakarta Activation specification API
+and Jakarta Activation implementation  Following is
+a description of the changes that are being introduced in Jakarta Activation 2.1.
+The numbers in parentheses are bug numbers; you can find more information
+about the bug reports at:
+
+    https://github.com/eclipse-ee4j/jaf/issues
+
+The Jakarta Activation 2.1 requires Java SE 8 or later.  Jakarta Activation 2.1 is
+part of Jakarta EE 10.
+
+
+===================================================================
+
+1.  Add provider SPI
+----------------------------------------------------------------
+
+Add jakarta.activation.spi package with interfaces for the provider of the compatible implementation
+of the Jakarta Activation Specification runtime to implement.
+
+===================================================================
+
+2.  Remove the implementation
+----------------------------------------------------------------------------
+
+The implementation of the specification was moved to the new project - Eclipse Angus - and
+further development continues there. Eclipse Angus is direct accessor of JavaActivation/JakartaActivation.
