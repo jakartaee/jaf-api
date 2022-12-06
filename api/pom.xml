@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -293,6 +293,17 @@
                             !org.glassfish.hk2.osgiresourcelocator,
                             *
                         </Import-Package>
+                        <!-- optional to allow usage with hk2 resource locator as a fallback -->
+                        <Require-Capability><![CDATA[
+                          osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.processor)
+                            (version>=1.0.0)(!(version>=2.0.0)))",
+                          osgi.serviceloader;
+                            filter:="(osgi.serviceloader=jakarta.activation.spi.MailcapRegistryProvider)";
+                              cardinality:=multiple;resolution:=optional,
+                          osgi.serviceloader;
+                            filter:="(osgi.serviceloader=jakarta.activation.spi.MimeTypeRegistryProvider)";
+                              cardinality:=multiple;resolution:=optional]]>
+                        </Require-Capability>
                     </instructions>
                 </configuration>
                 <executions>
