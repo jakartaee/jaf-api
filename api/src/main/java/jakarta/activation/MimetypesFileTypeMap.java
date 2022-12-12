@@ -389,13 +389,13 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             return AccessController.doPrivileged(new PrivilegedAction<MimeTypeRegistryProvider>() {
                 public MimeTypeRegistryProvider run() {
                     return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                            "com.sun.activation.registries.MimeTypeRegistryProviderImpl",
+                            null,
                             false);
                 }
             });
         } else {
             return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                    "com.sun.activation.registries.MimeTypeRegistryProviderImpl",
+                    null,
                     false);
         }
     }
