@@ -20,6 +20,12 @@ Jakarta Activation is used for data content handling by:
 
 # <a name="Latest_News"></a>Latest News
 
+## December TBD, 2022 - Jakarta Activation 2.1.1 Final Release ##
+
+The 2.1.1 release is the bug fix release which removes the need
+for accessDeclaredMembers permissions when loading DataHandlers
+and improves usability in OSGi environment.
+
 ## November 20, 2021 - Jakarta Activation 2.1.0 Final Release ##
 
 The 2.1.0 release is the first release providing standalone API jar file.
@@ -40,7 +46,7 @@ It is also the first release containing full module metadata.
 ## July 25, 2019 - Jakarta Activation is the new name for JAF ##
 
 The JavaBeans Activation Framework has been renamed to Jakarta Activation
-in preparationfor inclusion in a future version of Jakarta EE.
+in preparation for inclusion in a future version of Jakarta EE.
 
 ## November 26, 2018 - JavaBeans Activation Framework 1.2.1 Final Release ##
 
