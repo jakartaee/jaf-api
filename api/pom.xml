@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <name>Jakarta Activation API</name>
     <description>${project.name} ${spec.version} Specification</description>
-    <url>https://github.com/eclipse-ee4j/jaf</url>
+    <url>https://github.com/jakartaee/jaf-api</url>
 
     <properties>
         <spec.version>2.1</spec.version>
@@ -49,15 +49,15 @@
     </properties>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/eclipse/jaf.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/eclipse/jaf.git</developerConnection>
-        <url>https://github.com/eclipse-ee4j/jaf</url>
+        <connection>scm:git:ssh://git@github.com/jakartaee/jaf-api.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jakartaee/jaf-api.git</developerConnection>
+        <url>https://github.com/jakartaee/jaf-api</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/eclipse-ee4j/jaf/issues/</url>
+        <url>https://github.com/jakartaee/jaf-api/issues/</url>
     </issueManagement>
 
     <licenses>
