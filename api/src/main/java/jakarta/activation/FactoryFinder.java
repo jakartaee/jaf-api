@@ -66,6 +66,11 @@ class FactoryFinder {
             if (result != null) {
                 return result;
             }
+            // try api loader
+            result = newInstance(className, defaultClassName, FactoryFinder.class.getClassLoader());
+            if (result != null) {
+                return result;
+            }
         }
 
         // standard services: java.util.ServiceLoader
