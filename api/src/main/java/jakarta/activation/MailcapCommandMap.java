@@ -697,13 +697,13 @@ public class MailcapCommandMap extends CommandMap {
             return AccessController.doPrivileged(new PrivilegedAction<MailcapRegistryProvider>() {
                 public MailcapRegistryProvider run() {
                     return FactoryFinder.find(MailcapRegistryProvider.class,
-                            "com.sun.activation.registries.MailcapRegistryProviderImpl",
+                            null,
                             false);
                 }
             });
         } else {
             return FactoryFinder.find(MailcapRegistryProvider.class,
-                    "com.sun.activation.registries.MailcapRegistryProviderImpl",
+                    null,
                     false);
         }
     }
