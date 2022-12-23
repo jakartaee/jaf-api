@@ -117,12 +117,12 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>5.1.1</version>
+                    <version>5.1.8</version>
                     <configuration>
                         <instructions>
                             <_noextraheaders>true</_noextraheaders>
@@ -209,6 +209,7 @@
             but the module-info.java file.
             -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <release>9</release>
@@ -280,13 +281,17 @@
                         <!-- optional to allow usage with hk2 resource locator as a fallback -->
                         <Require-Capability><![CDATA[
                           osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.processor)
-                            (version>=1.0.0)(!(version>=2.0.0)))",
+                            (version>=1.0.0)(!(version>=2.0.0)))";resolution:=optional,
                           osgi.serviceloader;
                             filter:="(osgi.serviceloader=jakarta.activation.spi.MailcapRegistryProvider)";
+                              osgi.serviceloader="jakarta.activation.spi.MailcapRegistryProvider";
                               cardinality:=multiple;resolution:=optional,
                           osgi.serviceloader;
                             filter:="(osgi.serviceloader=jakarta.activation.spi.MimeTypeRegistryProvider)";
-                              cardinality:=multiple;resolution:=optional]]>
+                              osgi.serviceloader="jakarta.activation.spi.MimeTypeRegistryProvider";
+                              cardinality:=multiple;resolution:=optional,
+                          osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=8))
+                          ]]>
                         </Require-Capability>
                     </instructions>
                 </configuration>
