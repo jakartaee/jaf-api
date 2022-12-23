@@ -290,7 +290,7 @@
                             filter:="(osgi.serviceloader=jakarta.activation.spi.MimeTypeRegistryProvider)";
                               osgi.serviceloader="jakarta.activation.spi.MimeTypeRegistryProvider";
                               cardinality:=multiple;resolution:=optional,
-                          osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=8))
+                          osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))
                           ]]>
                         </Require-Capability>
                     </instructions>
