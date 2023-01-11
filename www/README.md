@@ -20,7 +20,7 @@ Jakarta Activation is used for data content handling by:
 
 # <a name="Latest_News"></a>Latest News
 
-## December TBD, 2022 - Jakarta Activation 2.1.1 Final Release ##
+## January 11, 2023 - Jakarta Activation 2.1.1 Final Release ##
 
 The 2.1.1 release is the bug fix release which removes the need
 for accessDeclaredMembers permissions when loading DataHandlers
