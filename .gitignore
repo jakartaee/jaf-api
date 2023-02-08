@@ -9,3 +9,7 @@ www/.jekyll-cache
 www/.jekyll-metadata
 www/vendor
 www/api
+
+.classpath
+.project
+.settings/
