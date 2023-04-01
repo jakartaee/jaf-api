@@ -11,6 +11,7 @@
 package jakarta.activation;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -51,6 +52,15 @@ public abstract class FileTypeMap {
      * @return The content type.
      */
     abstract public String getContentType(File file);
+
+    /**
+     * Return the type of the file Path object. This method should
+     * always return a valid MIME type.
+     *
+     * @param path A file Path to be typed.
+     * @return The content type.
+     */
+    abstract public String getContentType(Path path);
 
     /**
      * Return the type of the file passed in.  This method should
