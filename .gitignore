@@ -3,6 +3,13 @@ target/
 *~
 *.iml
 
+target/
+**/bin/
+
+.settings/
+.classpath
+.project
+
 _site
 www/.sass-cache
 www/.jekyll-cache
