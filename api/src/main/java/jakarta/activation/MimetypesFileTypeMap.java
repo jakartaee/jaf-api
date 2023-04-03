@@ -349,7 +349,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     }
 
     /**
-     * Return the MIME type of the {@Code File} object.
+     * Return the MIME type of the <Code>File</Code> object.
      * The implementation in this class calls
      * <code>getContentType(f.getName())</code>.
      *
@@ -361,11 +361,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     }
 
     /**
-     * Return the MIME type of the {@Code Path} object.
+     * Return the MIME type of the <Code>Path</Code> object.
      * The implementation in this class calls
      * <code>getContentType(p.getFileName().toString())</code>.
      *
-     * @param p the file {@Code Path}
+     * @param p the file <Code>Path</Code>
      * @return the file's MIME type
      */
     public String getContentType(Path p) {

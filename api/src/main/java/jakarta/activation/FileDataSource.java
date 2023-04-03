@@ -34,7 +34,7 @@ import java.nio.file.Paths;
  * FileTypeMap's getDefaultFileTypeMap method to get the System's default
  * FileTypeMap.
  *
- * @apiNote
+ * <b>API Note:</b>
  * It is recommended to construct a {@code FileDataSource} using a {@code Path}
  * instead of using a {@code File} since {@code Path} contains enhanced functionality.
  *
@@ -54,7 +54,7 @@ public class FileDataSource implements DataSource {
 	 * actually be opened until a method is called that requires the file to be
 	 * opened.</i>
 	 *
-	 * @apiNote
+	 * <b>API Note:</b>
 	 * {@code FileDataSource(Path)} constructor should be preferred over this one.
 	 * 
 	 * @param file the file
@@ -68,7 +68,7 @@ public class FileDataSource implements DataSource {
 	 * actually be opened until a method is called that requires the file to be
 	 * opened.</i>
 	 *
-	 * @param file the file
+	 * @param path the file
 	 */
 	public FileDataSource(Path path) {
 		_path = path;
