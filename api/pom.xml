@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>jakarta.activation</groupId>
     <artifactId>jakarta.activation-api</artifactId>
-    <version>2.1.2-SNAPSHOT</version>
+    <version>2.1.2</version>
     <packaging>jar</packaging>
     <name>Jakarta Activation API</name>
     <description>${project.name} ${spec.version} Specification</description>
