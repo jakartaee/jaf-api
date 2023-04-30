@@ -62,7 +62,7 @@ public class MimeTypeParameterList {
             return;
 
         int length = parameterList.length();
-        if (length <= 0)
+        if (length == 0)
             return;
 
         int i;
@@ -225,7 +225,7 @@ public class MimeTypeParameterList {
      * Return a string representation of this object.
      */
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.ensureCapacity(parameters.size() * 16);
         //    heuristic: 8 characters per field
 
@@ -274,7 +274,7 @@ public class MimeTypeParameterList {
         }
 
         if (needsQuotes) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.ensureCapacity((int) (length * 1.5));
 
             //    add the initial quote
@@ -303,7 +303,7 @@ public class MimeTypeParameterList {
      */
     private static String unquote(String value) {
         int valueLength = value.length();
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.ensureCapacity(valueLength);
 
         boolean escaped = false;

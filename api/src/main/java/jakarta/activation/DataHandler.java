@@ -533,8 +533,7 @@ public class DataHandler {
             if (cld == null)
                 cld = this.getClass().getClassLoader();
             bean = cmdinfo.getCommandObject(this, cld);
-        } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
         }
 
         return bean;

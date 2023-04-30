@@ -72,8 +72,7 @@ class SecuritySupport {
                         ret = new URL[v.size()];
                         ret = v.toArray(ret);
                     }
-                } catch (IOException ioex) {
-                } catch (SecurityException ex) {
+                } catch (IOException | SecurityException ioex) {
                 }
                 return ret;
             }
@@ -96,8 +95,7 @@ class SecuritySupport {
                         ret = new URL[v.size()];
                         ret = v.toArray(ret);
                     }
-                } catch (IOException ioex) {
-                } catch (SecurityException ex) {
+                } catch (IOException | SecurityException ioex) {
                 }
                 return ret;
             }
