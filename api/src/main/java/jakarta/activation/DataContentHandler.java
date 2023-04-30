@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,10 +10,8 @@
 
 package jakarta.activation;
 
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import jakarta.activation.DataSource;
 
 /**
  * The DataContentHandler interface is implemented by objects that can
@@ -49,12 +47,12 @@ public interface DataContentHandler {
      * @param df The ActivationDataFlavor representing the requested type.
      * @param ds The DataSource representing the data to be converted.
      * @return The constructed Object.
-     * @exception IOException	if the handler doesn't
-     *						support the requested flavor
-     * @exception IOException	if the data can't be accessed
+     * @throws IOException if the handler doesn't
+     *                     support the requested flavor
+     * @throws IOException if the data can't be accessed
      */
     public Object getTransferData(ActivationDataFlavor df, DataSource ds)
-				throws IOException;
+            throws IOException;
 
     /**
      * Return an object representing the data in its most preferred form.
@@ -64,7 +62,7 @@ public interface DataContentHandler {
      *
      * @param ds The DataSource representing the data to be converted.
      * @return The constructed Object.
-     * @exception IOException	if the data can't be accessed
+     * @throws IOException if the data can't be accessed
      */
     public Object getContent(DataSource ds) throws IOException;
 
@@ -72,12 +70,12 @@ public interface DataContentHandler {
      * Convert the object to a byte stream of the specified MIME type
      * and write it to the output stream.
      *
-     * @param obj	The object to be converted.
-     * @param mimeType	The requested MIME type of the resulting byte stream.
-     * @param os	The output stream into which to write the converted
-     *			byte stream.
-     * @exception IOException	errors writing to the stream
+     * @param obj      The object to be converted.
+     * @param mimeType The requested MIME type of the resulting byte stream.
+     * @param os       The output stream into which to write the converted
+     *                 byte stream.
+     * @throws IOException errors writing to the stream
      */
     public void writeTo(Object obj, String mimeType, OutputStream os)
-	                                               throws IOException;
+            throws IOException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2022, 2023 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -9,6 +9,8 @@
  */
 
 package jakarta.activation;
+
+import jakarta.activation.spi.MimeTypeRegistryProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,8 +22,6 @@ import java.security.PrivilegedAction;
 import java.util.NoSuchElementException;
 import java.util.ServiceConfigurationError;
 import java.util.Vector;
-
-import jakarta.activation.spi.MimeTypeRegistryProvider;
 
 /**
  * This class extends FileTypeMap and provides data typing of files
@@ -291,7 +291,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      * added from the named file.
      *
      * @param mimeTypeFileName the file name
-     * @exception IOException    for errors reading the file
+     * @throws IOException for errors reading the file
      */
     public MimetypesFileTypeMap(String mimeTypeFileName) throws IOException {
         this();

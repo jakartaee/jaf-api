@@ -21,7 +21,7 @@ public class MimeTypeEntry {
      * Create new {@code MimeTypeEntry}
      *
      * @param mime_type the MIME type string
-     * @param file_ext the file extension
+     * @param file_ext  the file extension
      */
     public MimeTypeEntry(String mime_type, String file_ext) {
         type = mime_type;

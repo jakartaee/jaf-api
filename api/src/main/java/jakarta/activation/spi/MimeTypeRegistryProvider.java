@@ -29,18 +29,20 @@ public interface MimeTypeRegistryProvider {
 
     /**
      * Retrieve an instance of the MimeTypeRegistry based on the name of the file where the MimeTypeEntries are stored.
+     *
      * @param name The name of the file that stores MimeTypeEntries.
      * @return The instance of the <code>MimeTypeRegistry</code>, or <i>null</i> if none are found.
-     * @throws IOException  If an instance of the MailcapRegistry class cannot be found or loaded.
+     * @throws IOException If an instance of the MailcapRegistry class cannot be found or loaded.
      */
     MimeTypeRegistry getByFileName(String name) throws IOException;
 
     /**
      * Retrieve an instance of the MimeTypeRegistry based on the InputStream
      * that is used to read data from some named resource.
+     *
      * @param inputStream InputStream for some resource that contains MimeTypeEntries.
      * @return The instance of the <code>MimeTypeRegistry</code>, or <i>null</i> if none are found.
-     * @throws IOException  If an instance of the MailcapRegistry class cannot be found or loaded.
+     * @throws IOException If an instance of the MailcapRegistry class cannot be found or loaded.
      */
     MimeTypeRegistry getByInputStream(InputStream inputStream) throws IOException;
 
@@ -48,8 +50,9 @@ public interface MimeTypeRegistryProvider {
      * Retrieve an instance of the in-memory implementation of the MimeTypeRegistry.
      * Jakarta Activation can throw <code>NoSuchElementException</code> or <code>ServiceConfigurationError</code>
      * if no implementations were found.
+     *
      * @return In-memory implementation of the MimeTypeRegistry.
-     * @throws NoSuchElementException If no implementations were found.
+     * @throws NoSuchElementException    If no implementations were found.
      * @throws ServiceConfigurationError If no implementations were loaded.
      */
     MimeTypeRegistry getInMemory();

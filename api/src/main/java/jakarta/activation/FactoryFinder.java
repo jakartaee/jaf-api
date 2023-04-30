@@ -40,17 +40,16 @@ class FactoryFinder {
      * <P>
      * This method is package private so that this code can be shared.
      *
+     * @param factoryClass     factory abstract class or interface to be found
+     * @param defaultClassName the implementation class name, which is
+     *                         to be used only if nothing else
+     *                         is found; {@code null} to indicate
+     *                         that there is no default class name
+     * @param tryFallback      whether to try the default class as a
+     *                         fallback
      * @return the {@code Class} object of the specified message factory;
-     *         may not be {@code null}
-     *
-     * @param factoryClass          factory abstract class or interface to be found
-     * @param defaultClassName      the implementation class name, which is
-     *                              to be used only if nothing else
-     *                              is found; {@code null} to indicate
-     *                              that there is no default class name
-     * @param tryFallback           whether to try the default class as a
-     *                              fallback
-     * @exception RuntimeException if there is no factory found
+     * may not be {@code null}
+     * @throws RuntimeException if there is no factory found
      */
     static <T> T find(Class<T> factoryClass,
                       String defaultClassName,

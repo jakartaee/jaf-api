@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,11 +10,11 @@
 
 package jakarta.activation;
 
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * The URLDataSource class provides an object that wraps a <code>URL</code>
@@ -39,7 +39,7 @@ public class URLDataSource implements DataSource {
      * @param url The URL to be encapsulated in this object.
      */
     public URLDataSource(URL url) {
-	this.url = url;
+        this.url = url;
     }
 
     /**
@@ -54,20 +54,21 @@ public class URLDataSource implements DataSource {
      * @return the content type.
      */
     public String getContentType() {
-	String type = null;
+        String type = null;
 
-	try {
-	    if (url_conn == null)
-		url_conn = url.openConnection();
-	} catch (IOException e) { }
-	
-	if (url_conn != null)
-	    type = url_conn.getContentType();
+        try {
+            if (url_conn == null)
+                url_conn = url.openConnection();
+        } catch (IOException e) {
+        }
 
-	if (type == null)
-	    type = "application/octet-stream";
-	
-	return type;
+        if (url_conn != null)
+            type = url_conn.getContentType();
+
+        if (type == null)
+            type = "application/octet-stream";
+
+        return type;
     }
 
     /**
@@ -77,7 +78,7 @@ public class URLDataSource implements DataSource {
      * @return the result of calling the URL's getFile method.
      */
     public String getName() {
-	return url.getFile();
+        return url.getFile();
     }
 
     /**
@@ -87,7 +88,7 @@ public class URLDataSource implements DataSource {
      * @return the InputStream.
      */
     public InputStream getInputStream() throws IOException {
-	return url.openStream();
+        return url.openStream();
     }
 
     /**
@@ -99,14 +100,14 @@ public class URLDataSource implements DataSource {
      * @return the OutputStream.
      */
     public OutputStream getOutputStream() throws IOException {
-	// get the url connection if it is available
-	url_conn = url.openConnection();
-	
-	if (url_conn != null) {
-	    url_conn.setDoOutput(true);
-	    return url_conn.getOutputStream();
-	} else
-	    return null;
+        // get the url connection if it is available
+        url_conn = url.openConnection();
+
+        if (url_conn != null) {
+            url_conn.setDoOutput(true);
+            return url_conn.getOutputStream();
+        } else
+            return null;
     }
 
     /**
@@ -115,6 +116,6 @@ public class URLDataSource implements DataSource {
      * @return The URL.
      */
     public URL getURL() {
-	return url;
+        return url;
     }
 }
