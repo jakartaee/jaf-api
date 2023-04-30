@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 public abstract class CommandMap {
     private static CommandMap defaultCommandMap = null;
     private static Map<ClassLoader, CommandMap> map =
-            new WeakHashMap<ClassLoader, CommandMap>();
+            new WeakHashMap<>();
 
     /**
      * Default (empty) constructor.

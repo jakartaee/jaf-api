@@ -163,12 +163,9 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                     LogSupport.log("MimetypesFileTypeMap: not loading " +
                             "mime types file: " + name);
             }
-        } catch (IOException e) {
+        } catch (IOException | SecurityException e) {
             if (LogSupport.isLoggable())
                 LogSupport.log("MimetypesFileTypeMap: can't load " + name, e);
-        } catch (SecurityException sex) {
-            if (LogSupport.isLoggable())
-                LogSupport.log("MimetypesFileTypeMap: can't load " + name, sex);
         } catch (NoSuchElementException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
@@ -227,14 +224,10 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                                         "not loading " +
                                         "mime types from URL: " + url);
                         }
-                    } catch (IOException ioex) {
+                    } catch (IOException | SecurityException ioex) {
                         if (LogSupport.isLoggable())
                             LogSupport.log("MimetypesFileTypeMap: can't load " +
                                     url, ioex);
-                    } catch (SecurityException sex) {
-                        if (LogSupport.isLoggable())
-                            LogSupport.log("MimetypesFileTypeMap: can't load " +
-                                    url, sex);
                     } catch (NoSuchElementException | ServiceConfigurationError e) {
                         if (LogSupport.isLoggable()) {
                             LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +

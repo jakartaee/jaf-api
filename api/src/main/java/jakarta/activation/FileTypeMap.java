@@ -35,7 +35,7 @@ public abstract class FileTypeMap {
 
     private static FileTypeMap defaultMap = null;
     private static Map<ClassLoader, FileTypeMap> map =
-            new WeakHashMap<ClassLoader, FileTypeMap>();
+            new WeakHashMap<>();
 
     /**
      * The default constructor.

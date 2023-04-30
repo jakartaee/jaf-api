@@ -113,8 +113,7 @@ class FactoryFinder {
     }
 
     private static String fromSystemProperty(String factoryId) {
-        String systemProp = getSystemProperty(factoryId);
-        return systemProp;
+        return getSystemProperty(factoryId);
     }
 
     private static String getSystemProperty(final String property) {
