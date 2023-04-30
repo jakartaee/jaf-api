@@ -33,6 +33,6 @@ public interface CommandObject {
      * @param dh   The DataHandler.
      * @exception IOException    for failures accessing data
      */
-    public void setCommandContext(String verb, DataHandler dh)
+    void setCommandContext(String verb, DataHandler dh)
             throws IOException;
 }

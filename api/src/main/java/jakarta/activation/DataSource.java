@@ -34,7 +34,7 @@ public interface DataSource {
      * @return an InputStream
      * @exception IOException    for failures creating the InputStream
      */
-    public InputStream getInputStream() throws IOException;
+    InputStream getInputStream() throws IOException;
 
     /**
      * This method returns an <code>OutputStream</code> where the
@@ -46,7 +46,7 @@ public interface DataSource {
      * @return an OutputStream
      * @exception IOException    for failures creating the OutputStream
      */
-    public OutputStream getOutputStream() throws IOException;
+    OutputStream getOutputStream() throws IOException;
 
     /**
      * This method returns the MIME type of the data in the form of a
@@ -56,7 +56,7 @@ public interface DataSource {
      *
      * @return the MIME Type
      */
-    public String getContentType();
+    String getContentType();
 
     /**
      * Return the <i>name</i> of this object where the name of the object
@@ -67,5 +67,5 @@ public interface DataSource {
      *
      * @return the name of the object.
      */
-    public String getName();
+    String getName();
 }

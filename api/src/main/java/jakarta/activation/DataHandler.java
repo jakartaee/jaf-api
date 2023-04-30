@@ -64,9 +64,9 @@ public class DataHandler {
     private CommandMap currentCommandMap = null;
 
     // our transfer flavors
-    private static final ActivationDataFlavor emptyFlavors[] =
+    private static final ActivationDataFlavor[] emptyFlavors =
             new ActivationDataFlavor[0];
-    private ActivationDataFlavor transferFlavors[] = emptyFlavors;
+    private ActivationDataFlavor[] transferFlavors = emptyFlavors;
 
     // our DataContentHandler
     private DataContentHandler dataContentHandler = null;
@@ -273,7 +273,7 @@ public class DataHandler {
         // for the DataSource case
         if (dataSource != null) {
             InputStream is = null;
-            byte data[] = new byte[8 * 1024];
+            byte[] data = new byte[8 * 1024];
             int bytes_read;
 
             is = dataSource.getInputStream();
@@ -714,7 +714,7 @@ class DataHandlerDataSource implements DataSource {
  */
 class DataSourceDataContentHandler implements DataContentHandler {
     private DataSource ds = null;
-    private ActivationDataFlavor transferFlavors[] = null;
+    private ActivationDataFlavor[] transferFlavors = null;
     private DataContentHandler dch = null;
 
     /**
@@ -793,7 +793,7 @@ class DataSourceDataContentHandler implements DataContentHandler {
  * with an object.
  */
 class ObjectDataContentHandler implements DataContentHandler {
-    private ActivationDataFlavor transferFlavors[] = null;
+    private ActivationDataFlavor[] transferFlavors = null;
     private Object obj;
     private String mimeType;
     private DataContentHandler dch = null;

@@ -37,7 +37,7 @@ public interface DataContentHandler {
      *
      * @return The ActivationDataFlavors.
      */
-    public ActivationDataFlavor[] getTransferDataFlavors();
+    ActivationDataFlavor[] getTransferDataFlavors();
 
     /**
      * Returns an object which represents the data to be transferred.
@@ -51,7 +51,7 @@ public interface DataContentHandler {
      *                     support the requested flavor
      * @throws IOException if the data can't be accessed
      */
-    public Object getTransferData(ActivationDataFlavor df, DataSource ds)
+    Object getTransferData(ActivationDataFlavor df, DataSource ds)
             throws IOException;
 
     /**
@@ -64,7 +64,7 @@ public interface DataContentHandler {
      * @return The constructed Object.
      * @throws IOException if the data can't be accessed
      */
-    public Object getContent(DataSource ds) throws IOException;
+    Object getContent(DataSource ds) throws IOException;
 
     /**
      * Convert the object to a byte stream of the specified MIME type
@@ -76,6 +76,6 @@ public interface DataContentHandler {
      *                 byte stream.
      * @throws IOException errors writing to the stream
      */
-    public void writeTo(Object obj, String mimeType, OutputStream os)
+    void writeTo(Object obj, String mimeType, OutputStream os)
             throws IOException;
 }
