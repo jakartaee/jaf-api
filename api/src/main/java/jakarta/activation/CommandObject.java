@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -30,9 +30,9 @@ public interface CommandObject {
      * to pass <i>null</i> as the value for <code>DataHandler</code>.
      *
      * @param verb The Command Verb this object refers to.
-     * @param dh The DataHandler.
-     * @exception	IOException	for failures accessing data
+     * @param dh   The DataHandler.
+     * @exception IOException    for failures accessing data
      */
     public void setCommandContext(String verb, DataHandler dh)
-						throws IOException;
+            throws IOException;
 }

@@ -29,6 +29,7 @@ public interface MailcapRegistryProvider {
 
     /**
      * Retrieve an instance of the MailcapRegistry based on the name of the file where the MailcapEntries are stored.
+     *
      * @param name The name of the file that stores MailcapEntries.
      * @return The instance of the <code>MailcapRegistry</code>, or <i>null</i> if none are found.
      * @throws IOException If an instance of the MailcapRegistry class cannot be found or loaded.
@@ -38,6 +39,7 @@ public interface MailcapRegistryProvider {
     /**
      * Retrieve an instance of the MailcapRegistry based on the InputStream
      * that is used to read data from some named resource.
+     *
      * @param inputStream InputStream for some resource that contains MailcapEntries.
      * @return The instance of the <code>MailcapRegistry</code>, or <i>null</i> if none are found.
      * @throws IOException If an instance of the MailcapRegistry class cannot be found or loaded.
@@ -46,8 +48,9 @@ public interface MailcapRegistryProvider {
 
     /**
      * Retrieve an instance of the in-memory implementation of the MailcapRegistry.
+     *
      * @return In-memory implementation of the MailcapRegistry.
-     * @throws NoSuchElementException If no implementations were found.
+     * @throws NoSuchElementException    If no implementations were found.
      * @throws ServiceConfigurationError If no implementations were loaded.
      */
     MailcapRegistry getInMemory();

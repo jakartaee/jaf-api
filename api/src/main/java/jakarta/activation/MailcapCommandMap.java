@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -12,11 +12,19 @@ package jakarta.activation;
 
 import jakarta.activation.spi.MailcapRegistryProvider;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.ServiceConfigurationError;
 
 /**
  * MailcapCommandMap extends the CommandMap
@@ -111,74 +119,76 @@ public class MailcapCommandMap extends CommandMap {
      * We manage a collection of databases, searched in order.
      */
     private MailcapRegistry[] DB;
-    private static final int PROG = 0;	// programmatically added entries
+    private static final int PROG = 0;    // programmatically added entries
 
     private static final String confDir;
 
     static {
-	String dir = null;
-	try {
-	    dir = AccessController.doPrivileged(
-		new PrivilegedAction<String>() {
-		    public String run() {
-			String home = System.getProperty("java.home");
-			String newdir = home + File.separator + "conf";
-			File conf = new File(newdir);
-			if (conf.exists())
-			    return newdir + File.separator;
-			else
-			    return home + File.separator + "lib" + File.separator;
-		    }
-		});
-	} catch (Exception ex) {
-	    // ignore any exceptions
-	}
-	confDir = dir;
+        String dir = null;
+        try {
+            dir = AccessController.doPrivileged(
+                    new PrivilegedAction<String>() {
+                        public String run() {
+                            String home = System.getProperty("java.home");
+                            String newdir = home + File.separator + "conf";
+                            File conf = new File(newdir);
+                            if (conf.exists())
+                                return newdir + File.separator;
+                            else
+                                return home + File.separator + "lib" + File.separator;
+                        }
+                    });
+        } catch (Exception ex) {
+            // ignore any exceptions
+        }
+        confDir = dir;
     }
 
     /**
      * The default Constructor.
      */
     public MailcapCommandMap() {
-	super();
-	List<MailcapRegistry> dbv = new ArrayList<>(5);	// usually 5 or less databases
-	MailcapRegistry mf = null;
-	dbv.add(null);		// place holder for PROG entry
+        super();
+        List<MailcapRegistry> dbv = new ArrayList<>(5);    // usually 5 or less databases
+        MailcapRegistry mf = null;
+        dbv.add(null);        // place holder for PROG entry
 
-	LogSupport.log("MailcapCommandMap: load HOME");
-	try {
-	    String user_home = System.getProperty("user.home");
+        LogSupport.log("MailcapCommandMap: load HOME");
+        try {
+            String user_home = System.getProperty("user.home");
 
-	    if (user_home != null) {
-		String path = user_home + File.separator + ".mailcap";
-		mf = loadFile(path);
-		if (mf != null)
-		    dbv.add(mf);
-	    }
-	} catch (SecurityException ex) {}
+            if (user_home != null) {
+                String path = user_home + File.separator + ".mailcap";
+                mf = loadFile(path);
+                if (mf != null)
+                    dbv.add(mf);
+            }
+        } catch (SecurityException ex) {
+        }
 
-	LogSupport.log("MailcapCommandMap: load SYS");
-	try {
-	    // check system's home
-	    if (confDir != null) {
-		mf = loadFile(confDir + "mailcap");
-		if (mf != null)
-		    dbv.add(mf);
-	    }
-	} catch (SecurityException ex) {}
+        LogSupport.log("MailcapCommandMap: load SYS");
+        try {
+            // check system's home
+            if (confDir != null) {
+                mf = loadFile(confDir + "mailcap");
+                if (mf != null)
+                    dbv.add(mf);
+            }
+        } catch (SecurityException ex) {
+        }
 
-	LogSupport.log("MailcapCommandMap: load JAR");
-	// load from the app's jar file
-	loadAllResources(dbv, "META-INF/mailcap");
+        LogSupport.log("MailcapCommandMap: load JAR");
+        // load from the app's jar file
+        loadAllResources(dbv, "META-INF/mailcap");
 
-	LogSupport.log("MailcapCommandMap: load DEF");
-	mf = loadResource("/META-INF/mailcap.default");
+        LogSupport.log("MailcapCommandMap: load DEF");
+        mf = loadResource("/META-INF/mailcap.default");
 
-	if (mf != null)
-	    dbv.add(mf);
+        if (mf != null)
+            dbv.add(mf);
 
-	DB = new MailcapRegistry[dbv.size()];
-	DB = dbv.toArray(DB);
+        DB = new MailcapRegistry[dbv.size()];
+        DB = dbv.toArray(DB);
     }
 
     /**
@@ -300,7 +310,7 @@ public class MailcapCommandMap extends CommandMap {
      * of a <i>mailcap</i> file.
      *
      * @param fileName The name of the <i>mailcap</i> file to open
-     * @exception IOException    if the file can't be accessed
+     * @throws IOException if the file can't be accessed
      */
     public MailcapCommandMap(String fileName) throws IOException {
         this();
@@ -358,51 +368,51 @@ public class MailcapCommandMap extends CommandMap {
      * MailcapCommandMap.  The first entry for a particular command
      * is considered the preferred command.
      *
-     * @param mimeType	the MIME type
+     * @param mimeType the MIME type
      * @return the CommandInfo objects representing the preferred commands.
      */
     public synchronized CommandInfo[] getPreferredCommands(String mimeType) {
-	List<CommandInfo> cmdList = new ArrayList<>();
-	if (mimeType != null)
-	    mimeType = mimeType.toLowerCase(Locale.ENGLISH);
+        List<CommandInfo> cmdList = new ArrayList<>();
+        if (mimeType != null)
+            mimeType = mimeType.toLowerCase(Locale.ENGLISH);
 
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-        Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
-	    if (cmdMap != null)
-		appendPrefCmdsToList(cmdMap, cmdList);
-	}
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
+            if (cmdMap != null)
+                appendPrefCmdsToList(cmdMap, cmdList);
+        }
 
-	// now add the fallback commands
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-        Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
-	    if (cmdMap != null)
-		appendPrefCmdsToList(cmdMap, cmdList);
-	}
+        // now add the fallback commands
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
+            if (cmdMap != null)
+                appendPrefCmdsToList(cmdMap, cmdList);
+        }
 
-	CommandInfo[] cmdInfos = new CommandInfo[cmdList.size()];
-	cmdInfos = cmdList.toArray(cmdInfos);
+        CommandInfo[] cmdInfos = new CommandInfo[cmdList.size()];
+        cmdInfos = cmdList.toArray(cmdInfos);
 
-	return cmdInfos;
+        return cmdInfos;
     }
 
     /**
      * Put the commands that are in the hash table, into the list.
      */
     private void appendPrefCmdsToList(Map<String, List<String>> cmdHash, List<CommandInfo> cmdList) {
-	Iterator<String> verb_enum = cmdHash.keySet().iterator();
+        Iterator<String> verb_enum = cmdHash.keySet().iterator();
 
-	while (verb_enum.hasNext()) {
-	    String verb = verb_enum.next();
-	    if (!checkForVerb(cmdList, verb)) {
-		List<String> cmdList2 = cmdHash.get(verb); // get the list
-		String className = cmdList2.get(0);
-		cmdList.add(new CommandInfo(verb, className));
-	    }
-	}
+        while (verb_enum.hasNext()) {
+            String verb = verb_enum.next();
+            if (!checkForVerb(cmdList, verb)) {
+                List<String> cmdList2 = cmdHash.get(verb); // get the list
+                String className = cmdList2.get(0);
+                cmdList.add(new CommandInfo(verb, className));
+            }
+        }
     }
 
     /**
@@ -410,114 +420,114 @@ public class MailcapCommandMap extends CommandMap {
      * true if the verb is there.
      */
     private boolean checkForVerb(List<CommandInfo> cmdList, String verb) {
-	Iterator<CommandInfo> ee = cmdList.iterator();
-	while (ee.hasNext()) {
-	    String enum_verb = (ee.next()).getCommandName();
-	    if (enum_verb.equals(verb))
-		return true;
-	}
-	return false;
+        Iterator<CommandInfo> ee = cmdList.iterator();
+        while (ee.hasNext()) {
+            String enum_verb = (ee.next()).getCommandName();
+            if (enum_verb.equals(verb))
+                return true;
+        }
+        return false;
     }
 
     /**
      * Get all the available commands in all mailcap files known to
      * this instance of MailcapCommandMap for this MIME type.
      *
-     * @param mimeType	the MIME type
+     * @param mimeType the MIME type
      * @return the CommandInfo objects representing all the commands.
      */
     public synchronized CommandInfo[] getAllCommands(String mimeType) {
-	List<CommandInfo> cmdList = new ArrayList<>();
-	if (mimeType != null)
-	    mimeType = mimeType.toLowerCase(Locale.ENGLISH);
+        List<CommandInfo> cmdList = new ArrayList<>();
+        if (mimeType != null)
+            mimeType = mimeType.toLowerCase(Locale.ENGLISH);
 
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-        Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
-	    if (cmdMap != null)
-		appendCmdsToList(cmdMap, cmdList);
-	}
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
+            if (cmdMap != null)
+                appendCmdsToList(cmdMap, cmdList);
+        }
 
-	// now add the fallback commands
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-        Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
-	    if (cmdMap != null)
-		appendCmdsToList(cmdMap, cmdList);
-	}
+        // now add the fallback commands
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
+            if (cmdMap != null)
+                appendCmdsToList(cmdMap, cmdList);
+        }
 
-	CommandInfo[] cmdInfos = new CommandInfo[cmdList.size()];
-	cmdInfos = cmdList.toArray(cmdInfos);
+        CommandInfo[] cmdInfos = new CommandInfo[cmdList.size()];
+        cmdInfos = cmdList.toArray(cmdInfos);
 
-	return cmdInfos;
+        return cmdInfos;
     }
 
     /**
      * Put the commands that are in the hash table, into the list.
      */
     private void appendCmdsToList(Map<String, List<String>> typeHash, List<CommandInfo> cmdList) {
-	Iterator<String> verb_enum = typeHash.keySet().iterator();
+        Iterator<String> verb_enum = typeHash.keySet().iterator();
 
-	while (verb_enum.hasNext()) {
-	    String verb = verb_enum.next();
-	    List<String> cmdList2 = typeHash.get(verb);
-	    Iterator<String> cmd_enum = cmdList2.iterator();
+        while (verb_enum.hasNext()) {
+            String verb = verb_enum.next();
+            List<String> cmdList2 = typeHash.get(verb);
+            Iterator<String> cmd_enum = cmdList2.iterator();
 
-	    while (cmd_enum.hasNext()) {
-		String cmd = cmd_enum.next();
-		cmdList.add(new CommandInfo(verb, cmd));
-		// cmdList.add(0, new CommandInfo(verb, cmd));
-	    }
-	}
+            while (cmd_enum.hasNext()) {
+                String cmd = cmd_enum.next();
+                cmdList.add(new CommandInfo(verb, cmd));
+                // cmdList.add(0, new CommandInfo(verb, cmd));
+            }
+        }
     }
 
     /**
      * Get the command corresponding to <code>cmdName</code> for the MIME type.
      *
-     * @param mimeType	the MIME type
-     * @param cmdName	the command name
+     * @param mimeType the MIME type
+     * @param cmdName  the command name
      * @return the CommandInfo object corresponding to the command.
      */
     public synchronized CommandInfo getCommand(String mimeType,
-							String cmdName) {
-	if (mimeType != null)
-	    mimeType = mimeType.toLowerCase(Locale.ENGLISH);
+                                               String cmdName) {
+        if (mimeType != null)
+            mimeType = mimeType.toLowerCase(Locale.ENGLISH);
 
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-	    Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
-	    if (cmdMap != null) {
-		// get the cmd list for the cmd
-		List<String> v = cmdMap.get(cmdName);
-		if (v != null) {
-		    String cmdClassName = v.get(0);
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
+            if (cmdMap != null) {
+                // get the cmd list for the cmd
+                List<String> v = cmdMap.get(cmdName);
+                if (v != null) {
+                    String cmdClassName = v.get(0);
 
-		    if (cmdClassName != null)
-			return new CommandInfo(cmdName, cmdClassName);
-		}
-	    }
-	}
+                    if (cmdClassName != null)
+                        return new CommandInfo(cmdName, cmdClassName);
+                }
+            }
+        }
 
-	// now try the fallback list
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-        Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
-	    if (cmdMap != null) {
-		// get the cmd list for the cmd
-		List<String> v = cmdMap.get(cmdName);
-		if (v != null) {
-		    String cmdClassName = v.get(0);
+        // now try the fallback list
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
+            if (cmdMap != null) {
+                // get the cmd list for the cmd
+                List<String> v = cmdMap.get(cmdName);
+                if (v != null) {
+                    String cmdClassName = v.get(0);
 
-		    if (cmdClassName != null)
-			return new CommandInfo(cmdName, cmdClassName);
-		}
-	    }
-	}
-	return null;
+                    if (cmdClassName != null)
+                        return new CommandInfo(cmdName, cmdClassName);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -549,108 +559,108 @@ public class MailcapCommandMap extends CommandMap {
     /**
      * Return the DataContentHandler for the specified MIME type.
      *
-     * @param mimeType	the MIME type
-     * @return		the DataContentHandler
+     * @param mimeType the MIME type
+     * @return the DataContentHandler
      */
     public synchronized DataContentHandler createDataContentHandler(
-							String mimeType) {
-	if (LogSupport.isLoggable())
-	    LogSupport.log(
-		"MailcapCommandMap: createDataContentHandler for " + mimeType);
-	if (mimeType != null)
-	    mimeType = mimeType.toLowerCase(Locale.ENGLISH);
+            String mimeType) {
+        if (LogSupport.isLoggable())
+            LogSupport.log(
+                    "MailcapCommandMap: createDataContentHandler for " + mimeType);
+        if (mimeType != null)
+            mimeType = mimeType.toLowerCase(Locale.ENGLISH);
 
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-	    if (LogSupport.isLoggable())
-		LogSupport.log("  search DB #" + i);
-        Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
-	    if (cmdMap != null) {
-		List<String> v = cmdMap.get("content-handler");
-		if (v != null) {
-		    String name = v.get(0);
-		    DataContentHandler dch = getDataContentHandler(name);
-		    if (dch != null)
-			return dch;
-		}
-	    }
-	}
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            if (LogSupport.isLoggable())
+                LogSupport.log("  search DB #" + i);
+            Map<String, List<String>> cmdMap = DB[i].getMailcapList(mimeType);
+            if (cmdMap != null) {
+                List<String> v = cmdMap.get("content-handler");
+                if (v != null) {
+                    String name = v.get(0);
+                    DataContentHandler dch = getDataContentHandler(name);
+                    if (dch != null)
+                        return dch;
+                }
+            }
+        }
 
-	// now try the fallback entries
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-	    if (LogSupport.isLoggable())
-		LogSupport.log("  search fallback DB #" + i);
-        Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
-	    if (cmdMap != null) {
-		List<String> v = cmdMap.get("content-handler");
-		if (v != null) {
-		    String name = v.get(0);
-		    DataContentHandler dch = getDataContentHandler(name);
-		    if (dch != null)
-			return dch;
-		}
-	    }
-	}
-	return null;
+        // now try the fallback entries
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            if (LogSupport.isLoggable())
+                LogSupport.log("  search fallback DB #" + i);
+            Map<String, List<String>> cmdMap = DB[i].getMailcapFallbackList(mimeType);
+            if (cmdMap != null) {
+                List<String> v = cmdMap.get("content-handler");
+                if (v != null) {
+                    String name = v.get(0);
+                    DataContentHandler dch = getDataContentHandler(name);
+                    if (dch != null)
+                        return dch;
+                }
+            }
+        }
+        return null;
     }
 
     private DataContentHandler getDataContentHandler(String name) {
-	if (LogSupport.isLoggable())
-	    LogSupport.log("    got content-handler");
-	if (LogSupport.isLoggable())
-	    LogSupport.log("      class " + name);
-	try {
-	    ClassLoader cld = null;
-	    // First try the "application's" class loader.
-	    cld = SecuritySupport.getContextClassLoader();
-	    if (cld == null)
-		cld = this.getClass().getClassLoader();
-	    Class<?> cl = null;
-	    try {
-		cl = cld.loadClass(name);
-	    } catch (Exception ex) {
-		// if anything goes wrong, do it the old way
-		cl = Class.forName(name);
-	    }
-	    if (cl != null)		// XXX - always true?
-		return (DataContentHandler)
-			    cl.getConstructor().newInstance();
-	} catch (ReflectiveOperationException e) {
-	    if (LogSupport.isLoggable())
-		LogSupport.log("Can't load DCH " + name, e);
-	}
-	return null;
+        if (LogSupport.isLoggable())
+            LogSupport.log("    got content-handler");
+        if (LogSupport.isLoggable())
+            LogSupport.log("      class " + name);
+        try {
+            ClassLoader cld = null;
+            // First try the "application's" class loader.
+            cld = SecuritySupport.getContextClassLoader();
+            if (cld == null)
+                cld = this.getClass().getClassLoader();
+            Class<?> cl = null;
+            try {
+                cl = cld.loadClass(name);
+            } catch (Exception ex) {
+                // if anything goes wrong, do it the old way
+                cl = Class.forName(name);
+            }
+            if (cl != null)        // XXX - always true?
+                return (DataContentHandler)
+                        cl.getConstructor().newInstance();
+        } catch (ReflectiveOperationException e) {
+            if (LogSupport.isLoggable())
+                LogSupport.log("Can't load DCH " + name, e);
+        }
+        return null;
     }
 
     /**
      * Get all the MIME types known to this command map.
      *
-     * @return		array of MIME types as strings
-     * @since	JAF 1.1
+     * @return array of MIME types as strings
+     * @since JAF 1.1
      */
     public synchronized String[] getMimeTypes() {
-	List<String> mtList = new ArrayList<>();
+        List<String> mtList = new ArrayList<>();
 
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-	    String[] ts = DB[i].getMimeTypes();
-	    if (ts != null) {
-		for (int j = 0; j < ts.length; j++) {
-		    // eliminate duplicates
-		    if (!mtList.contains(ts[j]))
-			mtList.add(ts[j]);
-		}
-	    }
-	}
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            String[] ts = DB[i].getMimeTypes();
+            if (ts != null) {
+                for (int j = 0; j < ts.length; j++) {
+                    // eliminate duplicates
+                    if (!mtList.contains(ts[j]))
+                        mtList.add(ts[j]);
+                }
+            }
+        }
 
-	String[] mts = new String[mtList.size()];
-	mts = mtList.toArray(mts);
+        String[] mts = new String[mtList.size()];
+        mts = mtList.toArray(mts);
 
-	return mts;
+        return mts;
     }
 
     /**
@@ -664,32 +674,32 @@ public class MailcapCommandMap extends CommandMap {
      * entries that specify a view command for the specified
      * MIME type are returned.
      *
-     * @param	mimeType	the MIME type
-     * @return		array of native command entries
-     * @since	JAF 1.1
+     * @param    mimeType    the MIME type
+     * @return array of native command entries
+     * @since JAF 1.1
      */
     public synchronized String[] getNativeCommands(String mimeType) {
-	List<String> cmdList = new ArrayList<>();
-	if (mimeType != null)
-	    mimeType = mimeType.toLowerCase(Locale.ENGLISH);
+        List<String> cmdList = new ArrayList<>();
+        if (mimeType != null)
+            mimeType = mimeType.toLowerCase(Locale.ENGLISH);
 
-	for (int i = 0; i < DB.length; i++) {
-	    if (DB[i] == null)
-		continue;
-	    String[] cmds = DB[i].getNativeCommands(mimeType);
-	    if (cmds != null) {
-		for (int j = 0; j < cmds.length; j++) {
-		    // eliminate duplicates
-		    if (!cmdList.contains(cmds[j]))
-			cmdList.add(cmds[j]);
-		}
-	    }
-	}
+        for (int i = 0; i < DB.length; i++) {
+            if (DB[i] == null)
+                continue;
+            String[] cmds = DB[i].getNativeCommands(mimeType);
+            if (cmds != null) {
+                for (int j = 0; j < cmds.length; j++) {
+                    // eliminate duplicates
+                    if (!cmdList.contains(cmds[j]))
+                        cmdList.add(cmds[j]);
+                }
+            }
+        }
 
-	String[] cmds = new String[cmdList.size()];
-	cmds = cmdList.toArray(cmds);
+        String[] cmds = new String[cmdList.size()];
+        cmds = cmdList.toArray(cmds);
 
-	return cmds;
+        return cmds;
     }
 
     private MailcapRegistryProvider getImplementation() {

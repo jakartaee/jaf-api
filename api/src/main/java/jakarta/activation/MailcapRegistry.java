@@ -33,8 +33,8 @@ public interface MailcapRegistry {
      * if that fails looks for wildcard &lt;type&gt;/\* and return that.
      * Return the list of all that hit.
      *
-     * @param	mime_type	the MIME type
-     * @return	the map of MailcapEntries
+     * @param    mime_type    the MIME type
+     * @return the map of MailcapEntries
      */
     Map<String, List<String>> getMailcapList(String mime_type);
 
@@ -46,23 +46,23 @@ public interface MailcapRegistry {
      * if that fails looks for wildcard &lt;type&gt;/\* and return that.
      * Return the list of all that hit.
      *
-     * @param	mime_type	the MIME type
-     * @return	the map of fallback MailcapEntries
+     * @param    mime_type    the MIME type
+     * @return the map of fallback MailcapEntries
      */
     Map<String, List<String>> getMailcapFallbackList(String mime_type);
 
     /**
      * Return all the MIME types known to this mailcap file.
      *
-     * @return	a String array of the MIME types
+     * @return a String array of the MIME types
      */
     String[] getMimeTypes();
 
     /**
      * Return all the native comands for the given MIME type.
      *
-     * @param	mime_type	the MIME type
-     * @return	a String array of the commands
+     * @param    mime_type    the MIME type
+     * @return a String array of the commands
      */
     String[] getNativeCommands(String mime_type);
 
@@ -71,12 +71,12 @@ public interface MailcapRegistry {
      * format:
      * Comment == "# <i>comment string</i>"
      * Entry == "mimetype;        javabeanclass"
-     *
+     * <p>
      * Example:
      * # this is a comment
      * image/gif       jaf.viewers.ImageViewer
      *
-     * @param	mail_cap	the mailcap string
+     * @param    mail_cap    the mailcap string
      */
     void appendToMailcap(String mail_cap);
 }

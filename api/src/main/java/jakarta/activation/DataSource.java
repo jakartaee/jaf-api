@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,9 +10,9 @@
 
 package jakarta.activation;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 
 /**
  * The DataSource interface provides Jakarta Activation
@@ -32,7 +32,7 @@ public interface DataSource {
      * positioned at the beginning of the data.
      *
      * @return an InputStream
-     * @exception	IOException	for failures creating the InputStream
+     * @exception IOException    for failures creating the InputStream
      */
     public InputStream getInputStream() throws IOException;
 
@@ -44,7 +44,7 @@ public interface DataSource {
      * be positioned at the location the data is to be written.
      *
      * @return an OutputStream
-     * @exception	IOException	for failures creating the OutputStream
+     * @exception IOException    for failures creating the OutputStream
      */
     public OutputStream getOutputStream() throws IOException;
 

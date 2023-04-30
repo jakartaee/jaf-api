@@ -10,7 +10,8 @@
 
 package jakarta.activation;
 
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Logging related methods.

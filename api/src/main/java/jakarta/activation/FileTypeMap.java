@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021, 2023 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -34,14 +34,14 @@ import java.util.WeakHashMap;
 public abstract class FileTypeMap {
 
     private static FileTypeMap defaultMap = null;
-    private static Map<ClassLoader,FileTypeMap> map =
-				new WeakHashMap<ClassLoader,FileTypeMap>();
+    private static Map<ClassLoader, FileTypeMap> map =
+            new WeakHashMap<ClassLoader, FileTypeMap>();
 
     /**
      * The default constructor.
      */
     public FileTypeMap() {
-	super();
+        super();
     }
 
     /**
@@ -76,28 +76,28 @@ public abstract class FileTypeMap {
      * will be returned to callers of getDefaultFileTypeMap.
      *
      * @param fileTypeMap The FileTypeMap.
-     * @exception SecurityException if the caller doesn't have permission
-     *					to change the default
+     * @throws SecurityException if the caller doesn't have permission
+     *                           to change the default
      */
     public static synchronized void setDefaultFileTypeMap(FileTypeMap fileTypeMap) {
-	SecurityManager security = System.getSecurityManager();
-	if (security != null) {
-	    try {
-		// if it's ok with the SecurityManager, it's ok with me...
-		security.checkSetFactory();
-	    } catch (SecurityException ex) {
-		// otherwise, we also allow it if this code and the
-		// factory come from the same (non-system) class loader (e.g.,
-		// the JAF classes were loaded with the applet classes).
-		ClassLoader cl = FileTypeMap.class.getClassLoader();
-		if (cl == null || cl.getParent() == null ||
-		    cl != fileTypeMap.getClass().getClassLoader())
-		    throw ex;
-	    }
-	}
-	// remove any per-thread-context-class-loader FileTypeMap
-	map.remove(SecuritySupport.getContextClassLoader());
-	defaultMap = fileTypeMap;	
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            try {
+                // if it's ok with the SecurityManager, it's ok with me...
+                security.checkSetFactory();
+            } catch (SecurityException ex) {
+                // otherwise, we also allow it if this code and the
+                // factory come from the same (non-system) class loader (e.g.,
+                // the JAF classes were loaded with the applet classes).
+                ClassLoader cl = FileTypeMap.class.getClassLoader();
+                if (cl == null || cl.getParent() == null ||
+                        cl != fileTypeMap.getClass().getClassLoader())
+                    throw ex;
+            }
+        }
+        // remove any per-thread-context-class-loader FileTypeMap
+        map.remove(SecuritySupport.getContextClassLoader());
+        defaultMap = fileTypeMap;
     }
 
     /**
@@ -110,16 +110,16 @@ public abstract class FileTypeMap {
      * @see jakarta.activation.FileTypeMap#setDefaultFileTypeMap
      */
     public static synchronized FileTypeMap getDefaultFileTypeMap() {
-	if (defaultMap != null)
-	    return defaultMap;
+        if (defaultMap != null)
+            return defaultMap;
 
-	// fetch per-thread-context-class-loader default
-	ClassLoader tccl = SecuritySupport.getContextClassLoader();
-	FileTypeMap def = map.get(tccl);
-	if (def == null) {
-	    def = new MimetypesFileTypeMap();
-	    map.put(tccl, def);
-	}
-	return def;
+        // fetch per-thread-context-class-loader default
+        ClassLoader tccl = SecuritySupport.getContextClassLoader();
+        FileTypeMap def = map.get(tccl);
+        if (def == null) {
+            def = new MimetypesFileTypeMap();
+            map.put(tccl, def);
+        }
+        return def;
     }
 }

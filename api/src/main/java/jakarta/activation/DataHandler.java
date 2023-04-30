@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,12 +10,12 @@
 
 package jakarta.activation;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -65,7 +65,7 @@ public class DataHandler {
 
     // our transfer flavors
     private static final ActivationDataFlavor emptyFlavors[] =
-						new ActivationDataFlavor[0];
+            new ActivationDataFlavor[0];
     private ActivationDataFlavor transferFlavors[] = emptyFlavors;
 
     // our DataContentHandler
@@ -83,12 +83,12 @@ public class DataHandler {
      * specified DataSource.  The data exists in a byte stream form.
      * The DataSource will provide an InputStream to access the data.
      *
-     * @param ds	the DataSource
+     * @param ds the DataSource
      */
     public DataHandler(DataSource ds) {
-	// save a reference to the incoming DS
-	dataSource = ds;
-	oldFactory = factory; // keep track of the factory
+        // save a reference to the incoming DS
+        dataSource = ds;
+        oldFactory = factory; // keep track of the factory
     }
 
     /**
@@ -97,13 +97,13 @@ public class DataHandler {
      * used when the application already has an in-memory representation
      * of the data in the form of a Java Object.
      *
-     * @param obj	the Java Object
-     * @param mimeType	the MIME type of the object
+     * @param obj      the Java Object
+     * @param mimeType the MIME type of the object
      */
     public DataHandler(Object obj, String mimeType) {
-	object = obj;
-	objectMimeType = mimeType;
-	oldFactory = factory; // keep track of the factory
+        object = obj;
+        objectMimeType = mimeType;
+        oldFactory = factory; // keep track of the factory
     }
 
     /**
@@ -111,21 +111,21 @@ public class DataHandler {
      * The DataHandler internally creates a <code>URLDataSource</code>
      * instance to represent the URL.
      *
-     * @param url	a URL object
+     * @param url a URL object
      */
     public DataHandler(URL url) {
-	dataSource = new URLDataSource(url);
-	oldFactory = factory; // keep track of the factory
+        dataSource = new URLDataSource(url);
+        oldFactory = factory; // keep track of the factory
     }
 
     /**
      * Return the CommandMap for this instance of DataHandler.
      */
     private synchronized CommandMap getCommandMap() {
-	if (currentCommandMap != null)
-	    return currentCommandMap;
-	else
-	    return CommandMap.getDefaultCommandMap();
+        if (currentCommandMap != null)
+            return currentCommandMap;
+        else
+            return CommandMap.getDefaultCommandMap();
     }
 
     /**
@@ -140,16 +140,16 @@ public class DataHandler {
      * instantiated with a DataSource are cached for performance
      * reasons.
      *
-     * @return	a valid DataSource object for this DataHandler
+     * @return a valid DataSource object for this DataHandler
      */
     public DataSource getDataSource() {
-	if (dataSource == null) {
-	    // create one on the fly
-	    if (objDataSource == null)
-		objDataSource = new DataHandlerDataSource(this);
-	    return objDataSource;
-	}
-	return dataSource;
+        if (dataSource == null) {
+            // create one on the fly
+            if (objDataSource == null)
+                objDataSource = new DataHandlerDataSource(this);
+            return objDataSource;
+        }
+        return dataSource;
     }
 
     /**
@@ -158,13 +158,13 @@ public class DataHandler {
      * to the <code>DataSource.getName</code> method, otherwise it
      * returns <i>null</i>.
      *
-     * @return	the name of the object
+     * @return the name of the object
      */
     public String getName() {
-	if (dataSource != null)
-	    return dataSource.getName();
-	else
-	    return null;
+        if (dataSource != null)
+            return dataSource.getName();
+        else
+            return null;
     }
 
     /**
@@ -172,13 +172,13 @@ public class DataHandler {
      * the source object. Note that this is the <i>full</i>
      * type with parameters.
      *
-     * @return	the MIME type
+     * @return the MIME type
      */
     public String getContentType() {
-	if (dataSource != null) // data source case
-	    return dataSource.getContentType();
-	else
-	    return objectMimeType; // obj/type case
+        if (dataSource != null) // data source case
+            return dataSource.getContentType();
+        else
+            return objectMimeType; // obj/type case
     }
 
     /**
@@ -199,59 +199,59 @@ public class DataHandler {
      * the data, IOExceptions that may occur during the copy can not be
      * propagated back to the caller. The result is an empty stream.
      *
-     * @return	the InputStream representing this data
-     * @exception IOException	if an I/O error occurs
-     *
+     * @throws IOException if an I/O error occurs
+     * @return the InputStream representing this data
      * @see jakarta.activation.DataContentHandler#writeTo
      * @see jakarta.activation.UnsupportedDataTypeException
      */
     public InputStream getInputStream() throws IOException {
-	InputStream ins = null;
+        InputStream ins = null;
 
-	if (dataSource != null) {
-	    ins = dataSource.getInputStream();
-	} else {
-	    DataContentHandler dch = getDataContentHandler();
-	    // we won't even try if we can't get a dch
-	    if (dch == null)
-		throw new UnsupportedDataTypeException(
-				"no DCH for MIME type " + getBaseType());
+        if (dataSource != null) {
+            ins = dataSource.getInputStream();
+        } else {
+            DataContentHandler dch = getDataContentHandler();
+            // we won't even try if we can't get a dch
+            if (dch == null)
+                throw new UnsupportedDataTypeException(
+                        "no DCH for MIME type " + getBaseType());
 
-	    if (dch instanceof ObjectDataContentHandler) {
-		if (((ObjectDataContentHandler)dch).getDCH() == null)
-		    throw new UnsupportedDataTypeException(
-				"no object DCH for MIME type " + getBaseType());
-	    }
-	    // there is none but the default^^^^^^^^^^^^^^^^
-	    final DataContentHandler fdch = dch;
+            if (dch instanceof ObjectDataContentHandler) {
+                if (((ObjectDataContentHandler) dch).getDCH() == null)
+                    throw new UnsupportedDataTypeException(
+                            "no object DCH for MIME type " + getBaseType());
+            }
+            // there is none but the default^^^^^^^^^^^^^^^^
+            final DataContentHandler fdch = dch;
 
-	    // from bill s.
-	    // ce n'est pas une pipe!
-	    //
-	    // NOTE: This block of code needs to throw exceptions, but
-	    // can't because it is in another thread!!! ARG!
-	    //
-	    final PipedOutputStream pos = new PipedOutputStream();
-	    PipedInputStream pin = new PipedInputStream(pos);
-	    new Thread(
-		       new Runnable() {
-		public void run() {
-		    try {
-			fdch.writeTo(object, objectMimeType, pos);
-		    } catch (IOException e) {
+            // from bill s.
+            // ce n'est pas une pipe!
+            //
+            // NOTE: This block of code needs to throw exceptions, but
+            // can't because it is in another thread!!! ARG!
+            //
+            final PipedOutputStream pos = new PipedOutputStream();
+            PipedInputStream pin = new PipedInputStream(pos);
+            new Thread(
+                    new Runnable() {
+                        public void run() {
+                            try {
+                                fdch.writeTo(object, objectMimeType, pos);
+                            } catch (IOException e) {
 
-		    } finally {
-			try {
-			    pos.close();
-			} catch (IOException ie) { }
-		    }
-		}
-	    },
-		      "DataHandler.getInputStream").start();
-	    ins = pin;
-	}
+                            } finally {
+                                try {
+                                    pos.close();
+                                } catch (IOException ie) {
+                                }
+                            }
+                        }
+                    },
+                    "DataHandler.getInputStream").start();
+            ins = pin;
+        }
 
-	return ins;
+        return ins;
     }
 
     /**
@@ -266,30 +266,30 @@ public class DataHandler {
      * If the DataContentHandler was found, it calls the
      * <code>writeTo</code> method on the <code>DataContentHandler</code>.
      *
-     * @param os	the OutputStream to write to
-     * @exception IOException	if an I/O error occurs
+     * @param os the OutputStream to write to
+     * @throws IOException if an I/O error occurs
      */
     public void writeTo(OutputStream os) throws IOException {
-	// for the DataSource case
-	if (dataSource != null) {
-	    InputStream is = null;
-	    byte data[] = new byte[8*1024];
-	    int bytes_read;
+        // for the DataSource case
+        if (dataSource != null) {
+            InputStream is = null;
+            byte data[] = new byte[8 * 1024];
+            int bytes_read;
 
-	    is = dataSource.getInputStream();
+            is = dataSource.getInputStream();
 
-	    try {
-		while ((bytes_read = is.read(data)) > 0) {
-		    os.write(data, 0, bytes_read);
-		}
-	    } finally {
-		is.close();
-		is = null;
-	    }
-	} else { // for the Object case
-	    DataContentHandler dch = getDataContentHandler();
-	    dch.writeTo(object, objectMimeType, os);
-	}
+            try {
+                while ((bytes_read = is.read(data)) > 0) {
+                    os.write(data, 0, bytes_read);
+                }
+            } finally {
+                is.close();
+                is = null;
+            }
+        } else { // for the Object case
+            DataContentHandler dch = getDataContentHandler();
+            dch.writeTo(object, objectMimeType, os);
+        }
     }
 
     /**
@@ -300,16 +300,15 @@ public class DataHandler {
      * Otherwise, <code>null</code> is returned.
      *
      * @return the OutputStream
-     * @exception	IOException	for failures creating the OutputStream
-     *
+     * @exception IOException    for failures creating the OutputStream
      * @see jakarta.activation.DataSource#getOutputStream
      * @see jakarta.activation.URLDataSource
      */
     public OutputStream getOutputStream() throws IOException {
-	if (dataSource != null)
-	    return dataSource.getOutputStream();
-	else
-	    return null;
+        if (dataSource != null)
+            return dataSource.getOutputStream();
+        else
+            return null;
     }
 
     /**
@@ -333,20 +332,20 @@ public class DataHandler {
      * getTransferDataFlavors returns one ActivationDataFlavor that represents
      * this object's MIME type and the object's class.
      *
-     * @return	an array of data flavors in which this data can be transferred
+     * @return an array of data flavors in which this data can be transferred
      * @see jakarta.activation.DataContentHandler#getTransferDataFlavors
      */
     public synchronized ActivationDataFlavor[] getTransferDataFlavors() {
-	if (factory != oldFactory) // if the factory has changed, clear cache
-	    transferFlavors = emptyFlavors;
+        if (factory != oldFactory) // if the factory has changed, clear cache
+            transferFlavors = emptyFlavors;
 
-	// if it's not set, set it...
-	if (transferFlavors == emptyFlavors)
-	    transferFlavors = getDataContentHandler().getTransferDataFlavors();
-	if (transferFlavors == emptyFlavors)
-	    return transferFlavors;	// no need to clone an empty array
-	else
-	    return transferFlavors.clone();
+        // if it's not set, set it...
+        if (transferFlavors == emptyFlavors)
+            transferFlavors = getDataContentHandler().getTransferDataFlavors();
+        if (transferFlavors == emptyFlavors)
+            return transferFlavors;    // no need to clone an empty array
+        else
+            return transferFlavors.clone();
     }
 
     /**
@@ -357,18 +356,18 @@ public class DataHandler {
      * <code>getTransferDataFlavors</code>, comparing each with
      * the specified flavor.
      *
-     * @param flavor	the requested flavor for the data
-     * @return		true if the data flavor is supported
+     * @param flavor the requested flavor for the data
+     * @return true if the data flavor is supported
      * @see jakarta.activation.DataHandler#getTransferDataFlavors
      */
     public boolean isDataFlavorSupported(ActivationDataFlavor flavor) {
-	ActivationDataFlavor[] lFlavors = getTransferDataFlavors();
+        ActivationDataFlavor[] lFlavors = getTransferDataFlavors();
 
-	for (int i = 0; i < lFlavors.length; i++) {
-	    if (lFlavors[i].equals(flavor))
-		return true;
-	}
-	return false;
+        for (int i = 0; i < lFlavors.length; i++) {
+            if (lFlavors[i].equals(flavor))
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -394,19 +393,19 @@ public class DataHandler {
      * and the type of the data are passed to its getTransferData
      * method. If the DataHandler fails to locate a DataContentHandler
      * and the flavor specifies this object's MIME type and its class,
-     * this DataHandler's referenced object is returned.  
+     * this DataHandler's referenced object is returned.
      * Otherwise it throws an IOException.
      *
-     * @param flavor	the requested flavor for the data
-     * @return		the object
-     * @exception IOException	if the data could not be
-     *			converted to the requested flavor
-     * @exception IOException	if an I/O error occurs
+     * @param flavor the requested flavor for the data
+     * @throws IOException if the data could not be
+     *                     converted to the requested flavor
+     * @throws IOException if an I/O error occurs
+     * @return the object
      * @see jakarta.activation.ActivationDataFlavor
      */
     public Object getTransferData(ActivationDataFlavor flavor)
-				throws IOException {
-	return getDataContentHandler().getTransferData(flavor, dataSource);
+            throws IOException {
+        return getDataContentHandler().getTransferData(flavor, dataSource);
     }
 
     /**
@@ -417,18 +416,17 @@ public class DataHandler {
      * Changing the CommandMap, or setting it to <code>null</code>,
      * clears out any data cached from the previous CommandMap.
      *
-     * @param commandMap	the CommandMap to use in this DataHandler
-     *
+     * @param commandMap the CommandMap to use in this DataHandler
      * @see jakarta.activation.CommandMap#setDefaultCommandMap
      */
     public synchronized void setCommandMap(CommandMap commandMap) {
-	if (commandMap != currentCommandMap || commandMap == null) {
-	    // clear cached values...
-	    transferFlavors = emptyFlavors;
-	    dataContentHandler = null;
+        if (commandMap != currentCommandMap || commandMap == null) {
+            // clear cached values...
+            transferFlavors = emptyFlavors;
+            dataContentHandler = null;
 
-	    currentCommandMap = commandMap;
-	}
+            currentCommandMap = commandMap;
+        }
     }
 
     /**
@@ -440,16 +438,15 @@ public class DataHandler {
      * MIME type represented by this DataHandler are present, the
      * installed CommandMap chooses the appropriate commands.
      *
-     * @return	the CommandInfo objects representing the preferred commands
-     *
+     * @return the CommandInfo objects representing the preferred commands
      * @see jakarta.activation.CommandMap#getPreferredCommands
      */
     public CommandInfo[] getPreferredCommands() {
-	if (dataSource != null)
-	    return getCommandMap().getPreferredCommands(getBaseType(),
-							dataSource);
-	else
-	    return getCommandMap().getPreferredCommands(getBaseType());
+        if (dataSource != null)
+            return getCommandMap().getPreferredCommands(getBaseType(),
+                    dataSource);
+        else
+            return getCommandMap().getPreferredCommands(getBaseType());
     }
 
     /**
@@ -460,15 +457,14 @@ public class DataHandler {
      * is used to call through to the <code>getAllCommands</code> method
      * of the CommandMap associated with this DataHandler.
      *
-     * @return	the CommandInfo objects representing all the commands
-     *
+     * @return the CommandInfo objects representing all the commands
      * @see jakarta.activation.CommandMap#getAllCommands
      */
     public CommandInfo[] getAllCommands() {
-	if (dataSource != null)
-	    return getCommandMap().getAllCommands(getBaseType(), dataSource);
-	else
-	    return getCommandMap().getAllCommands(getBaseType());
+        if (dataSource != null)
+            return getCommandMap().getAllCommands(getBaseType(), dataSource);
+        else
+            return getCommandMap().getAllCommands(getBaseType());
     }
 
     /**
@@ -478,17 +474,16 @@ public class DataHandler {
      * is used to call through to the <code>getCommand</code> method
      * of the CommandMap associated with this DataHandler.
      *
-     * @param cmdName	the command name
-     * @return	the CommandInfo corresponding to the command
-     *
+     * @param cmdName the command name
+     * @return the CommandInfo corresponding to the command
      * @see jakarta.activation.CommandMap#getCommand
      */
     public CommandInfo getCommand(String cmdName) {
-	if (dataSource != null)
-	    return getCommandMap().getCommand(getBaseType(), cmdName,
-								dataSource);
-	else
-	    return getCommandMap().getCommand(getBaseType(), cmdName);
+        if (dataSource != null)
+            return getCommandMap().getCommand(getBaseType(), cmdName,
+                    dataSource);
+        else
+            return getCommandMap().getCommand(getBaseType(), cmdName);
     }
 
     /**
@@ -505,14 +500,14 @@ public class DataHandler {
      * InputStream for the data.
      *
      * @return the content.
-     * @exception IOException if an IOException occurs during
-     *                              this operation.
+     * @throws IOException if an IOException occurs during
+     *                     this operation.
      */
     public Object getContent() throws IOException {
-	if (object != null)
-	    return object;
-	else
-	    return getDataContentHandler().getContent(getDataSource());
+        if (object != null)
+            return object;
+        else
+            return getDataContentHandler().getContent(getDataSource());
     }
 
     /**
@@ -524,24 +519,25 @@ public class DataHandler {
      * method with the <code>ClassLoader</code> used to load
      * the <code>jakarta.activation.DataHandler</code> class itself.
      *
-     * @param cmdinfo	the CommandInfo corresponding to a command
-     * @return	the instantiated command object
+     * @param cmdinfo the CommandInfo corresponding to a command
+     * @return the instantiated command object
      */
     public Object getBean(CommandInfo cmdinfo) {
-	Object bean = null;
+        Object bean = null;
 
-	try {
-	    // make the bean
-	    ClassLoader cld = null;
-	    // First try the "application's" class loader.
-	    cld = SecuritySupport.getContextClassLoader();
-	    if (cld == null)
-		cld = this.getClass().getClassLoader();
-	    bean = cmdinfo.getCommandObject(this, cld);
-	} catch (IOException e) {
-	} catch (ClassNotFoundException e) { }
+        try {
+            // make the bean
+            ClassLoader cld = null;
+            // First try the "application's" class loader.
+            cld = SecuritySupport.getContextClassLoader();
+            if (cld == null)
+                cld = this.getClass().getClassLoader();
+            bean = cmdinfo.getCommandObject(this, cld);
+        } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
+        }
 
-	return bean;
+        return bean;
     }
 
     /**
@@ -559,50 +555,50 @@ public class DataHandler {
      * to handle any missing cases, fill in defaults, and to ensure that
      * we always have a non-null DataContentHandler.
      *
-     * @return	the requested DataContentHandler
+     * @return the requested DataContentHandler
      */
     private synchronized DataContentHandler getDataContentHandler() {
 
-	// make sure the factory didn't change
-	if (factory != oldFactory) {
-	    oldFactory = factory;
-	    factoryDCH = null;
-	    dataContentHandler = null;
-	    transferFlavors = emptyFlavors;
-	}
+        // make sure the factory didn't change
+        if (factory != oldFactory) {
+            oldFactory = factory;
+            factoryDCH = null;
+            dataContentHandler = null;
+            transferFlavors = emptyFlavors;
+        }
 
- 	if (dataContentHandler != null)
- 	    return dataContentHandler;
+        if (dataContentHandler != null)
+            return dataContentHandler;
 
-	String simpleMT = getBaseType();
+        String simpleMT = getBaseType();
 
-	if (factoryDCH == null && factory != null)
-	    factoryDCH = factory.createDataContentHandler(simpleMT);
+        if (factoryDCH == null && factory != null)
+            factoryDCH = factory.createDataContentHandler(simpleMT);
 
- 	if (factoryDCH != null)
- 	    dataContentHandler = factoryDCH;
+        if (factoryDCH != null)
+            dataContentHandler = factoryDCH;
 
-	if (dataContentHandler == null) {
-	    if (dataSource != null)
-		dataContentHandler = getCommandMap().
-				createDataContentHandler(simpleMT, dataSource);
-	    else
-		dataContentHandler = getCommandMap().
-				createDataContentHandler(simpleMT);
-	}
+        if (dataContentHandler == null) {
+            if (dataSource != null)
+                dataContentHandler = getCommandMap().
+                        createDataContentHandler(simpleMT, dataSource);
+            else
+                dataContentHandler = getCommandMap().
+                        createDataContentHandler(simpleMT);
+        }
 
-	// getDataContentHandler always uses these 'wrapper' handlers
-	// to make sure it returns SOMETHING meaningful...
-	if (dataSource != null)
-	    dataContentHandler = new DataSourceDataContentHandler(
-						      dataContentHandler,
-						      dataSource);
-	else
-	    dataContentHandler = new ObjectDataContentHandler(
-						      dataContentHandler,
-						      object,
-						      objectMimeType);
-	return dataContentHandler;
+        // getDataContentHandler always uses these 'wrapper' handlers
+        // to make sure it returns SOMETHING meaningful...
+        if (dataSource != null)
+            dataContentHandler = new DataSourceDataContentHandler(
+                    dataContentHandler,
+                    dataSource);
+        else
+            dataContentHandler = new ObjectDataContentHandler(
+                    dataContentHandler,
+                    object,
+                    objectMimeType);
+        return dataContentHandler;
     }
 
     /**
@@ -610,16 +606,16 @@ public class DataHandler {
      * ignoring the parameters.  The type is cached.
      */
     private synchronized String getBaseType() {
-	if (shortType == null) {
-	    String ct = getContentType();
-	    try {
-		MimeType mt = new MimeType(ct);
-		shortType = mt.getBaseType();
-	    } catch (MimeTypeParseException e) {
-		shortType = ct;
-	    }
-	}
-	return shortType;
+        if (shortType == null) {
+            String ct = getContentType();
+            try {
+                MimeType mt = new MimeType(ct);
+                shortType = mt.getBaseType();
+            } catch (MimeTypeParseException e) {
+                shortType = ct;
+            }
+        }
+        return shortType;
     }
 
     /**
@@ -630,31 +626,30 @@ public class DataHandler {
      * If the DataContentHandlerFactory has already been set,
      * this method throws an Error.
      *
-     * @param newFactory	the DataContentHandlerFactory
-     * @exception Error	if the factory has already been defined.
-     *
+     * @param newFactory the DataContentHandlerFactory
+     * @throws Error if the factory has already been defined.
      * @see jakarta.activation.DataContentHandlerFactory
      */
     public static synchronized void setDataContentHandlerFactory(
-					 DataContentHandlerFactory newFactory) {
-	if (factory != null)
-	    throw new Error("DataContentHandlerFactory already defined");
+            DataContentHandlerFactory newFactory) {
+        if (factory != null)
+            throw new Error("DataContentHandlerFactory already defined");
 
-	SecurityManager security = System.getSecurityManager();
-	if (security != null) {
-	    try {
-		// if it's ok with the SecurityManager, it's ok with me...
-		security.checkSetFactory();
-	    } catch (SecurityException ex) {
-		// otherwise, we also allow it if this code and the
-		// factory come from the same class loader (e.g.,
-		// the JAF classes were loaded with the applet classes).
-		if (DataHandler.class.getClassLoader() !=
-			newFactory.getClass().getClassLoader())
-		    throw ex;
-	    }
-	}
-	factory = newFactory;
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            try {
+                // if it's ok with the SecurityManager, it's ok with me...
+                security.checkSetFactory();
+            } catch (SecurityException ex) {
+                // otherwise, we also allow it if this code and the
+                // factory come from the same class loader (e.g.,
+                // the JAF classes were loaded with the applet classes).
+                if (DataHandler.class.getClassLoader() !=
+                        newFactory.getClass().getClassLoader())
+                    throw ex;
+            }
+        }
+        factory = newFactory;
     }
 }
 
@@ -670,39 +665,43 @@ class DataHandlerDataSource implements DataSource {
      * The constructor.
      */
     public DataHandlerDataSource(DataHandler dh) {
-	this.dataHandler = dh;
+        this.dataHandler = dh;
     }
 
     /**
      * Returns an <code>InputStream</code> representing this object.
-     * @return	the <code>InputStream</code>
+     *
+     * @return the <code>InputStream</code>
      */
     public InputStream getInputStream() throws IOException {
-	return dataHandler.getInputStream();
+        return dataHandler.getInputStream();
     }
 
     /**
      * Returns the <code>OutputStream</code> for this object.
-     * @return	the <code>OutputStream</code>
+     *
+     * @return the <code>OutputStream</code>
      */
     public OutputStream getOutputStream() throws IOException {
-	return dataHandler.getOutputStream();
+        return dataHandler.getOutputStream();
     }
 
     /**
      * Returns the MIME type of the data represented by this object.
-     * @return	the MIME type
+     *
+     * @return the MIME type
      */
     public String getContentType() {
-	return dataHandler.getContentType();
+        return dataHandler.getContentType();
     }
 
     /**
      * Returns the name of this object.
-     * @return	the name of this object
+     *
+     * @return the name of this object
      */
     public String getName() {
-	return dataHandler.getName(); // what else would it be?
+        return dataHandler.getName(); // what else would it be?
     }
 }
 
@@ -722,65 +721,67 @@ class DataSourceDataContentHandler implements DataContentHandler {
      * The constructor.
      */
     public DataSourceDataContentHandler(DataContentHandler dch, DataSource ds) {
-	this.ds = ds;
-	this.dch = dch;
+        this.ds = ds;
+        this.dch = dch;
     }
 
     /**
      * Return the ActivationDataFlavors for this
      * <code>DataContentHandler</code>.
-     * @return	the ActivationDataFlavors
+     *
+     * @return the ActivationDataFlavors
      */
     public ActivationDataFlavor[] getTransferDataFlavors() {
 
-	if (transferFlavors == null) {
-	    if (dch != null) { // is there a dch?
-		transferFlavors = dch.getTransferDataFlavors();
-	    } else {
-		transferFlavors = new ActivationDataFlavor[1];
-		transferFlavors[0] =
-		    new ActivationDataFlavor(ds.getContentType(),
-					     ds.getContentType());
-	    }
-	}
-	return transferFlavors;
+        if (transferFlavors == null) {
+            if (dch != null) { // is there a dch?
+                transferFlavors = dch.getTransferDataFlavors();
+            } else {
+                transferFlavors = new ActivationDataFlavor[1];
+                transferFlavors[0] =
+                        new ActivationDataFlavor(ds.getContentType(),
+                                ds.getContentType());
+            }
+        }
+        return transferFlavors;
     }
 
     /**
      * Return the Transfer Data of type ActivationDataFlavor from InputStream.
-     * @param df	the ActivationDataFlavor
-     * @param ds	the DataSource
-     * @return		the constructed Object
+     *
+     * @param df the ActivationDataFlavor
+     * @param ds the DataSource
+     * @return the constructed Object
      */
     public Object getTransferData(ActivationDataFlavor df, DataSource ds)
-				throws IOException {
+            throws IOException {
 
-	if (dch != null)
-	    return dch.getTransferData(df, ds);
-	else if (df.equals(getTransferDataFlavors()[0])) // only have one now
-	    return ds.getInputStream();
-	else
-	    throw new IOException("Unsupported DataFlavor: " + df);
+        if (dch != null)
+            return dch.getTransferData(df, ds);
+        else if (df.equals(getTransferDataFlavors()[0])) // only have one now
+            return ds.getInputStream();
+        else
+            throw new IOException("Unsupported DataFlavor: " + df);
     }
 
     public Object getContent(DataSource ds) throws IOException {
 
-	if (dch != null)
-	    return dch.getContent(ds);
-	else
-	    return ds.getInputStream();
+        if (dch != null)
+            return dch.getContent(ds);
+        else
+            return ds.getInputStream();
     }
 
     /**
      * Write the object to the output stream.
      */
     public void writeTo(Object obj, String mimeType, OutputStream os)
-						throws IOException {
-	if (dch != null)
-	    dch.writeTo(obj, mimeType, os);
-	else
-	    throw new UnsupportedDataTypeException(
-			"no DCH for content type " + ds.getContentType());
+            throws IOException {
+        if (dch != null)
+            dch.writeTo(obj, mimeType, os);
+        else
+            throw new UnsupportedDataTypeException(
+                    "no DCH for content type " + ds.getContentType());
     }
 }
 
@@ -801,10 +802,10 @@ class ObjectDataContentHandler implements DataContentHandler {
      * The constructor.
      */
     public ObjectDataContentHandler(DataContentHandler dch,
-				    Object obj, String mimeType) {
-	this.obj = obj;
-	this.mimeType = mimeType;
-	this.dch = dch;
+                                    Object obj, String mimeType) {
+        this.obj = obj;
+        this.mimeType = mimeType;
+        this.dch = dch;
     }
 
     /**
@@ -812,64 +813,66 @@ class ObjectDataContentHandler implements DataContentHandler {
      * Used only by the DataHandler class.
      */
     public DataContentHandler getDCH() {
-	return dch;
+        return dch;
     }
 
     /**
      * Return the ActivationDataFlavors for this
      * <code>DataContentHandler</code>.
-     * @return	the ActivationDataFlavors
+     *
+     * @return the ActivationDataFlavors
      */
     public synchronized ActivationDataFlavor[] getTransferDataFlavors() {
-	if (transferFlavors == null) {
-	    if (dch != null) {
-		transferFlavors = dch.getTransferDataFlavors();
-	    } else {
-		transferFlavors = new ActivationDataFlavor[1];
-		transferFlavors[0] = new ActivationDataFlavor(obj.getClass(),
-					     mimeType, mimeType);
-	    }
-	}
-	return transferFlavors;
+        if (transferFlavors == null) {
+            if (dch != null) {
+                transferFlavors = dch.getTransferDataFlavors();
+            } else {
+                transferFlavors = new ActivationDataFlavor[1];
+                transferFlavors[0] = new ActivationDataFlavor(obj.getClass(),
+                        mimeType, mimeType);
+            }
+        }
+        return transferFlavors;
     }
 
     /**
      * Return the Transfer Data of type ActivationDataFlavor from InputStream.
-     * @param df	the ActivationDataFlavor
-     * @param ds	the DataSource
-     * @return		the constructed Object
+     *
+     * @param df the ActivationDataFlavor
+     * @param ds the DataSource
+     * @return the constructed Object
      */
     public Object getTransferData(ActivationDataFlavor df, DataSource ds)
-				throws IOException {
+            throws IOException {
 
-	if (dch != null)
-	    return dch.getTransferData(df, ds);
-	else if (df.equals(getTransferDataFlavors()[0])) // only have one now
-	    return obj;
-	else
-	    throw new IOException("Unsupported DataFlavor: " + df);
+        if (dch != null)
+            return dch.getTransferData(df, ds);
+        else if (df.equals(getTransferDataFlavors()[0])) // only have one now
+            return obj;
+        else
+            throw new IOException("Unsupported DataFlavor: " + df);
 
     }
 
     public Object getContent(DataSource ds) {
-	return obj;
+        return obj;
     }
 
     /**
      * Write the object to the output stream.
      */
     public void writeTo(Object obj, String mimeType, OutputStream os)
-						throws IOException {
-	if (dch != null)
-	    dch.writeTo(obj, mimeType, os);
-	else if (obj instanceof byte[])
-	    os.write((byte[])obj);
-	else if (obj instanceof String) {
-	    OutputStreamWriter osw = new OutputStreamWriter(os, Charset.defaultCharset());
-	    osw.write((String)obj);
-	    osw.flush();
-	} else
-	    throw new UnsupportedDataTypeException(
-				"no object DCH for MIME type " + this.mimeType);
+            throws IOException {
+        if (dch != null)
+            dch.writeTo(obj, mimeType, os);
+        else if (obj instanceof byte[])
+            os.write((byte[]) obj);
+        else if (obj instanceof String) {
+            OutputStreamWriter osw = new OutputStreamWriter(os, Charset.defaultCharset());
+            osw.write((String) obj);
+            osw.flush();
+        } else
+            throw new UnsupportedDataTypeException(
+                    "no object DCH for MIME type " + this.mimeType);
     }
 }

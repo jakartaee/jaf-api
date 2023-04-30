@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -9,9 +9,6 @@
  */
 
 package jakarta.activation;
-
-import java.io.IOException;
-import jakarta.activation.MimeType;
 
 /**
  * The ActivationDataFlavor class is similar to the JDK's
@@ -50,16 +47,16 @@ public class ActivationDataFlavor {
      * mimeType            = mimeType<br>
      * humanName           = humanName
      *
-     * @param representationClass the class used in this ActivationDataFlavor
-     * @param mimeType the MIME type of the data represented by this class
+     * @param representationClass  the class used in this ActivationDataFlavor
+     * @param mimeType             the MIME type of the data represented by this class
      * @param humanPresentableName the human presentable name of the flavor
      */
     public ActivationDataFlavor(Class<?> representationClass,
-		      String mimeType, String humanPresentableName) {
-	// init private variables:
-	this.mimeType = mimeType;
-	this.humanPresentableName = humanPresentableName;
-	this.representationClass = representationClass;
+                                String mimeType, String humanPresentableName) {
+        // init private variables:
+        this.mimeType = mimeType;
+        this.humanPresentableName = humanPresentableName;
+        this.representationClass = representationClass;
     }
 
     /**
@@ -77,14 +74,14 @@ public class ActivationDataFlavor {
      * representationClass = InputStream<p>
      * mimeType = mimeType
      *
-     * @param representationClass the class used in this ActivationDataFlavor
+     * @param representationClass  the class used in this ActivationDataFlavor
      * @param humanPresentableName the human presentable name of the flavor
      */
     public ActivationDataFlavor(Class<?> representationClass,
-				String humanPresentableName) {
-	this.mimeType = "application/x-java-serialized-object";
-	this.representationClass = representationClass;
-      	this.humanPresentableName = humanPresentableName;
+                                String humanPresentableName) {
+        this.mimeType = "application/x-java-serialized-object";
+        this.representationClass = representationClass;
+        this.humanPresentableName = humanPresentableName;
     }
 
     /**
@@ -100,90 +97,91 @@ public class ActivationDataFlavor {
      * representationClass = InputStream<br>
      * mimeType = mimeType
      *
-     * @param mimeType the MIME type of the data represented by this class
+     * @param mimeType             the MIME type of the data represented by this class
      * @param humanPresentableName the human presentable name of the flavor
      */
     public ActivationDataFlavor(String mimeType, String humanPresentableName) {
-	this.mimeType = mimeType;
-	try {
-	    this.representationClass = Class.forName("java.io.InputStream");
-	} catch (ClassNotFoundException ex) {
-	    // XXX - should never happen, ignore it
-	}
-      	this.humanPresentableName = humanPresentableName;
+        this.mimeType = mimeType;
+        try {
+            this.representationClass = Class.forName("java.io.InputStream");
+        } catch (ClassNotFoundException ex) {
+            // XXX - should never happen, ignore it
+        }
+        this.humanPresentableName = humanPresentableName;
     }
 
     /**
      * Return the MIME type for this ActivationDataFlavor.
      *
-     * @return	the MIME type
+     * @return the MIME type
      */
     public String getMimeType() {
-	return mimeType;
+        return mimeType;
     }
 
     /**
      * Return the representation class.
      *
-     * @return	the representation class
+     * @return the representation class
      */
     public Class<?> getRepresentationClass() {
-	return representationClass;
+        return representationClass;
     }
 
     /**
      * Return the Human Presentable name.
      *
-     * @return	the human presentable name
+     * @return the human presentable name
      */
     public String getHumanPresentableName() {
-	return humanPresentableName;
+        return humanPresentableName;
     }
 
     /**
      * Set the human presentable name.
      *
-     * @param humanPresentableName	the name to set
+     * @param humanPresentableName the name to set
      */
     public void setHumanPresentableName(String humanPresentableName) {
-	this.humanPresentableName = humanPresentableName;
+        this.humanPresentableName = humanPresentableName;
     }
 
     /**
      * Compares the ActivationDataFlavor passed in with this
      * ActivationDataFlavor; calls the <code>isMimeTypeEqual</code> method.
      *
-     * @param dataFlavor	the ActivationDataFlavor to compare with
-     * @return			true if the MIME type and representation class
-     *				are the same
+     * @param dataFlavor the ActivationDataFlavor to compare with
+     * @return true if the MIME type and representation class
+     * are the same
      */
     public boolean equals(ActivationDataFlavor dataFlavor) {
-	return (isMimeTypeEqual(dataFlavor.mimeType) &&
-	 	dataFlavor.getRepresentationClass() == representationClass);
+        return (isMimeTypeEqual(dataFlavor.mimeType) &&
+                dataFlavor.getRepresentationClass() == representationClass);
     }
 
     /**
-     * @param o		the <code>Object</code> to compare with
-     * @return		true if the object is also an ActivationDataFlavor
-     *			and is equal to this
+     * @param o the <code>Object</code> to compare with
+     * @return true if the object is also an ActivationDataFlavor
+     * and is equal to this
      */
     public boolean equals(Object o) {
-	return ((o instanceof ActivationDataFlavor) &&
-		equals((ActivationDataFlavor)o));
+        return ((o instanceof ActivationDataFlavor) &&
+                equals((ActivationDataFlavor) o));
     }
 
     /**
      * Compares only the <code>mimeType</code> against the passed in
      * <code>String</code> and <code>representationClass</code> is
      * not considered in the comparison.
-     *
+     * <p>
      * If <code>representationClass</code> needs to be compared, then
      * <code>equals(new DataFlavor(s))</code> may be used.
-     * @deprecated As inconsistent with <code>hashCode()</code> contract,
-     *             use <code>isMimeTypeEqual(String)</code> instead.
+     *
      * @param s the {@code mimeType} to compare.
      * @return true if the String (MimeType) is equal; false otherwise or if
-     *         {@code s} is {@code null}
+     * {@code s} is {@code null}
+     * @deprecated As inconsistent with <code>hashCode()</code> contract,
+     * use <code>isMimeTypeEqual(String)</code> instead.
      */
     @Deprecated
     public boolean equals(String s) {
@@ -209,8 +207,8 @@ public class ActivationDataFlavor {
             total += representationClass.hashCode();
         }
 
-	// XXX - MIME type equality is too complicated so we don't
-	// include it in the hashCode
+        // XXX - MIME type equality is too complicated so we don't
+        // include it in the hashCode
 
         return total;
     }
@@ -222,21 +220,21 @@ public class ActivationDataFlavor {
      * ActivationDataFlavor delegates the comparison of MIME types to
      * the MimeType class included as part of Jakarta Activation.
      *
-     * @param mimeType	the MIME type
-     * @return		true if the same MIME type
+     * @param mimeType the MIME type
+     * @return true if the same MIME type
      */
     public boolean isMimeTypeEqual(String mimeType) {
-	MimeType mt = null;
-	try {
-	    if (mimeObject == null)
-		mimeObject = new MimeType(this.mimeType);
-	    mt = new MimeType(mimeType);
-	} catch (MimeTypeParseException e) {
-	    // something didn't parse, do a crude comparison
-	    return this.mimeType.equalsIgnoreCase(mimeType);
-	}
+        MimeType mt = null;
+        try {
+            if (mimeObject == null)
+                mimeObject = new MimeType(this.mimeType);
+            mt = new MimeType(mimeType);
+        } catch (MimeTypeParseException e) {
+            // something didn't parse, do a crude comparison
+            return this.mimeType.equalsIgnoreCase(mimeType);
+        }
 
-	return mimeObject.match(mt);
+        return mimeObject.match(mt);
     }
 
     /**
@@ -249,15 +247,15 @@ public class ActivationDataFlavor {
      * return the normalized representation of the parameterValue.
      * This method is never invoked by this implementation.
      *
-     * @param parameterName	the parameter name
-     * @param parameterValue	the parameter value
-     * @return			the normalized parameter value
+     * @param parameterName  the parameter name
+     * @param parameterValue the parameter value
+     * @return the normalized parameter value
      * @deprecated
      */
     @Deprecated
     protected String normalizeMimeTypeParameter(String parameterName,
-						String parameterValue) {
-	return parameterValue;
+                                                String parameterValue) {
+        return parameterValue;
     }
 
     /**
@@ -268,12 +266,12 @@ public class ActivationDataFlavor {
      * where none are present in the MIME type string passed in.
      * This method is never invoked by this implementation.
      *
-     * @param mimeType	the MIME type
-     * @return		the normalized MIME type
+     * @param mimeType the MIME type
+     * @return the normalized MIME type
      * @deprecated
      */
     @Deprecated
     protected String normalizeMimeType(String mimeType) {
-	return mimeType;
+        return mimeType;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,7 +10,10 @@
 
 package jakarta.activation;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -36,12 +39,13 @@ public class CommandInfo {
 
     /**
      * The Constructor for CommandInfo.
-     * @param verb The command verb this CommandInfo decribes.
+     *
+     * @param verb      The command verb this CommandInfo decribes.
      * @param className The command's fully qualified class name.
      */
     public CommandInfo(String verb, String className) {
-	this.verb = verb;
-	this.className = className;
+        this.verb = verb;
+        this.className = className;
     }
 
     /**
@@ -50,7 +54,7 @@ public class CommandInfo {
      * @return the command verb.
      */
     public String getCommandName() {
-	return verb;
+        return verb;
     }
 
     /**
@@ -64,7 +68,7 @@ public class CommandInfo {
      * @return The class name of the command, or <i>null</i>
      */
     public String getCommandClass() {
-	return className;
+        return className;
     }
 
     /**
@@ -73,7 +77,7 @@ public class CommandInfo {
      * If the current runtime environment supports
      * <code>Beans.instantiate</code>,
      * use it to instantiate the JavaBeans component.  Otherwise, use
-     * {@link java.lang.Class#forName Class.forName}.
+     * {@link java.lang.Class#forName(String)}  Class.forName}.
      * <p>
      * The component class needs to be public.
      * On Java SE 9 and newer, if the component class is in a named module,
@@ -96,38 +100,38 @@ public class CommandInfo {
      * readExternal method will be called if an InputStream
      * can be acquired from the DataHandler.
      *
-     * @param dh	The DataHandler that describes the data to be
-     *			passed to the command.
-     * @param loader	The ClassLoader to be used to instantiate the bean.
+     * @param dh     The DataHandler that describes the data to be
+     *               passed to the command.
+     * @param loader The ClassLoader to be used to instantiate the bean.
      * @return The bean
-     * @exception	IOException	for failures reading data
-     * @exception	ClassNotFoundException	if command object class can't
-     *						be found
+     * @exception IOException    for failures reading data
+     * @exception ClassNotFoundException    if command object class can't
+     * be found
      * @see jakarta.activation.CommandObject
      */
     public Object getCommandObject(DataHandler dh, ClassLoader loader)
-			throws IOException, ClassNotFoundException {
-	Object new_bean = null;
+            throws IOException, ClassNotFoundException {
+        Object new_bean = null;
 
-	// try to instantiate the bean
-	new_bean = Beans.instantiate(loader, className);
+        // try to instantiate the bean
+        new_bean = Beans.instantiate(loader, className);
 
-	// if we got one and it is a CommandObject
-	if (new_bean != null) {
-	    if (new_bean instanceof CommandObject) {
-		((CommandObject)new_bean).setCommandContext(verb, dh);
-	    } else if (new_bean instanceof Externalizable) {
-		if (dh != null) {
-		    InputStream is = dh.getInputStream();
-		    if (is != null) {
-			((Externalizable)new_bean).readExternal(
-					       new ObjectInputStream(is));
-		    }
-		}
-	    }
-	}
+        // if we got one and it is a CommandObject
+        if (new_bean != null) {
+            if (new_bean instanceof CommandObject) {
+                ((CommandObject) new_bean).setCommandContext(verb, dh);
+            } else if (new_bean instanceof Externalizable) {
+                if (dh != null) {
+                    InputStream is = dh.getInputStream();
+                    if (is != null) {
+                        ((Externalizable) new_bean).readExternal(
+                                new ObjectInputStream(is));
+                    }
+                }
+            }
+        }
 
-	return new_bean;
+        return new_bean;
     }
 
     /**
@@ -167,33 +171,34 @@ public class CommandInfo {
 
             } else {
 
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-		    // if it's ok with the SecurityManager, it's ok with me.
-		    String cname = cn.replace('/', '.');
-		    if (cname.startsWith("[")) {
-			int b = cname.lastIndexOf('[') + 2;
-			if (b > 1 && b < cname.length()) {
-			    cname = cname.substring(b);
-			}
-		    }
-		    int i = cname.lastIndexOf('.');
-		    if (i != -1) {
-			security.checkPackageAccess(cname.substring(0, i));
-		    }
-		}
+                SecurityManager security = System.getSecurityManager();
+                if (security != null) {
+                    // if it's ok with the SecurityManager, it's ok with me.
+                    String cname = cn.replace('/', '.');
+                    if (cname.startsWith("[")) {
+                        int b = cname.lastIndexOf('[') + 2;
+                        if (b > 1 && b < cname.length()) {
+                            cname = cname.substring(b);
+                        }
+                    }
+                    int i = cname.lastIndexOf('.');
+                    if (i != -1) {
+                        security.checkPackageAccess(cname.substring(0, i));
+                    }
+                }
 
                 // Beans.instantiate specified to use SCL when loader is null
                 if (loader == null) {
                     loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-			    public ClassLoader run() {
-				ClassLoader cl = null;
-				try {
-				    cl = ClassLoader.getSystemClassLoader();
-				} catch (SecurityException ex) { }
-				return cl;
-			    }
-			});
+                        public ClassLoader run() {
+                            ClassLoader cl = null;
+                            try {
+                                cl = ClassLoader.getSystemClassLoader();
+                            } catch (SecurityException ex) {
+                            }
+                            return cl;
+                        }
+                    });
                 }
                 Class<?> beanClass = Class.forName(cn, true, loader);
                 try {

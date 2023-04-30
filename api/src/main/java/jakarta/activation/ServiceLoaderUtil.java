@@ -65,8 +65,8 @@ class ServiceLoaderUtil {
     // unless it is defaultClassname. It means if you are trying to instantiate
     // default implementation (fallback), pass the class name to both first and second parameter.
     static <P, T extends Exception> P newInstance(String className,
-                                                    String defaultImplClassName, ClassLoader classLoader,
-                                                    final ExceptionHandler<T> handler) throws T {
+                                                  String defaultImplClassName, ClassLoader classLoader,
+                                                  final ExceptionHandler<T> handler) throws T {
         try {
             Class<P> cls = safeLoadClass(className, defaultImplClassName, classLoader);
             return cls.getConstructor().newInstance();
@@ -79,8 +79,8 @@ class ServiceLoaderUtil {
 
     @SuppressWarnings({"unchecked"})
     static <P> Class<P> safeLoadClass(String className,
-                               String defaultImplClassName,
-                               ClassLoader classLoader) throws ClassNotFoundException {
+                                      String defaultImplClassName,
+                                      ClassLoader classLoader) throws ClassNotFoundException {
 
         try {
             checkPackageAccess(className);

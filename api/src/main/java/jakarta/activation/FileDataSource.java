@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021, 2023 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2023, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -31,7 +31,7 @@ import java.nio.file.Paths;
  * set the FileTypeMap for an instance of FileDataSource. If no
  * FileTypeMap is set, the FileDataSource will call the FileTypeMap's
  * getDefaultFileTypeMap method to get the System's default FileTypeMap.
- *
+ * <p>
  * <b>API Note:</b>
  * It is recommended to construct a {@code FileDataSource} using a {@code Path}
  * instead of using a {@code File} since {@code Path} contains enhanced functionality.
@@ -44,21 +44,21 @@ public class FileDataSource implements DataSource {
 
     // keep track of original 'ref' passed in, non-null
     // one indicated which was passed in:
-	private Path _path = null;
+    private Path _path = null;
     private FileTypeMap typeMap = null;
 
     /**
      * Creates a FileDataSource from a File object. <i>Note:
      * The file will not actually be opened until a method is
      * called that requires the file to be opened.</i>
-     *
+     * <p>
      * <b>API Note:</b>
      * {@code FileDataSource(Path)} constructor should be preferred over this one.
-     * 
+     *
      * @param file the file
      */
     public FileDataSource(File file) {
-	_path = file.toPath();	// save the file Object...
+        _path = file.toPath();    // save the file Object...
     }
 
     /**
@@ -69,7 +69,7 @@ public class FileDataSource implements DataSource {
      * @param path the file
      */
     public FileDataSource(Path path) {
-    _path = path;
+        _path = path;
     }
 
     /**
@@ -81,7 +81,7 @@ public class FileDataSource implements DataSource {
      * @param name the system-dependent file name.
      */
     public FileDataSource(String name) {
-	this(Paths.get(name));	// use the file constructor
+        this(Paths.get(name));    // use the file constructor
     }
 
     /**
@@ -93,7 +93,7 @@ public class FileDataSource implements DataSource {
      * @return an InputStream
      */
     public InputStream getInputStream() throws IOException {
-	return Files.newInputStream(_path);
+        return Files.newInputStream(_path);
     }
 
     /**
@@ -105,7 +105,7 @@ public class FileDataSource implements DataSource {
      * @return an OutputStream
      */
     public OutputStream getOutputStream() throws IOException {
-	return Files.newOutputStream(_path);
+        return Files.newOutputStream(_path);
     }
 
     /**
@@ -120,11 +120,11 @@ public class FileDataSource implements DataSource {
      * @see jakarta.activation.FileTypeMap#getDefaultFileTypeMap
      */
     public String getContentType() {
-    // check to see if the type map is null?
-    if (typeMap == null)
-        return FileTypeMap.getDefaultFileTypeMap().getContentType(_path);
-	else
-        return typeMap.getContentType(_path);
+        // check to see if the type map is null?
+        if (typeMap == null)
+            return FileTypeMap.getDefaultFileTypeMap().getContentType(_path);
+        else
+            return typeMap.getContentType(_path);
     }
 
     /**
@@ -135,23 +135,25 @@ public class FileDataSource implements DataSource {
      * @see jakarta.activation.DataSource
      */
     public String getName() {
-	return _path.getFileName().toString();
+        return _path.getFileName().toString();
     }
 
     /**
      * Return the File object that corresponds to this FileDataSource.
+     *
      * @return the File object for the file represented by this object.
      */
     public File getFile() {
-	return _path.toFile();
+        return _path.toFile();
     }
 
     /**
      * Return the Path object that corresponds to this FileDataSource.
+     *
      * @return the Path object for the file represented by this object.
      */
     public Path getPath() {
-	return _path;
+        return _path;
     }
 
     /**
@@ -160,6 +162,6 @@ public class FileDataSource implements DataSource {
      * @param map The FileTypeMap for this object.
      */
     public void setFileTypeMap(FileTypeMap map) {
-	typeMap = map;
+        typeMap = map;
     }
 }
