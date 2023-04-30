@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2021, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -11,6 +11,7 @@
 package jakarta.activation;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -51,6 +52,15 @@ public abstract class FileTypeMap {
      * @return The content type.
      */
     abstract public String getContentType(File file);
+
+    /**
+     * Return the type of the file Path object. This method should
+     * always return a valid MIME type.
+     *
+     * @param path A file Path to be typed.
+     * @return The content type.
+     */
+    abstract public String getContentType(Path path);
 
     /**
      * Return the type of the file passed in.  This method should

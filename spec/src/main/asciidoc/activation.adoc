@@ -192,7 +192,7 @@ them for their names to generate its display.
 [source, java]
 ----
 // for each file in the directory:
-File file = new File(file_name);
+Path file = Path.of(file_name);
 DataSource ds = new FileDataSource(file);
 DataHandler dh = new DataHandler(ds);
 ----
@@ -876,6 +876,11 @@ and ServiceLoader to obtain an instance of the implementation of the
 MimeTypeRegistryProvider.
 
 == Document Change History
+
+=== Changes in version 2.2
+
+* Apr 04, 2023: Initialization sample code changed to use preferred
+constructor.
 
 === Changes in version 2.1
 

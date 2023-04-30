@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2022, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,13 +10,18 @@
 
 package jakarta.activation;
 
-import jakarta.activation.spi.MimeTypeRegistryProvider;
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.NoSuchElementException;
+import java.util.ServiceConfigurationError;
+import java.util.Vector;
+
+import jakarta.activation.spi.MimeTypeRegistryProvider;
 
 /**
  * This class extends FileTypeMap and provides data typing of files
@@ -344,7 +349,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     }
 
     /**
-     * Return the MIME type of the file object.
+     * Return the MIME type of the <Code>File</Code> object.
      * The implementation in this class calls
      * <code>getContentType(f.getName())</code>.
      *
@@ -353,6 +358,18 @@ public class MimetypesFileTypeMap extends FileTypeMap {
      */
     public String getContentType(File f) {
         return this.getContentType(f.getName());
+    }
+
+    /**
+     * Return the MIME type of the <Code>Path</Code> object.
+     * The implementation in this class calls
+     * <code>getContentType(p.getFileName().toString())</code>.
+     *
+     * @param p the file <Code>Path</Code>
+     * @return the file's MIME type
+     */
+    public String getContentType(Path p) {
+        return this.getContentType(p.getFileName().toString());
     }
 
     /**
