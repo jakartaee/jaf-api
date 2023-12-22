@@ -398,15 +398,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged(new PrivilegedAction<MimeTypeRegistryProvider>() {
                 public MimeTypeRegistryProvider run() {
-                    return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                            null,
-                            false);
+                    return FactoryFinder.find(MimeTypeRegistryProvider.class);
                 }
             });
         } else {
-            return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                    null,
-                    false);
+            return FactoryFinder.find(MimeTypeRegistryProvider.class);
         }
     }
 

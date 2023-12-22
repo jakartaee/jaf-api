@@ -706,15 +706,11 @@ public class MailcapCommandMap extends CommandMap {
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged(new PrivilegedAction<MailcapRegistryProvider>() {
                 public MailcapRegistryProvider run() {
-                    return FactoryFinder.find(MailcapRegistryProvider.class,
-                            null,
-                            false);
+                    return FactoryFinder.find(MailcapRegistryProvider.class);
                 }
             });
         } else {
-            return FactoryFinder.find(MailcapRegistryProvider.class,
-                    null,
-                    false);
+            return FactoryFinder.find(MailcapRegistryProvider.class);
         }
     }
 

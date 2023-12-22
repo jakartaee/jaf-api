@@ -23,12 +23,13 @@ import java.util.logging.Logger;
 class ServiceLoaderUtil {
 
     static <P, T extends Exception> P firstByServiceLoader(Class<P> spiClass,
+                                                           ClassLoader loader,            
                                                            Logger logger,
                                                            ExceptionHandler<T> handler) throws T {
         logger.log(Level.FINE, "Using java.util.ServiceLoader to find {0}", spiClass.getName());
         // service discovery
         try {
-            ServiceLoader<P> serviceLoader = ServiceLoader.load(spiClass);
+            ServiceLoader<P> serviceLoader = ServiceLoader.load(spiClass, loader);
 
             for (P impl : serviceLoader) {
                 logger.log(Level.FINE, "ServiceProvider loading Facility used; returning object [{0}]", impl.getClass().getName());
@@ -65,11 +66,11 @@ class ServiceLoaderUtil {
     // unless it is defaultClassname. It means if you are trying to instantiate
     // default implementation (fallback), pass the class name to both first and second parameter.
     static <P, T extends Exception> P newInstance(String className,
-                                                  String defaultImplClassName, ClassLoader classLoader,
+                                                  Class<P> service, ClassLoader classLoader,
                                                   final ExceptionHandler<T> handler) throws T {
         try {
-            Class<P> cls = safeLoadClass(className, defaultImplClassName, classLoader);
-            return cls.getConstructor().newInstance();
+            Class<P> cls = safeLoadClass(className, classLoader);
+            return service.cast(cls.getConstructor().newInstance());
         } catch (ClassNotFoundException x) {
             throw handler.createException(x, "Provider " + className + " not found");
         } catch (Exception x) {
@@ -79,28 +80,9 @@ class ServiceLoaderUtil {
 
     @SuppressWarnings({"unchecked"})
     static <P> Class<P> safeLoadClass(String className,
-                                      String defaultImplClassName,
                                       ClassLoader classLoader) throws ClassNotFoundException {
-
-        try {
-            checkPackageAccess(className);
-        } catch (SecurityException se) {
-            // anyone can access the platform default factory class without permission
-            if (defaultImplClassName != null && defaultImplClassName.equals(className)) {
-                return (Class<P>) Class.forName(className);
-            }
-            // not platform default implementation ...
-            throw se;
-        }
+        checkPackageAccess(className);
         return nullSafeLoadClass(className, classLoader);
-    }
-
-    static <T extends Exception> ClassLoader contextClassLoader(ExceptionHandler<T> exceptionHandler) throws T {
-        try {
-            return Thread.currentThread().getContextClassLoader();
-        } catch (Exception x) {
-            throw exceptionHandler.createException(x, x.toString());
-        }
     }
 
     static abstract class ExceptionHandler<T extends Exception> {
