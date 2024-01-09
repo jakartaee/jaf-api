@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 class ServiceLoaderUtil {
 
     static <P, T extends Exception> P firstByServiceLoader(Class<P> spiClass,
-                                                           ClassLoader loader,            
+                                                           ClassLoader loader,
                                                            Logger logger,
                                                            ExceptionHandler<T> handler) throws T {
         logger.log(Level.FINE, "Using java.util.ServiceLoader to find {0}", spiClass.getName());
@@ -55,16 +55,13 @@ class ServiceLoaderUtil {
 
     @SuppressWarnings({"unchecked"})
     static <P> Class<P> nullSafeLoadClass(String className, ClassLoader classLoader) throws ClassNotFoundException {
-        if (classLoader == null) {
-            return (Class<P>) Class.forName(className);
-        } else {
-            return (Class<P>) classLoader.loadClass(className);
+        if (classLoader == null) { //Match behavior of ServiceLoader
+            classLoader = ClassLoader.getSystemClassLoader();
         }
+        return (Class<P>) Class.forName(className, false, classLoader);
     }
 
-    // Returns instance of required class. It checks package access (security)
-    // unless it is defaultClassname. It means if you are trying to instantiate
-    // default implementation (fallback), pass the class name to both first and second parameter.
+    // Returns instance of required class. It checks package access (security).
     static <P, T extends Exception> P newInstance(String className,
                                                   Class<P> service, ClassLoader classLoader,
                                                   final ExceptionHandler<T> handler) throws T {
