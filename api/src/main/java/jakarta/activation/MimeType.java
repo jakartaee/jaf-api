@@ -24,7 +24,7 @@ public class MimeType implements Externalizable {
 
     private String primaryType;
     private String subType;
-    private MimeTypeParameterList parameters;
+    private transient MimeTypeParameterList parameters;
 
     private static final long serialVersionUID = 7548163901563814301L;
 
