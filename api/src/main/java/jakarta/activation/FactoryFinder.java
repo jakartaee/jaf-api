@@ -27,7 +27,7 @@ class FactoryFinder {
             new ServiceLoaderUtil.ExceptionHandler<RuntimeException>() {
                 @Override
                 public RuntimeException createException(Throwable throwable, String message) {
-                    return new RuntimeException(message, throwable);
+                    return new IllegalStateException(message, throwable);
                 }
             };
 
@@ -52,8 +52,9 @@ class FactoryFinder {
                 return f;
             }
         }
-        throw new RuntimeException(
-                "Provider for " + factoryClass.getName() + " cannot be found", null);
+
+        throw EXCEPTION_HANDLER.createException((Throwable) null,
+                "Provider for " + factoryClass.getName() + " cannot be found");
     }
 
     static <T> T find(Class<T> factoryClass, ClassLoader loader) throws RuntimeException {
@@ -85,7 +86,9 @@ class FactoryFinder {
         return null;
     }
 
-    private static <T> T newInstance(String className, Class<? extends T> service, ClassLoader loader) throws RuntimeException {
+    private static <T> T newInstance(String className,
+                            Class<? extends T> service, ClassLoader loader)
+                                throws RuntimeException {
         return ServiceLoaderUtil.newInstance(
                 className,
                 service,
@@ -161,41 +164,41 @@ class FactoryFinder {
 
     private static ClassLoader[] getClassLoaders(final Class<?>... classes) {
         return AccessController.doPrivileged(
-                new PrivilegedAction<ClassLoader[]>() {
-                    @Override
-                    public ClassLoader[] run() {
-                        ClassLoader[] loaders = new ClassLoader[classes.length];
-                        int w = 0;
-                        for (Class<?> k : classes) {
-                            ClassLoader cl = null;
-                            if (k == Thread.class) {
-                                try {
-                                    cl = Thread.currentThread().getContextClassLoader();
-                                } catch (SecurityException ex) {
-                                }
-                            } else if (k == System.class) {
-                                try {
-                                    cl = ClassLoader.getSystemClassLoader();
-                                } catch (SecurityException ex) {
-                                }
-                            } else {
-                                try {
-                                    cl = k.getClassLoader();
-                                } catch (SecurityException ex) {
-                                }
+            new PrivilegedAction<ClassLoader[]>() {
+                @Override
+                public ClassLoader[] run() {
+                    ClassLoader[] loaders = new ClassLoader[classes.length];
+                    int w = 0;
+                    for (Class<?> k : classes) {
+                        ClassLoader cl = null;
+                        if (k == Thread.class) {
+                            try {
+                                cl = Thread.currentThread().getContextClassLoader();
+                            } catch (SecurityException ex) {
                             }
-
-                            if (cl != null) {
-                               loaders[w++] = cl;
+                        } else if (k == System.class) {
+                            try {
+                                cl = ClassLoader.getSystemClassLoader();
+                            } catch (SecurityException ex) {
+                            }
+                        } else {
+                            try {
+                                cl = k.getClassLoader();
+                            } catch (SecurityException ex) {
                             }
                         }
 
-                        if (loaders.length != w) {
-                            loaders = Arrays.copyOf(loaders, w);
+                        if (cl != null) {
+                           loaders[w++] = cl;
                         }
-                        return loaders;
                     }
+
+                    if (loaders.length != w) {
+                        loaders = Arrays.copyOf(loaders, w);
+                    }
+                    return loaders;
                 }
+            }
         );
     }
 }
