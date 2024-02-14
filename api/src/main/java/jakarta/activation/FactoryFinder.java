@@ -40,7 +40,7 @@ class FactoryFinder {
      * @param factoryClass     factory abstract class or interface to be found
      * @return the {@code Class} object of the specified message factory;
      * may not be {@code null}
-     * @throws RuntimeException if there is no factory found
+     * @throws IllegalStateException if there is no factory found
      */
     static <T> T find(Class<T> factoryClass) throws RuntimeException {
         for (ClassLoader l : getClassLoaders(
