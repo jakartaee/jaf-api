@@ -38,18 +38,9 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
-      BUNDLE_GEMFILE: ${{ github.workspace }}/www/Gemfile
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
-        with:
-          ruby-version: '3.1'
-          bundler-cache: true
-          cache-version: 0
-          working-directory:  './www'
       - name: Add static content
         run: |
           export VERSION=`curl https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/maven-metadata.xml | tac | grep -o -m 1 "<version>[[:digit:]]\.[[:digit:]]\.[[:digit:]]</version" | cut -f 2 -d ">" | cut -f 1 -d "<"`
@@ -59,13 +50,14 @@ jobs:
           unzip -q -d ./www/api jakarta.activation-api-javadoc.zip -x "META-INF/*"
           cp -Rfv CONTRIBUTING.md doc/spec/* ./www/
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v3
       - name: Build with Jekyll
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --source ./www/ --destination ./_site
-        env:
-          JEKYLL_ENV: production
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./www/
+          destination: ./_site
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v1
 
   # Deployment job
   deploy:
@@ -77,4 +69,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
