@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -200,7 +200,7 @@ public class MailcapCommandMap extends CommandMap {
         } catch (IOException | SecurityException e) {
             if (LogSupport.isLoggable())
                 LogSupport.log("MailcapCommandMap: can't load " + name, e);
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
                         "MailcapRegistry: can't load " + name, e);
@@ -251,7 +251,7 @@ public class MailcapCommandMap extends CommandMap {
                         if (LogSupport.isLoggable())
                             LogSupport.log("MailcapCommandMap: can't load " +
                                     url, ioex);
-                    } catch (NoSuchElementException | ServiceConfigurationError e) {
+                    } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
                         if (LogSupport.isLoggable()) {
                             LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
                                     "MailcapRegistry: can't load " + name, e);
@@ -286,7 +286,7 @@ public class MailcapCommandMap extends CommandMap {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("MailcapRegistry: can't load from file - " + name, e);
             }
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
                         "MailcapRegistry: can't load " + name, e);
@@ -307,7 +307,7 @@ public class MailcapCommandMap extends CommandMap {
         if (DB[PROG] == null) {
             try {
                 DB[PROG] = getImplementation().getByFileName(fileName);
-            } catch (NoSuchElementException | ServiceConfigurationError e) {
+            } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
                 String message = "Cannot find or load an implementation for MailcapRegistryProvider. " +
                         "MailcapRegistry: can't load " + fileName;
                 if (LogSupport.isLoggable()) {
@@ -336,7 +336,7 @@ public class MailcapCommandMap extends CommandMap {
                 DB[PROG] = getImplementation().getByInputStream(is);
             } catch (IOException ex) {
                 // XXX - should throw it
-            } catch (NoSuchElementException | ServiceConfigurationError e) {
+            } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
                 if (LogSupport.isLoggable()) {
                     LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider." +
                             "MailcapRegistry: can't load InputStream", e);
@@ -537,7 +537,7 @@ public class MailcapCommandMap extends CommandMap {
                 DB[PROG] = getImplementation().getInMemory();
             }
             DB[PROG].appendToMailcap(mail_cap);
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
                         "MailcapRegistry: can't load", e);
@@ -696,15 +696,11 @@ public class MailcapCommandMap extends CommandMap {
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged(new PrivilegedAction<MailcapRegistryProvider>() {
                 public MailcapRegistryProvider run() {
-                    return FactoryFinder.find(MailcapRegistryProvider.class,
-                            null,
-                            false);
+                    return FactoryFinder.find(MailcapRegistryProvider.class);
                 }
             });
         } else {
-            return FactoryFinder.find(MailcapRegistryProvider.class,
-                    null,
-                    false);
+            return FactoryFinder.find(MailcapRegistryProvider.class);
         }
     }
 
