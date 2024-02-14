@@ -35,6 +35,7 @@
         <activation.recompile.skip>false</activation.recompile.skip>
         <!-- for the osgiversion-maven-plugin -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputTimestamp>2024-02-14T00:00:00Z</project.build.outputTimestamp>
         <javadoc.title>Jakarta Activation API documentation</javadoc.title>
         <legal.doc.source>${project.basedir}/..</legal.doc.source>
         <copyright.exclude>${project.basedir}/../etc/copyright-exclude</copyright.exclude>
