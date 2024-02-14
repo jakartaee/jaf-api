@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 Contributors to the Eclipse Foundation
+# Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0 which is available at
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Add static content
         run: |
           export VERSION=`curl https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/maven-metadata.xml | tac | grep -o -m 1 "<version>[[:digit:]]\.[[:digit:]]\.[[:digit:]]</version" | cut -f 2 -d ">" | cut -f 1 -d "<"`
@@ -50,7 +50,7 @@ jobs:
           unzip -q -d ./www/api jakarta.activation-api-javadoc.zip -x "META-INF/*"
           cp -Rfv CONTRIBUTING.md doc/spec/* ./www/
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
@@ -69,4 +69,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v2
