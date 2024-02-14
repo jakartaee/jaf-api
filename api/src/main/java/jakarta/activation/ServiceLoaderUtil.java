@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Shared ServiceLoader/FactoryFinder Utils.
+ * Shared ServiceLoader/FactoryFinder Utils. JAF and MAIL use the same loading
+ * logic of thread context class loader, calling class loader, and finally the
+ * system class loader.
  *
  * @author Miroslav.Kos@oracle.com
  */
