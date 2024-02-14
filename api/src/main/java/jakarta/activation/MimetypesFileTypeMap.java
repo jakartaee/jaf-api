@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2023 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -166,7 +166,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         } catch (IOException | SecurityException e) {
             if (LogSupport.isLoggable())
                 LogSupport.log("MimetypesFileTypeMap: can't load " + name, e);
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
                         "MimeTypeRegistry: can't load " + name, e);
@@ -228,7 +228,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                         if (LogSupport.isLoggable())
                             LogSupport.log("MimetypesFileTypeMap: can't load " +
                                     url, ioex);
-                    } catch (NoSuchElementException | ServiceConfigurationError e) {
+                    } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
                         if (LogSupport.isLoggable()) {
                             LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
                                     "MimeTypeRegistry: can't load " + url, e);
@@ -270,7 +270,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("MimeTypeRegistry: can't load from file - " + name, e);
             }
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
                         "MimeTypeRegistry: can't load " + name, e);
@@ -290,7 +290,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         this();
         try {
             DB[PROG] = getImplementation().getByFileName(mimeTypeFileName);
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             String errorMessage = "Cannot find or load an implementation for MimeTypeRegistryProvider." +
                     "MimeTypeRegistry: can't load " + mimeTypeFileName;
             if (LogSupport.isLoggable()) {
@@ -312,7 +312,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             DB[PROG] = getImplementation().getByInputStream(is);
         } catch (IOException ex) {
             // XXX - really should throw it
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
                         "MimeTypeRegistry: can't load InputStream", e);
@@ -332,7 +332,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                 DB[PROG] = getImplementation().getInMemory();
             }
             DB[PROG].appendToRegistry(mime_types);
-        } catch (NoSuchElementException | ServiceConfigurationError e) {
+        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
             if (LogSupport.isLoggable()) {
                 LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
                         "MimeTypeRegistry: can't add " + mime_types, e);
@@ -398,15 +398,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged(new PrivilegedAction<MimeTypeRegistryProvider>() {
                 public MimeTypeRegistryProvider run() {
-                    return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                            null,
-                            false);
+                    return FactoryFinder.find(MimeTypeRegistryProvider.class);
                 }
             });
         } else {
-            return FactoryFinder.find(MimeTypeRegistryProvider.class,
-                    null,
-                    false);
+            return FactoryFinder.find(MimeTypeRegistryProvider.class);
         }
     }
 
