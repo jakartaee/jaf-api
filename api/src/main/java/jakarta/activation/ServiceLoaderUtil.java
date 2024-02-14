@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -15,8 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Shared ServiceLoader/FactoryFinder Utils shared among JAF, MAIL, SAAJ, JAXB and JAXWS
- * Class duplicated to all those projects.
+ * Shared ServiceLoader/FactoryFinder Utils.
  *
  * @author Miroslav.Kos@oracle.com
  */
@@ -87,5 +86,4 @@ class ServiceLoaderUtil {
         public abstract T createException(Throwable throwable, String message);
 
     }
-
 }
