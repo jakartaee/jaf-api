@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -13,6 +13,7 @@ package jakarta.activation;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,48 +27,41 @@ class FactoryFinder {
             new ServiceLoaderUtil.ExceptionHandler<RuntimeException>() {
                 @Override
                 public RuntimeException createException(Throwable throwable, String message) {
-                    return new RuntimeException(message, throwable);
+                    return new IllegalStateException(message, throwable);
                 }
             };
 
     /**
      * Finds the implementation {@code Class} object for the given
-     * factory type.  If it fails and {@code tryFallback} is {@code true}
-     * finds the {@code Class} object for the given default class name.
-     * The arguments supplied must be used in order
-     * Note the default class name may be needed even if fallback
-     * is not to be attempted in order to check if requested type is fallback.
+     * factory type.
      * <P>
      * This method is package private so that this code can be shared.
      *
+     * @param factoryClass     factory abstract class or interface to be found
      * @return the {@code Class} object of the specified message factory;
-     *         may not be {@code null}
-     *
-     * @param factoryClass          factory abstract class or interface to be found
-     * @param defaultClassName      the implementation class name, which is
-     *                              to be used only if nothing else
-     *                              is found; {@code null} to indicate
-     *                              that there is no default class name
-     * @param tryFallback           whether to try the default class as a
-     *                              fallback
-     * @exception RuntimeException if there is no factory found
+     * may not be {@code null}
+     * @throws IllegalStateException if there is no factory found
      */
-    static <T> T find(Class<T> factoryClass,
-                      String defaultClassName,
-                      boolean tryFallback) throws RuntimeException {
-
-        ClassLoader tccl = ServiceLoaderUtil.contextClassLoader(EXCEPTION_HANDLER);
-        String factoryId = factoryClass.getName();
-
-        // Use the system property first
-        String className = fromSystemProperty(factoryId);
-        if (className != null) {
-            T result = newInstance(className, defaultClassName, tccl);
-            if (result != null) {
-                return result;
+    static <T> T find(Class<T> factoryClass) throws RuntimeException {
+        for (ClassLoader l : getClassLoaders(
+                                Thread.class,
+                                FactoryFinder.class,
+                                System.class)) {
+            T f = find(factoryClass, l);
+            if (f != null) {
+                return f;
             }
-            // try api loader
-            result = newInstance(className, defaultClassName, FactoryFinder.class.getClassLoader());
+        }
+
+        throw EXCEPTION_HANDLER.createException((Throwable) null,
+                "Provider for " + factoryClass.getName() + " cannot be found");
+    }
+
+    static <T> T find(Class<T> factoryClass, ClassLoader loader) throws RuntimeException {
+        // Use the system property first
+        String className = fromSystemProperty(factoryClass.getName());
+        if (className != null) {
+            T result = newInstance(className, factoryClass, loader);
             if (result != null) {
                 return result;
             }
@@ -76,6 +70,7 @@ class FactoryFinder {
         // standard services: java.util.ServiceLoader
         T factory = ServiceLoaderUtil.firstByServiceLoader(
                 factoryClass,
+                loader,
                 logger,
                 EXCEPTION_HANDLER);
         if (factory != null) {
@@ -83,33 +78,21 @@ class FactoryFinder {
         }
 
         // handling Glassfish/OSGi (platform specific default)
-        if (isOsgi()) {
-            T result = lookupUsingOSGiServiceLoader(factoryId);
-            if (result != null) {
-                return result;
-            }
+        T result = lookupUsingHk2ServiceLoader(factoryClass, loader);
+        if (result != null) {
+            return result;
         }
 
-        // If not found and fallback should not be tried, throw RuntimeException.
-        if (!tryFallback) {
-            throw new RuntimeException(
-                    "Provider for " + factoryId + " cannot be found", null);
-        }
-
-        // We didn't find the class through the usual means so try the default
-        // (built in) factory if specified.
-        if (defaultClassName == null) {
-            throw new RuntimeException(
-                    "Provider for " + factoryId + " cannot be found", null);
-        }
-        return newInstance(defaultClassName, defaultClassName, tccl);
+        return null;
     }
 
-    private static <T> T newInstance(String className, String defaultClassName, ClassLoader tccl) throws RuntimeException {
+    private static <T> T newInstance(String className,
+                            Class<? extends T> service, ClassLoader loader)
+                                throws RuntimeException {
         return ServiceLoaderUtil.newInstance(
                 className,
-                defaultClassName,
-                tccl,
+                service,
+                loader,
                 EXCEPTION_HANDLER);
     }
 
@@ -138,31 +121,85 @@ class FactoryFinder {
         }
     }
 
-    private static final String OSGI_SERVICE_LOADER_CLASS_NAME = "org.glassfish.hk2.osgiresourcelocator.ServiceLoader";
+    private static Class<?>[] getHk2ServiceLoaderTargets(Class<?> factoryClass) {
+        ClassLoader[] loaders = getClassLoaders(Thread.class, factoryClass, System.class);
 
-    private static boolean isOsgi() {
-        try {
-            Class.forName(OSGI_SERVICE_LOADER_CLASS_NAME);
-            return true;
-        } catch (ClassNotFoundException ignored) {
+        Class<?>[] classes = new Class<?>[loaders.length];
+        int w = 0;
+        for (ClassLoader loader : loaders) {
+            if (loader != null) {
+                try {
+                    classes[w++] = Class.forName("org.glassfish.hk2.osgiresourcelocator.ServiceLoader", false, loader);
+                } catch (Exception | LinkageError ignored) {
+                }  //GlassFish class loaders can throw undocumented exceptions
+            }
         }
-        return false;
+
+        if (classes.length != w) {
+           classes = Arrays.copyOf(classes, w);
+        }
+        return classes;
     }
 
     @SuppressWarnings({"unchecked"})
-    private static <T> T lookupUsingOSGiServiceLoader(String factoryId) {
-        try {
-            // Use reflection to avoid having any dependency on HK2 ServiceLoader class
-            Class<?> serviceClass = Class.forName(factoryId);
-            Class<?>[] args = new Class<?>[]{serviceClass};
-            Class<?> target = Class.forName(OSGI_SERVICE_LOADER_CLASS_NAME);
-            Method m = target.getMethod("lookupProviderInstances", Class.class);
-            Iterator<?> iter = ((Iterable<?>) m.invoke(null, (Object[]) args)).iterator();
-            return iter.hasNext() ? (T) iter.next() : null;
-        } catch (Exception ignored) {
-            // log and continue
-            return null;
+    private static <T> T lookupUsingHk2ServiceLoader(Class<T> factoryClass, ClassLoader loader) {
+        for (Class<?> target : getHk2ServiceLoaderTargets(factoryClass)) {
+            try {
+                // Use reflection to avoid having any dependency on HK2 ServiceLoader class
+                Class<?> serviceClass = Class.forName(factoryClass.getName(), false, loader);
+                Class<?>[] args = new Class<?>[]{serviceClass};
+                Method m = target.getMethod("lookupProviderInstances", Class.class);
+                Iterable<?> iterable = ((Iterable<?>) m.invoke(null, (Object[]) args));
+                if (iterable != null) {
+                    Iterator<?> iter = iterable.iterator();
+                    if (iter.hasNext()) {
+                        return factoryClass.cast(iter.next()); //Verify classloader.
+                    }
+                }
+            } catch (Exception ignored) {
+                // log and continue
+            }
         }
+        return null;
     }
 
+    private static ClassLoader[] getClassLoaders(final Class<?>... classes) {
+        return AccessController.doPrivileged(
+            new PrivilegedAction<ClassLoader[]>() {
+                @Override
+                public ClassLoader[] run() {
+                    ClassLoader[] loaders = new ClassLoader[classes.length];
+                    int w = 0;
+                    for (Class<?> k : classes) {
+                        ClassLoader cl = null;
+                        if (k == Thread.class) {
+                            try {
+                                cl = Thread.currentThread().getContextClassLoader();
+                            } catch (SecurityException ex) {
+                            }
+                        } else if (k == System.class) {
+                            try {
+                                cl = ClassLoader.getSystemClassLoader();
+                            } catch (SecurityException ex) {
+                            }
+                        } else {
+                            try {
+                                cl = k.getClassLoader();
+                            } catch (SecurityException ex) {
+                            }
+                        }
+
+                        if (cl != null) {
+                           loaders[w++] = cl;
+                        }
+                    }
+
+                    if (loaders.length != w) {
+                        loaders = Arrays.copyOf(loaders, w);
+                    }
+                    return loaders;
+                }
+            }
+        );
+    }
 }
