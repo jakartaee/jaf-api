@@ -38,6 +38,8 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
+      BUNDLE_GEMFILE: ${{ github.workspace }}/www/Gemfile
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,6 +49,7 @@ jobs:
           ruby-version: '3.1'
           bundler-cache: true
           cache-version: 0
+          working-directory:  './www'
       - name: Add static content
         run: |
           export VERSION=`curl https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/maven-metadata.xml | tac | grep -o -m 1 "<version>[[:digit:]]\.[[:digit:]]\.[[:digit:]]</version" | cut -f 2 -d ">" | cut -f 1 -d "<"`
