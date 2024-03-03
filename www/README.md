@@ -20,6 +20,11 @@ Jakarta Activation is used for data content handling by:
 
 # <a name="Latest_News"></a>Latest News
 
+## March 2, 2024 - Jakarta Activation 2.1.3 Final Release ##
+
+The 2.1.3 release is the bug fix release fixing erroneous
+assumption about classes being loaded from `Thread.getContextClassLoader`.
+
 ## April 28, 2023 - Jakarta Activation 2.1.2 Final Release ##
 
 The 2.1.2 release is the bug fix release which adds missing
