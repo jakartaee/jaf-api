@@ -15,8 +15,6 @@ import jakarta.activation.spi.MailcapRegistryProvider;
 import java.util.*;
 import java.io.*;
 import java.net.*;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * MailcapCommandMap extends the CommandMap
@@ -118,18 +116,11 @@ public class MailcapCommandMap extends CommandMap {
     static {
 	String dir = null;
 	try {
-	    dir = AccessController.doPrivileged(
-		new PrivilegedAction<String>() {
-		    public String run() {
 			String home = System.getProperty("java.home");
 			String newdir = home + File.separator + "conf";
 			File conf = new File(newdir);
-			if (conf.exists())
-			    return newdir + File.separator;
-			else
-			    return home + File.separator + "lib" + File.separator;
-		    }
-		});
+            dir = conf.exists() ? (newdir + File.separator) :
+                (home + File.separator + "lib" + File.separator);
 	} catch (Exception ex) {
 	    // ignore any exceptions
 	}
@@ -185,7 +176,7 @@ public class MailcapCommandMap extends CommandMap {
      * Load from the named resource.
      */
     private MailcapRegistry loadResource(String name) {
-        try (InputStream clis = SecuritySupport.getResourceAsStream(this.getClass(), name)) {
+        try (InputStream clis = this.getClass().getResourceAsStream(name)) {
             if (clis != null) {
                 MailcapRegistry mf = getImplementation().getByInputStream(clis);
                 if (LogSupport.isLoggable())
@@ -218,7 +209,7 @@ public class MailcapCommandMap extends CommandMap {
             URL[] urls;
             ClassLoader cld = null;
             // First try the "application's" class loader.
-            cld = SecuritySupport.getContextClassLoader();
+            cld = Thread.currentThread().getContextClassLoader();
             if (cld == null)
                 cld = this.getClass().getClassLoader();
             if (cld != null)
@@ -232,7 +223,7 @@ public class MailcapCommandMap extends CommandMap {
                     URL url = urls[i];
                     if (LogSupport.isLoggable())
                         LogSupport.log("MailcapCommandMap: URL " + url);
-                    try (InputStream clis = SecuritySupport.openStream(url)) {
+                    try (InputStream clis = url.openStream()) {
                         if (clis != null) {
                             v.add(getImplementation().getByInputStream(clis));
                             anyLoaded = true;
@@ -605,7 +596,7 @@ public class MailcapCommandMap extends CommandMap {
 	try {
 	    ClassLoader cld = null;
 	    // First try the "application's" class loader.
-	    cld = SecuritySupport.getContextClassLoader();
+            cld = Thread.currentThread().getContextClassLoader();
 	    if (cld == null)
 		cld = this.getClass().getClassLoader();
 	    Class<?> cl = null;
@@ -693,16 +684,8 @@ public class MailcapCommandMap extends CommandMap {
     }
 
     private MailcapRegistryProvider getImplementation() {
-        if (System.getSecurityManager() != null) {
-            return AccessController.doPrivileged(new PrivilegedAction<MailcapRegistryProvider>() {
-                public MailcapRegistryProvider run() {
                     return FactoryFinder.find(MailcapRegistryProvider.class);
                 }
-            });
-        } else {
-            return FactoryFinder.find(MailcapRegistryProvider.class);
-        }
-    }
 
     /*
      * for debugging...

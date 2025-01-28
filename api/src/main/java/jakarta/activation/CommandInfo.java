@@ -13,8 +13,6 @@ package jakarta.activation;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * The CommandInfo class is used by CommandMap implementations to
@@ -167,33 +165,11 @@ public class CommandInfo {
 
             } else {
 
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-		    // if it's ok with the SecurityManager, it's ok with me.
-		    String cname = cn.replace('/', '.');
-		    if (cname.startsWith("[")) {
-			int b = cname.lastIndexOf('[') + 2;
-			if (b > 1 && b < cname.length()) {
-			    cname = cname.substring(b);
-			}
-		    }
-		    int i = cname.lastIndexOf('.');
-		    if (i != -1) {
-			security.checkPackageAccess(cname.substring(0, i));
-		    }
-		}
-
                 // Beans.instantiate specified to use SCL when loader is null
                 if (loader == null) {
-                    loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-			    public ClassLoader run() {
-				ClassLoader cl = null;
 				try {
-				    cl = ClassLoader.getSystemClassLoader();
+                        loader = ClassLoader.getSystemClassLoader();
 				} catch (SecurityException ex) { }
-				return cl;
-			    }
-			});
                 }
                 Class<?> beanClass = Class.forName(cn, true, loader);
                 try {

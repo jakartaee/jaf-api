@@ -10,10 +10,12 @@
 
 package jakarta.activation;
 
-import java.security.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Security related methods that only work on J2SE 1.2 and newer.
@@ -24,34 +26,7 @@ class SecuritySupport {
 	// private constructor, can't create an instance
     }
 
-    public static ClassLoader getContextClassLoader() {
-	return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-	    public ClassLoader run() {
-		ClassLoader cl = null;
-		try {
-		    cl = Thread.currentThread().getContextClassLoader();
-		} catch (SecurityException ex) { }
-		return cl;
-	    }
-	});
-    }
-
-    public static InputStream getResourceAsStream(final Class<?> c,
-				final String name) throws IOException {
-	try {
-	    return AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-		    public InputStream run() throws IOException {
-			return c.getResourceAsStream(name);
-		    }
-		});
-	} catch (PrivilegedActionException e) {
-	    throw (IOException)e.getException();
-	}
-    }
-
     public static URL[] getResources(final ClassLoader cl, final String name) {
-	return AccessController.doPrivileged(new PrivilegedAction<URL[]>() {
-	    public URL[] run() {
 		URL[] ret = null;
 		try {
 		    List<URL> v = new ArrayList<>();
@@ -69,12 +44,8 @@ class SecuritySupport {
 		} catch (SecurityException ex) { }
 		return ret;
 	    }
-	});
-    }
 
     public static URL[] getSystemResources(final String name) {
-	return AccessController.doPrivileged(new PrivilegedAction<URL[]>() {
-	    public URL[] run() {
 		URL[] ret = null;
 		try {
 		    List<URL> v = new ArrayList<>();
@@ -92,18 +63,4 @@ class SecuritySupport {
 		} catch (SecurityException ex) { }
 		return ret;
 	    }
-	});
-    }
-
-    public static InputStream openStream(final URL url) throws IOException {
-	try {
-	    return AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-		    public InputStream run() throws IOException {
-			return url.openStream();
-		    }
-		});
-	} catch (PrivilegedActionException e) {
-	    throw (IOException)e.getException();
-	}
-    }
 }
