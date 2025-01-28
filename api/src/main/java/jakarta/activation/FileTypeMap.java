@@ -80,23 +80,8 @@ public abstract class FileTypeMap {
      *                           to change the default
      */
     public static synchronized void setDefaultFileTypeMap(FileTypeMap fileTypeMap) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            try {
-                // if it's ok with the SecurityManager, it's ok with me...
-                security.checkSetFactory();
-            } catch (SecurityException ex) {
-                // otherwise, we also allow it if this code and the
-                // factory come from the same (non-system) class loader (e.g.,
-                // the JAF classes were loaded with the applet classes).
-                ClassLoader cl = FileTypeMap.class.getClassLoader();
-                if (cl == null || cl.getParent() == null ||
-                        cl != fileTypeMap.getClass().getClassLoader())
-                    throw ex;
-            }
-        }
         // remove any per-thread-context-class-loader FileTypeMap
-        map.remove(SecuritySupport.getContextClassLoader());
+        map.remove(Thread.currentThread().getContextClassLoader());
         defaultMap = fileTypeMap;
     }
 
@@ -114,7 +99,7 @@ public abstract class FileTypeMap {
             return defaultMap;
 
         // fetch per-thread-context-class-loader default
-        ClassLoader tccl = SecuritySupport.getContextClassLoader();
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         FileTypeMap def = map.get(tccl);
         if (def == null) {
             def = new MimetypesFileTypeMap();

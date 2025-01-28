@@ -54,7 +54,7 @@ public abstract class CommandMap {
             return defaultCommandMap;
 
         // fetch per-thread-context-class-loader default
-        ClassLoader tccl = SecuritySupport.getContextClassLoader();
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         CommandMap def = map.get(tccl);
         if (def == null) {
             def = new MailcapCommandMap();
@@ -72,24 +72,8 @@ public abstract class CommandMap {
      *                           to change the default
      */
     public static synchronized void setDefaultCommandMap(CommandMap commandMap) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            try {
-                // if it's ok with the SecurityManager, it's ok with me...
-                security.checkSetFactory();
-            } catch (SecurityException ex) {
-                // otherwise, we also allow it if this code and the
-                // factory come from the same (non-system) class loader (e.g.,
-                // the JAF classes were loaded with the applet classes).
-                ClassLoader cl = CommandMap.class.getClassLoader();
-                if (cl == null || cl.getParent() == null ||
-                        cl != commandMap.getClass().getClassLoader()) {
-                    throw ex;
-                }
-            }
-        }
         // remove any per-thread-context-class-loader CommandMap
-        map.remove(SecuritySupport.getContextClassLoader());
+        map.remove(Thread.currentThread().getContextClassLoader());
         defaultCommandMap = commandMap;
     }
 

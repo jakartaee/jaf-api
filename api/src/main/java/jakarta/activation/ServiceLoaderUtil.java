@@ -43,17 +43,6 @@ class ServiceLoaderUtil {
         return null;
     }
 
-    static void checkPackageAccess(String className) {
-        // make sure that the current thread has an access to the package of the given name.
-        SecurityManager s = System.getSecurityManager();
-        if (s != null) {
-            int i = className.lastIndexOf('.');
-            if (i != -1) {
-                s.checkPackageAccess(className.substring(0, i));
-            }
-        }
-    }
-
     @SuppressWarnings({"unchecked"})
     static <P> Class<P> nullSafeLoadClass(String className, ClassLoader classLoader) throws ClassNotFoundException {
         if (classLoader == null) { //Match behavior of ServiceLoader
@@ -79,7 +68,6 @@ class ServiceLoaderUtil {
     @SuppressWarnings({"unchecked"})
     static <P> Class<P> safeLoadClass(String className,
                                       ClassLoader classLoader) throws ClassNotFoundException {
-        checkPackageAccess(className);
         return nullSafeLoadClass(className, classLoader);
     }
 
