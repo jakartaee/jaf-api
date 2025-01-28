@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.NoSuchElementException;
 import java.util.ServiceConfigurationError;
 import java.util.Vector;
@@ -76,18 +74,11 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     static {
         String dir = null;
         try {
-            dir = AccessController.doPrivileged(
-                    new PrivilegedAction<String>() {
-                        public String run() {
-                            String home = System.getProperty("java.home");
-                            String newdir = home + File.separator + "conf";
-                            File conf = new File(newdir);
-                            if (conf.exists())
-                                return newdir + File.separator;
-                            else
-                                return home + File.separator + "lib" + File.separator;
-                        }
-                    });
+            String home = System.getProperty("java.home");
+            String newdir = home + File.separator + "conf";
+            File conf = new File(newdir);
+            dir = conf.exists() ? (newdir + File.separator) :
+                (home + File.separator + "lib" + File.separator);
         } catch (Exception ex) {
             if (LogSupport.isLoggable())
                 LogSupport.log("Exception during MimetypesFileTypeMap class loading", ex);
@@ -151,7 +142,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     private MimeTypeRegistry loadResource(String name) {
         InputStream clis = null;
         try {
-            clis = SecuritySupport.getResourceAsStream(this.getClass(), name);
+            clis = this.getClass().getResourceAsStream(name);
             if (clis != null) {
                 MimeTypeRegistry mf = getImplementation().getByInputStream(clis);
                 if (LogSupport.isLoggable())
@@ -192,7 +183,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             URL[] urls;
             ClassLoader cld = null;
             // First try the "application's" class loader.
-            cld = SecuritySupport.getContextClassLoader();
+            cld = Thread.currentThread().getContextClassLoader();
             if (cld == null)
                 cld = this.getClass().getClassLoader();
             if (cld != null)
@@ -208,7 +199,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                     if (LogSupport.isLoggable())
                         LogSupport.log("MimetypesFileTypeMap: URL " + url);
                     try {
-                        clis = SecuritySupport.openStream(url);
+                        clis = url.openStream();
                         if (clis != null) {
                             v.addElement(
                                     getImplementation().getByInputStream(clis)
@@ -395,15 +386,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     }
 
     private MimeTypeRegistryProvider getImplementation() {
-        if (System.getSecurityManager() != null) {
-            return AccessController.doPrivileged(new PrivilegedAction<MimeTypeRegistryProvider>() {
-                public MimeTypeRegistryProvider run() {
-                    return FactoryFinder.find(MimeTypeRegistryProvider.class);
-                }
-            });
-        } else {
-            return FactoryFinder.find(MimeTypeRegistryProvider.class);
-        }
+        return FactoryFinder.find(MimeTypeRegistryProvider.class);
     }
 
     /*

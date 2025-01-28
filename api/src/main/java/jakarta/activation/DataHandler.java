@@ -529,7 +529,7 @@ public class DataHandler {
             // make the bean
             ClassLoader cld = null;
             // First try the "application's" class loader.
-            cld = SecuritySupport.getContextClassLoader();
+            cld = Thread.currentThread().getContextClassLoader();
             if (cld == null)
                 cld = this.getClass().getClassLoader();
             bean = cmdinfo.getCommandObject(this, cld);
@@ -634,20 +634,6 @@ public class DataHandler {
         if (factory != null)
             throw new Error("DataContentHandlerFactory already defined");
 
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            try {
-                // if it's ok with the SecurityManager, it's ok with me...
-                security.checkSetFactory();
-            } catch (SecurityException ex) {
-                // otherwise, we also allow it if this code and the
-                // factory come from the same class loader (e.g.,
-                // the JAF classes were loaded with the applet classes).
-                if (DataHandler.class.getClassLoader() !=
-                        newFactory.getClass().getClassLoader())
-                    throw ex;
-            }
-        }
         factory = newFactory;
     }
 }

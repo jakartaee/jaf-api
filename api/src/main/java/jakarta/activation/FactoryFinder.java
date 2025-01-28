@@ -11,8 +11,6 @@
 package jakarta.activation;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -102,12 +100,7 @@ class FactoryFinder {
 
     private static String getSystemProperty(final String property) {
         logger.log(Level.FINE, "Checking system property {0}", property);
-        String value = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty(property);
-            }
-        });
+        String value = System.getProperty(property);
         logFound(value);
         return value;
     }
@@ -163,42 +156,35 @@ class FactoryFinder {
     }
 
     private static ClassLoader[] getClassLoaders(final Class<?>... classes) {
-        return AccessController.doPrivileged(
-            new PrivilegedAction<ClassLoader[]>() {
-                @Override
-                public ClassLoader[] run() {
-                    ClassLoader[] loaders = new ClassLoader[classes.length];
-                    int w = 0;
-                    for (Class<?> k : classes) {
-                        ClassLoader cl = null;
-                        if (k == Thread.class) {
-                            try {
-                                cl = Thread.currentThread().getContextClassLoader();
-                            } catch (SecurityException ex) {
-                            }
-                        } else if (k == System.class) {
-                            try {
-                                cl = ClassLoader.getSystemClassLoader();
-                            } catch (SecurityException ex) {
-                            }
-                        } else {
-                            try {
-                                cl = k.getClassLoader();
-                            } catch (SecurityException ex) {
-                            }
-                        }
-
-                        if (cl != null) {
-                           loaders[w++] = cl;
-                        }
-                    }
-
-                    if (loaders.length != w) {
-                        loaders = Arrays.copyOf(loaders, w);
-                    }
-                    return loaders;
+        ClassLoader[] loaders = new ClassLoader[classes.length];
+        int w = 0;
+        for (Class<?> k : classes) {
+            ClassLoader cl = null;
+            if (k == Thread.class) {
+                try {
+                    cl = Thread.currentThread().getContextClassLoader();
+                } catch (SecurityException ex) {
+                }
+            } else if (k == System.class) {
+                try {
+                    cl = ClassLoader.getSystemClassLoader();
+                } catch (SecurityException ex) {
+                }
+            } else {
+                try {
+                    cl = k.getClassLoader();
+                } catch (SecurityException ex) {
                 }
             }
-        );
+
+            if (cl != null) {
+               loaders[w++] = cl;
+            }
+        }
+
+        if (loaders.length != w) {
+            loaders = Arrays.copyOf(loaders, w);
+        }
+        return loaders;
     }
 }
