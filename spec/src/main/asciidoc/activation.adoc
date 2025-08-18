@@ -94,7 +94,7 @@ CommandMap interface allows developers to develop their own solutions
 for discovering which commands are available on the system. A possible
 implementation can access the ‘types registry’ on the platform or use a
 server-based solution. Jakarta Activation provides a simple default
-solution based on RFC 1524 (.mailcap) like functionality.
+solution based on RFC 1524 (.jakarta.mailcap) like functionality.
 See “Deliverables” below.
 
 === The Command Object Interface
@@ -139,7 +139,7 @@ Application must use Jakarta Activation implementation that provides
 MimeTypeRegistry, MailcapRegistry, MailcapRegistryProvider and
 MimeTypeRegistryProvider implementations when the application wishes
 to get access to the available MIME types and CommandMap whose configuration
-is based on mailcap storage like mailcap files (RFC 1524).
+is based on jakarta.mailcap storage like jakarta.mailcap files (RFC 1524).
 
 == Usage Scenarios
 
@@ -396,7 +396,7 @@ that are available for that data type. The application requests commands
 available through the DataHandler and specifies a command on that list.
 The DataHandler uses the CommandMap to retrieve the Bean associated with
 that command. Some or all of the command map is stored in some ‘common’
-place, like a .mailcap (RFC 1524) file. Other more complex
+place, like a .jakarta.mailcap (RFC 1524) file. Other more complex
 implementations can be distributed, or can provide licensing or
 authentication features.
 
@@ -455,8 +455,8 @@ JavaBeans™ and the JDK™, and defines as few additional interfaces and
 policies as possible.
 
 We expect that viewers/editors will be bound to data
-via a simple registry mechanism similar in function to a .mailcap file.
-In addition, mailcap format files may be bundled with components,
+via a simple registry mechanism similar in function to a .jakarta.mailcap file.
+In addition, jakarta.mailcap format files may be bundled with components,
 allowing additional packages to be added at runtime.
 
 Our viewers/editors and related classes and files are
@@ -575,7 +575,7 @@ public class WombatPrintBean extends WombatBean {
 }
 ----
 
-You will need to create a mailcap file that lists the
+You will need to create a jakarta.mailcap file that lists the
 MIME type “application/x-wombat” and user visible commands that are
 supported by your WombatBean. Your WombatBean wrappers will be listed as
 the objects supporting each of these commands.
@@ -587,7 +587,7 @@ application/x-wombat; ; x-java-view=com.foo.WombatViewBean; \
     x-java-print=com.foo.WombatPrintBean
 ----
 
-You’ll also need to create a mime.types file with an
+You’ll also need to create a jakarta.mime.types file with an
 entry:
 
 [source]
@@ -599,8 +599,8 @@ All of these components are packaged in a JAR file:
 
 [source]
 ----
-META-INF/mailcap
-META-INF/mime.types
+META-INF/jakarta.mailcap
+META-INF/jakarta.mime.types
 com/foo/WombatBean.class
 com/foo/WombatEditBean.class
 com/foo/WombatViewBean.class
@@ -641,9 +641,9 @@ to the Wombat class.
 
 The WombatDataContentHandler is delivered as a class
 and is designated as a DataContentHandler that can operate on Wombats in
-the mailcap file included in your JAR file.
+the jakarta.mailcap file included in your JAR file.
 
-Your mailcap file changes to list the appropriate
+Your jakarta.mailcap file changes to list the appropriate
 Wombat Beans, which implement user commands:
 
 [source]
@@ -676,14 +676,14 @@ Wombat file format, which they reverse engineered.
 The ViewAll WombatViewerBean implements the
 Externalizable interface to read the Wombat data format.
 
-ViewAll delivers an appropriate mailcap file:
+ViewAll delivers an appropriate jakarta.mailcap file:
 
 [source]
 ----
 application/x-wombat; ; x-java-view=com.viewall.WombatViewer
 ----
 
-and mime.types file:
+and jakarta.mime.types file:
 
 [source]
 ----
@@ -710,7 +710,7 @@ application described, you’ll need a DataContentHandler to plug into the
 DataHandler infrastructure and construct the WombatNotification objects.
 The WombatNotification DataContentHandler is delivered as a class named
 WombatNotificationDataContentHandler and is delivered in a JAR file with
-the following mailcap file:
+the following jakarta.mailcap file:
 
 [source]
 ----
@@ -817,7 +817,7 @@ changed) to determine the content type of files.
 
 **class MimetypesFileTypeMap:** This class extends
 FileTypeMap and provides data typing of files via their file extension.
-It uses the .mime.types format.
+It uses the .jakarta.mime.types format.
 
 **class URLDataSource:** The URLDataSource class provides
 an object that wraps a URL object in a DataSource interface.
@@ -827,7 +827,7 @@ create new DataHandlers.
 
 **class MailcapCommandMap:** MailcapCommandMap extends the
 CommandMap abstract class. It implements a CommandMap whose
-configuration is based on mailcap files (RFC 1524). The
+configuration is based on jakarta.mailcap files (RFC 1524). The
 MailcapCommandMap can be configured both programmatically and via
 configuration files.
 

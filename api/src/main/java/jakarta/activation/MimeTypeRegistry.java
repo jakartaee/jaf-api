@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2025 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -48,7 +48,7 @@ public interface MimeTypeRegistry {
     /**
      * Appends string of entries to the types registry
      *
-     * @param mime_types the mime.types string
+     * @param mime_types the jakarta.mime.types string
      */
     void appendToRegistry(String mime_types);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2024 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2025 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -20,7 +20,7 @@ import java.security.PrivilegedAction;
 
 /**
  * This class extends FileTypeMap and provides data typing of files
- * via their file extension. It uses the <code>.mime.types</code> format. <p>
+ * via their file extension. It uses the <code>.jakarta.mime.types</code> format. <p>
  *
  * <b>MIME types file search order:</b><p>
  * The MimetypesFileTypeMap looks in various places in the user's
@@ -29,14 +29,14 @@ import java.security.PrivilegedAction;
  * MIME types files in the following order:
  * <ol>
  * <li> Programmatically added entries to the MimetypesFileTypeMap instance.
- * <li> The file <code>.mime.types</code> in the user's home directory.
- * <li> The file <code>mime.types</code> in the Java runtime.
- * <li> The file or resources named <code>META-INF/mime.types</code>.
- * <li> The file or resource named <code>META-INF/mimetypes.default</code>
+ * <li> The file <code>.jakarta.mime.types</code> in the user's home directory.
+ * <li> The file <code>jakarta.mime.types</code> in the Java runtime.
+ * <li> The file or resources named <code>META-INF/jakarta.mime.types</code>.
+ * <li> The file or resource named <code>META-INF/jakarta.mimetypes.default</code>
  * (usually found only in the <code>activation.jar</code> file).
  * </ol>
  * <p>
- * (The current implementation looks for the <code>mime.types</code> file
+ * (The current implementation looks for the <code>jakarta.mime.types</code> file
  * in the Java runtime in the directory <code><i>java.home</i>/conf</code>
  * if it exists, and otherwise in the directory
  * <code><i>java.home</i>/lib</code>, where <i>java.home</i> is the value
@@ -103,10 +103,14 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             String user_home = System.getProperty("user.home");
 
             if (user_home != null) {
-                String path = user_home + File.separator + ".mime.types";
+                String[] paths = new String[] {user_home + File.separator + ".jakarta.mime.types", user_home + File.separator + ".mime.types"};
+                for (String path : paths) {
                 mf = loadFile(path);
-                if (mf != null)
+                    if (mf != null) {
                     dbv.addElement(mf);
+                        break;
+            }
+                }
             }
         } catch (SecurityException ex) {
             if (LogSupport.isLoggable())
@@ -117,9 +121,14 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         try {
             // check system's home
             if (confDir != null) {
-                mf = loadFile(confDir + "mime.types");
-                if (mf != null)
+                String[] confs = new String[] {"jakarta.mime.types", "mime.types"};
+                for (String conf : confs) {
+                    mf = loadFile(confDir + conf);
+                    if (mf != null) {
                     dbv.addElement(mf);
+                        break;
+                    }
+            }
             }
         } catch (SecurityException ex) {
             if (LogSupport.isLoggable())
@@ -128,10 +137,10 @@ public class MimetypesFileTypeMap extends FileTypeMap {
 
         LogSupport.log("MimetypesFileTypeMap: load JAR");
         // load from the app's jar file
-        loadAllResources(dbv, "META-INF/mime.types");
+        loadAllResources(dbv, "META-INF/jakarta.mime.types", "META-INF/mime.types");
 
         LogSupport.log("MimetypesFileTypeMap: load DEF");
-        mf = loadResource("/META-INF/mimetypes.default");
+        mf = loadResource("/META-INF/jakarta.mimetypes.default", "/META-INF/mimetypes.default");
 
         if (mf != null)
             dbv.addElement(mf);
@@ -143,7 +152,8 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load from the named resource.
      */
-    private MimeTypeRegistry loadResource(String name) {
+    private MimeTypeRegistry loadResource(String ... names) {
+        for (String name : names) {
         InputStream clis = null;
         try {
             clis = SecuritySupport.getResourceAsStream(this.getClass(), name);
@@ -175,14 +185,16 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                     LogSupport.log("InputStream cannot be close for " + name, ex);
             }
         }
+        }
         return null;
     }
 
     /**
      * Load all of the named resource.
      */
-    private void loadAllResources(Vector<MimeTypeRegistry> v, String name) {
+    private void loadAllResources(Vector<MimeTypeRegistry> v, String ... names) {
         boolean anyLoaded = false;
+        for (String name : names) {
         try {
             URL[] urls;
             ClassLoader cld = null;
@@ -239,15 +251,21 @@ public class MimetypesFileTypeMap extends FileTypeMap {
                     }
                 }
             }
+                // Even if nothing was loaded, we stop it because resources were found.
+                break;
         } catch (Exception ex) {
             if (LogSupport.isLoggable())
                 LogSupport.log("MimetypesFileTypeMap: can't load " + name, ex);
         }
-
+        }
         // if failed to load anything, fall back to old technique, just in case
         if (!anyLoaded) {
             LogSupport.log("MimetypesFileTypeMap: !anyLoaded");
-            MimeTypeRegistry mf = loadResource("/" + name);
+            String[] resources = new String[names.length];
+            for (int i = 0; i < names.length; i++) {
+                resources[i] = "/" + names[i];
+            }
+            MimeTypeRegistry mf = loadResource(resources);
             if (mf != null)
                 v.addElement(mf);
         }
@@ -318,7 +336,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Prepend the MIME type values to the registry.
      *
-     * @param mime_types A .mime.types formatted string of entries.
+     * @param mime_types A .jakarta.mime.types formatted string of entries.
      */
     public synchronized void addMimeTypes(String mime_types) {
         try {
