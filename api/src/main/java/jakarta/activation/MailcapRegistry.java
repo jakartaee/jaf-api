@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2025 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -52,7 +52,7 @@ public interface MailcapRegistry {
     Map<String, List<String>> getMailcapFallbackList(String mime_type);
 
     /**
-     * Return all the MIME types known to this mailcap file.
+     * Return all the MIME types known to this jakarta.mailcap file.
      *
      * @return	a String array of the MIME types
      */
@@ -67,7 +67,7 @@ public interface MailcapRegistry {
     String[] getNativeCommands(String mime_type);
 
     /**
-     * appendToMailcap: Append to this Mailcap DB, use the mailcap
+     * appendToMailcap: Append to this Mailcap DB, use the jakarta.mailcap
      * format:
      * Comment == "# <i>comment string</i>"
      * Entry == "mimetype;        javabeanclass"
@@ -76,7 +76,7 @@ public interface MailcapRegistry {
      * # this is a comment
      * image/gif       jaf.viewers.ImageViewer
      *
-     * @param	mail_cap	the mailcap string
+     * @param    mail_cap    the jakarta.mailcap string
      */
     void appendToMailcap(String mail_cap);
 }
