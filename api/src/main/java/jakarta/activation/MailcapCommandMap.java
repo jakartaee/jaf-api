@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2024 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2025 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -19,26 +19,26 @@ import java.net.*;
 /**
  * MailcapCommandMap extends the CommandMap
  * abstract class. It implements a CommandMap whose configuration
- * is based on mailcap files
+ * is based on jakarta.mailcap files
  * (<A HREF="http://www.ietf.org/rfc/rfc1524.txt">RFC 1524</A>).
  * The MailcapCommandMap can be configured both programmatically
  * and via configuration files.
  * <p>
  * <b>Mailcap file search order:</b><p>
  * The MailcapCommandMap looks in various places in the user's
- * system for mailcap file entries. When requests are made
+ * system for jakarta.mailcap file entries. When requests are made
  * to search for commands in the MailcapCommandMap, it searches
- * mailcap files in the following order:
+ * jakarta.mailcap files in the following order:
  * <ol>
  * <li> Programatically added entries to the MailcapCommandMap instance.
- * <li> The file <code>.mailcap</code> in the user's home directory.
- * <li> The file <code>mailcap</code> in the Java runtime.
- * <li> The file or resources named <code>META-INF/mailcap</code>.
- * <li> The file or resource named <code>META-INF/mailcap.default</code>
+ * <li> The file <code>.jakarta.mailcap</code> in the user's home directory.
+ * <li> The file <code>jakarta.mailcap</code> in the Java runtime.
+ * <li> The file or resources named <code>META-INF/jakarta.mailcap</code>.
+ * <li> The file or resource named <code>META-INF/jakarta.mailcap.default</code>
  * (usually found only in the <code>activation.jar</code> file).
  * </ol>
  * <p>
- * (The current implementation looks for the <code>mailcap</code> file
+ * (The current implementation looks for the <code>jakarta.mailcap</code> file
  * in the Java runtime in the directory <code><i>java.home</i>/conf</code>
  * if it exists, and otherwise in the directory
  * <code><i>java.home</i>/lib</code>, where <i>java.home</i> is the value
@@ -47,7 +47,7 @@ import java.net.*;
  * <p>
  * <b>Mailcap file format:</b><p>
  *
- * Mailcap files must conform to the mailcap
+ * Mailcap files must conform to the jakarta.mailcap
  * file specification (RFC 1524, <i>A User Agent Configuration Mechanism
  * For Multimedia Mail Format Information</i>).
  * The file format consists of entries corresponding to
@@ -55,10 +55,10 @@ import java.net.*;
  * specifies <i>applications</i> for clients to use when they
  * themselves cannot operate on the specified MIME type. The
  * MailcapCommandMap extends this specification by using a parameter mechanism
- * in mailcap files that allows JavaBeans(tm) components to be specified as
+ * in jakarta.mailcap files that allows JavaBeans(tm) components to be specified as
  * corresponding to particular commands for a MIME type.<p>
  *
- * When a mailcap file is
+ * When a jakarta.mailcap file is
  * parsed, the MailcapCommandMap recognizes certain parameter signatures,
  * specifically those parameter names that begin with <code>x-java-</code>.
  * The MailcapCommandMap uses this signature to find
@@ -84,7 +84,7 @@ import java.net.*;
  * view command would only be used if a non-fallback view command for
  * the MIME type could not be found.<p>
  *
- * MailcapCommandMap aware mailcap files have the
+ * MailcapCommandMap aware jakarta.mailcap files have the
  * following general form:<p>
  * <code>
  * # Comments begin with a '#' and continue to the end of the line.<br>
@@ -94,7 +94,7 @@ import java.net.*;
  * # and a parameter list looks like: <br>
  * text/plain; ; x-java-view=com.sun.TextViewer; x-java-edit=com.sun.TextEdit
  * <br>
- * # Note that mailcap entries that do not contain 'x-java' parameters<br>
+ * # Note that jakarta.mailcap entries that do not contain 'x-java' parameters<br>
  * # and comply to RFC 1524 are simply ignored:<br>
  * image/gif; /usr/dt/bin/sdtimage %s<br>
  *
@@ -141,10 +141,14 @@ public class MailcapCommandMap extends CommandMap {
 	    String user_home = System.getProperty("user.home");
 
 	    if (user_home != null) {
-		String path = user_home + File.separator + ".mailcap";
+                String[] paths = new String[] {user_home + File.separator + ".jakarta.mailcap", user_home + File.separator + ".mailcap"};
+                for (String path : paths) {
 		mf = loadFile(path);
-		if (mf != null)
+                    if (mf != null) {
 		    dbv.add(mf);
+                        break;
+                    }
+                }
 	    }
 	} catch (SecurityException ex) {}
 
@@ -152,18 +156,23 @@ public class MailcapCommandMap extends CommandMap {
 	try {
 	    // check system's home
 	    if (confDir != null) {
-		mf = loadFile(confDir + "mailcap");
-		if (mf != null)
+                String[] confs = new String[] {"jakarta.mailcap", "mailcap"};
+                for (String conf : confs) {
+                    mf = loadFile(confDir + conf);
+                    if (mf != null) {
 		    dbv.add(mf);
+                        break;
+                    }
+                }
 	    }
 	} catch (SecurityException ex) {}
 
 	LogSupport.log("MailcapCommandMap: load JAR");
 	// load from the app's jar file
-	loadAllResources(dbv, "META-INF/mailcap");
+        loadAllResources(dbv, "META-INF/jakarta.mailcap", "META-INF/mailcap");
 
 	LogSupport.log("MailcapCommandMap: load DEF");
-	mf = loadResource("/META-INF/mailcap.default");
+        mf = loadResource("/META-INF/jakarta.mailcap.default", "/META-INF/mailcap.default");
 
 	if (mf != null)
 	    dbv.add(mf);
@@ -175,18 +184,19 @@ public class MailcapCommandMap extends CommandMap {
     /**
      * Load from the named resource.
      */
-    private MailcapRegistry loadResource(String name) {
+    private MailcapRegistry loadResource(String ... names) {
+        for (String name : names) {
         try (InputStream clis = this.getClass().getResourceAsStream(name)) {
             if (clis != null) {
                 MailcapRegistry mf = getImplementation().getByInputStream(clis);
                 if (LogSupport.isLoggable())
                     LogSupport.log("MailcapCommandMap: successfully loaded " +
-                            "mailcap file: " + name);
+                                "jakarta.mailcap file: " + name);
                 return mf;
             } else {
                 if (LogSupport.isLoggable())
                     LogSupport.log("MailcapCommandMap: not loading " +
-                            "mailcap file: " + name);
+                                "jakarta.mailcap file: " + name);
             }
         } catch (IOException | SecurityException e) {
             if (LogSupport.isLoggable())
@@ -197,14 +207,16 @@ public class MailcapCommandMap extends CommandMap {
                         "MailcapRegistry: can't load " + name, e);
             }
         }
+        }
         return null;
     }
 
     /**
      * Load all of the named resource.
      */
-    private void loadAllResources(List<MailcapRegistry> v, String name) {
+    private void loadAllResources(List<MailcapRegistry> v, String ... names) {
         boolean anyLoaded = false;
+        for (String name : names) {
         try {
             URL[] urls;
             ClassLoader cld = null;
@@ -230,12 +242,12 @@ public class MailcapCommandMap extends CommandMap {
                             if (LogSupport.isLoggable())
                                 LogSupport.log("MailcapCommandMap: " +
                                         "successfully loaded " +
-                                        "mailcap file from URL: " +
+                                            "jakarta.mailcap file from URL: " +
                                         url);
                         } else {
                             if (LogSupport.isLoggable())
                                 LogSupport.log("MailcapCommandMap: " +
-                                        "not loading mailcap " +
+                                            "not loading jakarta.mailcap " +
                                         "file from URL: " + url);
                         }
                     } catch (IOException | SecurityException ioex) {
@@ -249,17 +261,24 @@ public class MailcapCommandMap extends CommandMap {
                         }
                     }
                 }
+                    // Even if nothing was loaded, we stop it because resources were found.
+                    break;
             }
         } catch (Exception ex) {
             if (LogSupport.isLoggable())
                 LogSupport.log("MailcapCommandMap: can't load " + name, ex);
+        }
         }
 
         // if failed to load anything, fall back to old technique, just in case
         if (!anyLoaded) {
             if (LogSupport.isLoggable())
                 LogSupport.log("MailcapCommandMap: !anyLoaded");
-            MailcapRegistry mf = loadResource("/" + name);
+            String[] resources = new String[names.length];
+            for (int i = 0; i < names.length; i++) {
+                resources[i] = "/" + names[i];
+            }
+            MailcapRegistry mf = loadResource(resources);
             if (mf != null)
                 v.add(mf);
         }
@@ -288,9 +307,9 @@ public class MailcapCommandMap extends CommandMap {
 
     /**
      * Constructor that allows the caller to specify the path
-     * of a <i>mailcap</i> file.
+     * of a <i>jakarta.mailcap</i> file.
      *
-     * @param fileName The name of the <i>mailcap</i> file to open
+     * @param fileName The name of the <i>jakarta.mailcap</i> file to open
      * @exception IOException    if the file can't be accessed
      */
     public MailcapCommandMap(String fileName) throws IOException {
@@ -315,9 +334,9 @@ public class MailcapCommandMap extends CommandMap {
 
     /**
      * Constructor that allows the caller to specify an <i>InputStream</i>
-     * containing a mailcap file.
+     * containing a jakarta.mailcap file.
      *
-     * @param is InputStream of the <i>mailcap</i> file to open
+     * @param is InputStream of the <i>jakarta.mailcap</i> file to open
      */
     public MailcapCommandMap(InputStream is) {
         this();
@@ -341,11 +360,11 @@ public class MailcapCommandMap extends CommandMap {
 
     /**
      * Get the preferred command list for a MIME Type. The MailcapCommandMap
-     * searches the mailcap files as described above under
+     * searches the jakarta.mailcap files as described above under
      * <i>Mailcap file search order</i>.<p>
      *
      * The result of the search is a proper subset of available
-     * commands in all mailcap files known to this instance of
+     * commands in all jakarta.mailcap files known to this instance of
      * MailcapCommandMap.  The first entry for a particular command
      * is considered the preferred command.
      *
@@ -411,7 +430,7 @@ public class MailcapCommandMap extends CommandMap {
     }
 
     /**
-     * Get all the available commands in all mailcap files known to
+     * Get all the available commands in all jakarta.mailcap files known to
      * this instance of MailcapCommandMap for this MIME type.
      *
      * @param mimeType	the MIME type
@@ -515,10 +534,10 @@ public class MailcapCommandMap extends CommandMap {
      * Add entries to the registry.  Programmatically
      * added entries are searched before other entries.<p>
      *
-     * The string that is passed in should be in mailcap
+     * The string that is passed in should be in jakarta.mailcap
      * format.
      *
-     * @param mail_cap a correctly formatted mailcap string
+     * @param mail_cap a correctly formatted jakarta.mailcap string
      */
     public synchronized void addMailcap(String mail_cap) {
         // check to see if one exists
@@ -647,11 +666,11 @@ public class MailcapCommandMap extends CommandMap {
     /**
      * Get the native commands for the given MIME type.
      * Returns an array of strings where each string is
-     * an entire mailcap file entry.  The application
+     * an entire jakarta.mailcap file entry.  The application
      * will need to parse the entry to extract the actual
      * command as well as any attributes it needs. See
      * <A HREF="http://www.ietf.org/rfc/rfc1524.txt">RFC 1524</A>
-     * for details of the mailcap entry syntax.  Only mailcap
+     * for details of the jakarta.mailcap entry syntax.  Only jakarta.mailcap
      * entries that specify a view command for the specified
      * MIME type are returned.
      *
