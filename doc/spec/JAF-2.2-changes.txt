@@ -9,7 +9,7 @@ find more information about the bug reports at:
 
     https://github.com/eclipse-ee4j/jaf/issues
 
-The Jakarta Activation 2.2 requires Java SE 8 or later.  Jakarta Activation 2.2
+The Jakarta Activation 2.2 requires Java SE 11 or later.  Jakarta Activation 2.2
 is part of Jakarta EE 12.
 
 
