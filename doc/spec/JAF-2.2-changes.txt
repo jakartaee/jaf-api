@@ -13,23 +13,3 @@ The Jakarta Activation 2.2 requires Java SE 8 or later.  Jakarta Activation 2.2
 is part of Jakarta EE 12.
 
 
-===================================================================
-
-1.  Resource Loading Order
-----------------------------------------------------------------
-
-To avoid conflicts when both legacy and Jakarta Activation resources are
-present in the classpath, Jakarta Activation 2.2 will now attempt to load
-resources prefixed with `jakarta.` first if found.  
-
-For example:
-- `jakarta.mailcap` will be loaded instead of `mailcap`.
-- `jakarta.mime.types` will be loaded instead of `mime.types`.
-
-If the `jakarta.`-prefixed resource is not found, the framework will fall back
-to the older resource file. This ensures backward compatibility with existing
-applications while giving priority to Jakarta-specific resources.
-
-Over time, the legacy resources without the `jakarta.` prefix may be removed,
-leaving only the Jakarta-prefixed variants.
-
