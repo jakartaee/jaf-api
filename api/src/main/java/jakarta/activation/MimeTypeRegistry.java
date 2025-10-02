@@ -48,7 +48,7 @@ public interface MimeTypeRegistry {
     /**
      * Appends string of entries to the types registry
      *
-     * @param mime_types the jakarta.mime.types string
+     * @param mime_types the mime.types and jakarta.mime.types string
      */
     void appendToRegistry(String mime_types);
 }
