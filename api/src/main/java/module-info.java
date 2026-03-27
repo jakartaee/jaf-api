@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 1997, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -16,7 +17,6 @@ module jakarta.activation {
     uses jakarta.activation.spi.MimeTypeRegistryProvider;
     exports jakarta.activation;
     exports jakarta.activation.spi;
-    requires java.logging;
     //reflective call to java.beans.Beans.instantiate
     requires static java.desktop;
 }

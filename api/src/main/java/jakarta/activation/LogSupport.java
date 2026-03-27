@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,16 +11,17 @@
 
 package jakarta.activation;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Logging related methods.
  */
 class LogSupport {
+
     private static boolean debug = false;
-    private static Logger logger;
-    private static final Level level = Level.FINE;
+
+    private static final System.Logger logger;
+
+    private static final System.Logger.Level level = System.Logger.Level.DEBUG;
 
     static {
         try {
@@ -28,7 +30,7 @@ class LogSupport {
         } catch (Throwable t) {
             // ignore any errors
         }
-        logger = Logger.getLogger("jakarta.activation");
+        logger = System.getLogger("jakarta.activation");
     }
 
     /**
