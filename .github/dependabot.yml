@@ -22,7 +22,9 @@ updates:
           - "*"
 
   - package-ecosystem: "maven"
-    directory: "/"
+    directories:
+      - "/api"
+      - "/spec"
     schedule:
       interval: "daily"
     groups:
