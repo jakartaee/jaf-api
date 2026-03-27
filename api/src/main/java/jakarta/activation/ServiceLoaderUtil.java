@@ -11,8 +11,6 @@
 package jakarta.activation;
 
 import java.util.ServiceLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Shared ServiceLoader/FactoryFinder Utils. JAF and MAIL use the same loading
@@ -25,15 +23,15 @@ class ServiceLoaderUtil {
 
     static <P, T extends Exception> P firstByServiceLoader(Class<P> spiClass,
                                                            ClassLoader loader,
-                                                           Logger logger,
+                                                           System.Logger logger,
                                                            ExceptionHandler<T> handler) throws T {
-        logger.log(Level.FINE, "Using java.util.ServiceLoader to find {0}", spiClass.getName());
+        logger.log(System.Logger.Level.DEBUG, "Using java.util.ServiceLoader to find {0}", spiClass.getName());
         // service discovery
         try {
             ServiceLoader<P> serviceLoader = ServiceLoader.load(spiClass, loader);
 
             for (P impl : serviceLoader) {
-                logger.log(Level.FINE, "ServiceProvider loading Facility used; returning object [{0}]", impl.getClass().getName());
+                logger.log(System.Logger.Level.DEBUG, "ServiceProvider loading Facility used; returning object [{0}]", impl.getClass().getName());
 
                 return impl;
             }

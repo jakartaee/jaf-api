@@ -10,16 +10,17 @@
 
 package jakarta.activation;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Logging related methods.
  */
 class LogSupport {
+
     private static boolean debug = false;
-    private static Logger logger;
-    private static final Level level = Level.FINE;
+
+    private static final System.Logger logger;
+
+    private static final System.Logger.Level level = System.Logger.Level.DEBUG;
 
     static {
         try {
@@ -28,7 +29,7 @@ class LogSupport {
         } catch (Throwable t) {
             // ignore any errors
         }
-        logger = Logger.getLogger("jakarta.activation");
+        logger = System.getLogger("jakarta.activation");
     }
 
     /**

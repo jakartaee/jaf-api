@@ -16,7 +16,6 @@ module jakarta.activation {
     uses jakarta.activation.spi.MimeTypeRegistryProvider;
     exports jakarta.activation;
     exports jakarta.activation.spi;
-    requires java.logging;
     //reflective call to java.beans.Beans.instantiate
     requires static java.desktop;
 }

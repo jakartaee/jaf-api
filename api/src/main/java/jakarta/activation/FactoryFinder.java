@@ -9,17 +9,15 @@
  */
 
 package jakarta.activation;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 class FactoryFinder {
 
-    private static final Logger logger = Logger.getLogger("jakarta.activation");
+    private static final System.Logger logger =
+            System.getLogger("jakarta.activation");
 
     private static final ServiceLoaderUtil.ExceptionHandler<RuntimeException> EXCEPTION_HANDLER =
             new ServiceLoaderUtil.ExceptionHandler<RuntimeException>() {
@@ -99,7 +97,8 @@ class FactoryFinder {
     }
 
     private static String getSystemProperty(final String property) {
-        logger.log(Level.FINE, "Checking system property {0}", property);
+        logger.log(System.Logger.Level.DEBUG, "Checking system property {0}", property);
+
         String value = System.getProperty(property);
         logFound(value);
         return value;
@@ -107,9 +106,9 @@ class FactoryFinder {
 
     private static void logFound(String value) {
         if (value != null) {
-            logger.log(Level.FINE, "  found {0}", value);
+            logger.log(System.Logger.Level.DEBUG, "  found {0}", value);
         } else {
-            logger.log(Level.FINE, "  not found");
+            logger.log(System.Logger.Level.DEBUG, "  not found");
         }
     }
 
