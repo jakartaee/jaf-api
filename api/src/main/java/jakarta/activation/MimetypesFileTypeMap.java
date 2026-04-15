@@ -64,12 +64,12 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /*
      * We manage a collection of databases, searched in order.
      */
-    private MimeTypeRegistry[] DB;
-    private static final int PROG = 0;    // programmatically added entries
+    protected MimeTypeRegistry[] DB;
+    protected static final int PROG = 0;    // programmatically added entries
 
-    private static final String defaultType = "application/octet-stream";
+    protected static final String defaultType = "application/octet-stream";
 
-    private static final String confDir;
+    protected static String confDir;
 
     static {
         String dir = null;
@@ -148,7 +148,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load from the named resource.
      */
-    private MimeTypeRegistry loadResource(String ... names) {
+    protected MimeTypeRegistry loadResource(String ... names) {
         for (String name : names) {
         InputStream clis = null;
         try {
@@ -188,7 +188,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load all of the named resource.
      */
-    private void loadAllResources(Vector<MimeTypeRegistry> v, String ... names) {
+    protected void loadAllResources(Vector<MimeTypeRegistry> v, String ... names) {
         boolean anyLoaded = false;
         for (String name : names) {
         try {
@@ -270,7 +270,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load the named file.
      */
-    private MimeTypeRegistry loadFile(String name) {
+    protected MimeTypeRegistry loadFile(String name) {
         MimeTypeRegistry mtf = null;
 
         try {
@@ -403,7 +403,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         return defaultType;
     }
 
-    private MimeTypeRegistryProvider getImplementation() {
+    protected MimeTypeRegistryProvider getImplementation() {
         return FactoryFinder.find(MimeTypeRegistryProvider.class);
     }
 
