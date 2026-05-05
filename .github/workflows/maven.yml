@@ -17,10 +17,16 @@ on:
     paths-ignore:
       - 'doc/**'
       - 'www/**'
+    branches:
+      - main
+      - master
   push:
     paths-ignore:
       - 'doc/**'
       - 'www/**'
+    branches:
+      - main
+      - master
 
 jobs:
   build:
