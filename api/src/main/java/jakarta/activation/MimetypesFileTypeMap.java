@@ -17,29 +17,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.ServiceConfigurationError;
 import java.util.Vector;
 
 /**
  * This class extends FileTypeMap and provides data typing of files
- * via their file extension. It uses the <code>.jakarta.mime.types</code> format. <p>
+ * via their file extension. It uses the <code>mime.types</code> format. <p>
  *
  * <b>MIME types file search order:</b><p>
  * The MimetypesFileTypeMap looks in various places in the user's
  * system for MIME types file entries. When requests are made
  * to search for MIME types in the MimetypesFileTypeMap, it searches
- * MIME types files in the following order:
+ * both legacy (<code>mime.types</code>) and Jakarta-prefixed
+ * (<code>jakarta.mime.types</code>) files in the following order:
  * <ol>
  * <li> Programmatically added entries to the MimetypesFileTypeMap instance.
- * <li> The file <code>.jakarta.mime.types</code> in the user's home directory.
- * <li> The file <code>jakarta.mime.types</code> in the Java runtime.
- * <li> The file or resources named <code>META-INF/jakarta.mime.types</code>.
- * <li> The file or resource named <code>META-INF/jakarta.mimetypes.default</code>
- * (usually found only in the <code>activation.jar</code> file).
+ * <li> The file <code>.mime.types</code> and <code>.jakarta.mime.types</code>
+ *      in the user's home directory.
+ * <li> The file <code>mime.types</code> and <code>jakarta.mime.types</code>
+ *      in the Java runtime.
+ * <li> The file or resources named <code>META-INF/mime.types</code> and
+ *      <code>META-INF/jakarta.mime.types</code>.
+ * <li> The file or resource named <code>META-INF/mimetypes.default</code> and
+ *      <code>META-INF/jakarta.mimetypes.default</code>
+ *      (usually found only in the <code>activation.jar</code> file).
  * </ol>
  * <p>
- * (The current implementation looks for the <code>jakarta.mime.types</code> file
+ * (The current implementation looks for the MIME types file
  * in the Java runtime in the directory <code><i>java.home</i>/conf</code>
  * if it exists, and otherwise in the directory
  * <code><i>java.home</i>/lib</code>, where <i>java.home</i> is the value
@@ -99,13 +106,12 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             String user_home = System.getProperty("user.home");
 
             if (user_home != null) {
-                String[] paths = new String[] {user_home + File.separator + ".jakarta.mime.types", user_home + File.separator + ".mime.types"};
+                String[] paths = new String[] {user_home + File.separator + ".mime.types", user_home + File.separator + ".jakarta.mime.types"};
                 for (String path : paths) {
-                mf = loadFile(path);
+                    mf = loadFile(path);
                     if (mf != null) {
-                    dbv.addElement(mf);
-                        break;
-            }
+                        dbv.addElement(mf);
+                    }
                 }
             }
         } catch (SecurityException ex) {
@@ -117,14 +123,13 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         try {
             // check system's home
             if (confDir != null) {
-                String[] confs = new String[] {"jakarta.mime.types", "mime.types"};
+                String[] confs = new String[] {"mime.types", "jakarta.mime.types"};
                 for (String conf : confs) {
                     mf = loadFile(confDir + conf);
                     if (mf != null) {
-                    dbv.addElement(mf);
-                        break;
+                        dbv.addElement(mf);
                     }
-            }
+                }
             }
         } catch (SecurityException ex) {
             if (LogSupport.isLoggable())
@@ -136,10 +141,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
         loadAllResources(dbv, "META-INF/jakarta.mime.types", "META-INF/mime.types");
 
         LogSupport.log("MimetypesFileTypeMap: load DEF");
-        mf = loadResource("/META-INF/jakarta.mimetypes.default", "/META-INF/mimetypes.default");
-
-        if (mf != null)
-            dbv.addElement(mf);
+        dbv.addAll(loadResource("/META-INF/mimetypes.default", "/META-INF/jakarta.mimetypes.default"));
 
         DB = new MimeTypeRegistry[dbv.size()];
         dbv.copyInto(DB);
@@ -148,41 +150,42 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Load from the named resource.
      */
-    private MimeTypeRegistry loadResource(String ... names) {
+    private List<MimeTypeRegistry> loadResource(String ... names) {
+        List<MimeTypeRegistry> registry = new ArrayList<>();
         for (String name : names) {
-        InputStream clis = null;
-        try {
-            clis = this.getClass().getResourceAsStream(name);
-            if (clis != null) {
-                MimeTypeRegistry mf = getImplementation().getByInputStream(clis);
-                if (LogSupport.isLoggable())
-                    LogSupport.log("MimetypesFileTypeMap: successfully " +
-                            "loaded mime types file: " + name);
-                return mf;
-            } else {
-                if (LogSupport.isLoggable())
-                    LogSupport.log("MimetypesFileTypeMap: not loading " +
-                            "mime types file: " + name);
-            }
-        } catch (IOException | SecurityException e) {
-            if (LogSupport.isLoggable())
-                LogSupport.log("MimetypesFileTypeMap: can't load " + name, e);
-        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
-            if (LogSupport.isLoggable()) {
-                LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
-                        "MimeTypeRegistry: can't load " + name, e);
-            }
-        } finally {
+            InputStream clis = null;
             try {
-                if (clis != null)
-                    clis.close();
-            } catch (IOException ex) {
+                clis = this.getClass().getResourceAsStream(name);
+                if (clis != null) {
+                    MimeTypeRegistry mf = getImplementation().getByInputStream(clis);
+                    if (LogSupport.isLoggable())
+                        LogSupport.log("MimetypesFileTypeMap: successfully " +
+                                "loaded mime types file: " + name);
+                    registry.add(mf);
+                } else {
+                    if (LogSupport.isLoggable())
+                        LogSupport.log("MimetypesFileTypeMap: not loading " +
+                                "mime types file: " + name);
+                }
+            } catch (IOException | SecurityException e) {
                 if (LogSupport.isLoggable())
-                    LogSupport.log("InputStream cannot be close for " + name, ex);
+                    LogSupport.log("MimetypesFileTypeMap: can't load " + name, e);
+            } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
+                if (LogSupport.isLoggable()) {
+                    LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
+                            "MimeTypeRegistry: can't load " + name, e);
+                }
+            } finally {
+                try {
+                    if (clis != null)
+                        clis.close();
+                } catch (IOException ex) {
+                    if (LogSupport.isLoggable())
+                        LogSupport.log("InputStream cannot be close for " + name, ex);
+                }
             }
         }
-        }
-        return null;
+        return registry;
     }
 
     /**
@@ -191,68 +194,66 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     private void loadAllResources(Vector<MimeTypeRegistry> v, String ... names) {
         boolean anyLoaded = false;
         for (String name : names) {
-        try {
-            URL[] urls;
-            ClassLoader cld = null;
-            // First try the "application's" class loader.
-            cld = Thread.currentThread().getContextClassLoader();
-            if (cld == null)
-                cld = this.getClass().getClassLoader();
-            if (cld != null)
-                urls = SecuritySupport.getResources(cld, name);
-            else
-                urls = SecuritySupport.getSystemResources(name);
-            if (urls != null) {
-                if (LogSupport.isLoggable())
-                    LogSupport.log("MimetypesFileTypeMap: getResources");
-                for (int i = 0; i < urls.length; i++) {
-                    URL url = urls[i];
-                    InputStream clis = null;
+            try {
+                URL[] urls;
+                ClassLoader cld = null;
+                // First try the "application's" class loader.
+                cld = Thread.currentThread().getContextClassLoader();
+                if (cld == null)
+                    cld = this.getClass().getClassLoader();
+                if (cld != null)
+                    urls = SecuritySupport.getResources(cld, name);
+                else
+                    urls = SecuritySupport.getSystemResources(name);
+                if (urls != null) {
                     if (LogSupport.isLoggable())
-                        LogSupport.log("MimetypesFileTypeMap: URL " + url);
-                    try {
-                        clis = url.openStream();
-                        if (clis != null) {
-                            v.addElement(
-                                    getImplementation().getByInputStream(clis)
-                            );
-                            anyLoaded = true;
-                            if (LogSupport.isLoggable())
-                                LogSupport.log("MimetypesFileTypeMap: " +
-                                        "successfully loaded " +
-                                        "mime types from URL: " + url);
-                        } else {
-                            if (LogSupport.isLoggable())
-                                LogSupport.log("MimetypesFileTypeMap: " +
-                                        "not loading " +
-                                        "mime types from URL: " + url);
-                        }
-                    } catch (IOException | SecurityException ioex) {
+                        LogSupport.log("MimetypesFileTypeMap: getResources");
+                    for (int i = 0; i < urls.length; i++) {
+                        URL url = urls[i];
+                        InputStream clis = null;
                         if (LogSupport.isLoggable())
-                            LogSupport.log("MimetypesFileTypeMap: can't load " +
-                                    url, ioex);
-                    } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
-                        if (LogSupport.isLoggable()) {
-                            LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
-                                    "MimeTypeRegistry: can't load " + url, e);
-                        }
-                    } finally {
+                            LogSupport.log("MimetypesFileTypeMap: URL " + url);
                         try {
-                            if (clis != null)
-                                clis.close();
-                        } catch (IOException cex) {
+                            clis = url.openStream();
+                            if (clis != null) {
+                                v.addElement(
+                                        getImplementation().getByInputStream(clis)
+                                );
+                                anyLoaded = true;
+                                if (LogSupport.isLoggable())
+                                    LogSupport.log("MimetypesFileTypeMap: " +
+                                            "successfully loaded " +
+                                            "mime types from URL: " + url);
+                            } else {
+                                if (LogSupport.isLoggable())
+                                    LogSupport.log("MimetypesFileTypeMap: " +
+                                            "not loading " +
+                                            "mime types from URL: " + url);
+                            }
+                        } catch (IOException | SecurityException ioex) {
                             if (LogSupport.isLoggable())
-                                LogSupport.log("InputStream cannot be close for " + name, cex);
+                                LogSupport.log("MimetypesFileTypeMap: can't load " +
+                                        url, ioex);
+                        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
+                            if (LogSupport.isLoggable()) {
+                                LogSupport.log("Cannot find or load an implementation for MimeTypeRegistryProvider." +
+                                        "MimeTypeRegistry: can't load " + url, e);
+                            }
+                        } finally {
+                            try {
+                                if (clis != null)
+                                    clis.close();
+                            } catch (IOException cex) {
+                                if (LogSupport.isLoggable())
+                                    LogSupport.log("InputStream cannot be close for " + name, cex);
+                            }
                         }
                     }
                 }
+            } catch (Exception ex) {
+                if (LogSupport.isLoggable())
+                    LogSupport.log("MimetypesFileTypeMap: can't load " + name, ex);
             }
-                // Even if nothing was loaded, we stop it because resources were found.
-                break;
-        } catch (Exception ex) {
-            if (LogSupport.isLoggable())
-                LogSupport.log("MimetypesFileTypeMap: can't load " + name, ex);
-        }
         }
         // if failed to load anything, fall back to old technique, just in case
         if (!anyLoaded) {
@@ -261,9 +262,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
             for (int i = 0; i < names.length; i++) {
                 resources[i] = "/" + names[i];
             }
-            MimeTypeRegistry mf = loadResource(resources);
-            if (mf != null)
-                v.addElement(mf);
+            v.addAll(loadResource(resources));
         }
     }
 
@@ -332,7 +331,7 @@ public class MimetypesFileTypeMap extends FileTypeMap {
     /**
      * Prepend the MIME type values to the registry.
      *
-     * @param mime_types A .jakarta.mime.types formatted string of entries.
+     * @param mime_types A mime types formatted string of entries.
      */
     public synchronized void addMimeTypes(String mime_types) {
         try {

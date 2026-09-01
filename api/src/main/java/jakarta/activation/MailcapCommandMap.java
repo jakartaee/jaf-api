@@ -27,26 +27,31 @@ import java.util.ServiceConfigurationError;
 /**
  * MailcapCommandMap extends the CommandMap
  * abstract class. It implements a CommandMap whose configuration
- * is based on jakarta.mailcap files
+ * is based on mailcap configuration files
  * (<A HREF="http://www.ietf.org/rfc/rfc1524.txt">RFC 1524</A>).
  * The MailcapCommandMap can be configured both programmatically
  * and via configuration files.
  * <p>
  * <b>Mailcap file search order:</b><p>
  * The MailcapCommandMap looks in various places in the user's
- * system for jakarta.mailcap file entries. When requests are made
+ * system for mailcap file entries. When requests are made
  * to search for commands in the MailcapCommandMap, it searches
- * jakarta.mailcap files in the following order:
+ * both legacy (<code>mailcap</code>) and Jakarta-prefixed
+ * (<code>jakarta.mailcap</code>) files in the following order:
  * <ol>
- * <li> Programatically added entries to the MailcapCommandMap instance.
- * <li> The file <code>.jakarta.mailcap</code> in the user's home directory.
- * <li> The file <code>jakarta.mailcap</code> in the Java runtime.
- * <li> The file or resources named <code>META-INF/jakarta.mailcap</code>.
- * <li> The file or resource named <code>META-INF/jakarta.mailcap.default</code>
- * (usually found only in the <code>activation.jar</code> file).
+ * <li> Programmatically added entries to the MailcapCommandMap instance.
+ * <li> The file <code>.mailcap</code> or <code>.jakarta.mailcap</code>
+ *      in the user's home directory.
+ * <li> The file <code>mailcap</code> or <code>jakarta.mailcap</code>
+ *      in the Java runtime.
+ * <li> The file or resources named <code>META-INF/mailcap</code> or
+ *      <code>META-INF/jakarta.mailcap</code>.
+ * <li> The file or resource named <code>META-INF/mailcap.default</code> or
+ *      <code>META-INF/jakarta.mailcap.default</code>
+ *      (usually found only in the <code>activation.jar</code> file).
  * </ol>
  * <p>
- * (The current implementation looks for the <code>jakarta.mailcap</code> file
+ * (The current implementation looks for the mailcap file
  * in the Java runtime in the directory <code><i>java.home</i>/conf</code>
  * if it exists, and otherwise in the directory
  * <code><i>java.home</i>/lib</code>, where <i>java.home</i> is the value
@@ -55,7 +60,7 @@ import java.util.ServiceConfigurationError;
  * <p>
  * <b>Mailcap file format:</b><p>
  *
- * Mailcap files must conform to the jakarta.mailcap
+ * Mailcap files must conform to the mailcap
  * file specification (RFC 1524, <i>A User Agent Configuration Mechanism
  * For Multimedia Mail Format Information</i>).
  * The file format consists of entries corresponding to
@@ -63,10 +68,10 @@ import java.util.ServiceConfigurationError;
  * specifies <i>applications</i> for clients to use when they
  * themselves cannot operate on the specified MIME type. The
  * MailcapCommandMap extends this specification by using a parameter mechanism
- * in jakarta.mailcap files that allows JavaBeans(tm) components to be specified as
+ * in mailcap files that allows JavaBeans(tm) components to be specified as
  * corresponding to particular commands for a MIME type.<p>
  *
- * When a jakarta.mailcap file is
+ * When a mailcap file is
  * parsed, the MailcapCommandMap recognizes certain parameter signatures,
  * specifically those parameter names that begin with <code>x-java-</code>.
  * The MailcapCommandMap uses this signature to find
@@ -92,7 +97,7 @@ import java.util.ServiceConfigurationError;
  * view command would only be used if a non-fallback view command for
  * the MIME type could not be found.<p>
  *
- * MailcapCommandMap aware jakarta.mailcap files have the
+ * MailcapCommandMap aware mailcap files have the
  * following general form:<p>
  * <code>
  * # Comments begin with a '#' and continue to the end of the line.<br>
@@ -102,8 +107,8 @@ import java.util.ServiceConfigurationError;
  * # and a parameter list looks like: <br>
  * text/plain; ; x-java-view=com.sun.TextViewer; x-java-edit=com.sun.TextEdit
  * <br>
- * # Note that jakarta.mailcap entries that do not contain 'x-java' parameters<br>
- * # and comply to RFC 1524 are simply ignored:<br>
+ * # Note that entries that do not contain 'x-java' parameters<br>
+ * # and comply with RFC 1524 are simply ignored:<br>
  * image/gif; /usr/dt/bin/sdtimage %s<br>
  *
  * </code>
@@ -149,12 +154,11 @@ public class MailcapCommandMap extends CommandMap {
             String user_home = System.getProperty("user.home");
 
             if (user_home != null) {
-                String[] paths = new String[] {user_home + File.separator + ".jakarta.mailcap", user_home + File.separator + ".mailcap"};
+                String[] paths = new String[] {user_home + File.separator + ".mailcap", user_home + File.separator + ".jakarta.mailcap"};
                 for (String path : paths) {
-                mf = loadFile(path);
+                    mf = loadFile(path);
                     if (mf != null) {
-                    dbv.add(mf);
-                        break;
+                        dbv.add(mf);
                     }
                 }
             }
@@ -165,12 +169,11 @@ public class MailcapCommandMap extends CommandMap {
         try {
             // check system's home
             if (confDir != null) {
-                String[] confs = new String[] {"jakarta.mailcap", "mailcap"};
+                String[] confs = new String[] {"mailcap", "jakarta.mailcap"};
                 for (String conf : confs) {
                     mf = loadFile(confDir + conf);
                     if (mf != null) {
-                    dbv.add(mf);
-                        break;
+                        dbv.add(mf);
                     }
                 }
             }
@@ -179,13 +182,11 @@ public class MailcapCommandMap extends CommandMap {
 
         LogSupport.log("MailcapCommandMap: load JAR");
         // load from the app's jar file
-        loadAllResources(dbv, "META-INF/jakarta.mailcap", "META-INF/mailcap");
+        loadAllResources(dbv, "META-INF/mailcap", "META-INF/jakarta.mailcap");
 
         LogSupport.log("MailcapCommandMap: load DEF");
-        mf = loadResource("/META-INF/jakarta.mailcap.default", "/META-INF/mailcap.default");
 
-        if (mf != null)
-            dbv.add(mf);
+        dbv.addAll(loadResource("/META-INF/mailcap.default", "/META-INF/jakarta.mailcap.default"));
 
         DB = new MailcapRegistry[dbv.size()];
         DB = dbv.toArray(DB);
@@ -194,31 +195,32 @@ public class MailcapCommandMap extends CommandMap {
     /**
      * Load from the named resource.
      */
-    private MailcapRegistry loadResource(String ... names) {
+    private List<MailcapRegistry> loadResource(String ... names) {
+        List<MailcapRegistry> registry = new ArrayList<>();
         for (String name : names) {
-        try (InputStream clis = this.getClass().getResourceAsStream(name)) {
-            if (clis != null) {
-                MailcapRegistry mf = getImplementation().getByInputStream(clis);
+            try (InputStream clis = this.getClass().getResourceAsStream(name)) {
+                if (clis != null) {
+                    MailcapRegistry mf = getImplementation().getByInputStream(clis);
+                    if (LogSupport.isLoggable())
+                        LogSupport.log("MailcapCommandMap: successfully loaded " +
+                                    "mailcap file: " + name);
+                    registry.add(mf);
+                } else {
+                    if (LogSupport.isLoggable())
+                        LogSupport.log("MailcapCommandMap: not loading " +
+                                    "mailcap file: " + name);
+                }
+            } catch (IOException | SecurityException e) {
                 if (LogSupport.isLoggable())
-                    LogSupport.log("MailcapCommandMap: successfully loaded " +
-                                "jakarta.mailcap file: " + name);
-                return mf;
-            } else {
-                if (LogSupport.isLoggable())
-                    LogSupport.log("MailcapCommandMap: not loading " +
-                                "jakarta.mailcap file: " + name);
-            }
-        } catch (IOException | SecurityException e) {
-            if (LogSupport.isLoggable())
-                LogSupport.log("MailcapCommandMap: can't load " + name, e);
-        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
-            if (LogSupport.isLoggable()) {
-                LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
-                        "MailcapRegistry: can't load " + name, e);
+                    LogSupport.log("MailcapCommandMap: can't load " + name, e);
+            } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
+                if (LogSupport.isLoggable()) {
+                    LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
+                            "MailcapRegistry: can't load " + name, e);
+                }
             }
         }
-        }
-        return null;
+        return registry;
     }
 
     /**
@@ -227,57 +229,55 @@ public class MailcapCommandMap extends CommandMap {
     private void loadAllResources(List<MailcapRegistry> v, String ... names) {
         boolean anyLoaded = false;
         for (String name : names) {
-        try {
-            URL[] urls;
-            ClassLoader cld = null;
-            // First try the "application's" class loader.
-            cld = Thread.currentThread().getContextClassLoader();
-            if (cld == null)
-                cld = this.getClass().getClassLoader();
-            if (cld != null)
-                urls = SecuritySupport.getResources(cld, name);
-            else
-                urls = SecuritySupport.getSystemResources(name);
-            if (urls != null) {
-                if (LogSupport.isLoggable())
-                    LogSupport.log("MailcapCommandMap: getResources");
-                for (int i = 0; i < urls.length; i++) {
-                    URL url = urls[i];
+            try {
+                URL[] urls;
+                ClassLoader cld = null;
+                // First try the "application's" class loader.
+                cld = Thread.currentThread().getContextClassLoader();
+                if (cld == null)
+                    cld = this.getClass().getClassLoader();
+                if (cld != null)
+                    urls = SecuritySupport.getResources(cld, name);
+                else
+                    urls = SecuritySupport.getSystemResources(name);
+                if (urls != null) {
                     if (LogSupport.isLoggable())
-                        LogSupport.log("MailcapCommandMap: URL " + url);
-                    try (InputStream clis = url.openStream()) {
-                        if (clis != null) {
-                            v.add(getImplementation().getByInputStream(clis));
-                            anyLoaded = true;
-                            if (LogSupport.isLoggable())
-                                LogSupport.log("MailcapCommandMap: " +
-                                        "successfully loaded " +
-                                            "jakarta.mailcap file from URL: " +
-                                        url);
-                        } else {
-                            if (LogSupport.isLoggable())
-                                LogSupport.log("MailcapCommandMap: " +
-                                            "not loading jakarta.mailcap " +
-                                        "file from URL: " + url);
-                        }
-                    } catch (IOException | SecurityException ioex) {
+                        LogSupport.log("MailcapCommandMap: getResources");
+                    for (int i = 0; i < urls.length; i++) {
+                        URL url = urls[i];
                         if (LogSupport.isLoggable())
-                            LogSupport.log("MailcapCommandMap: can't load " +
-                                    url, ioex);
-                    } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
-                        if (LogSupport.isLoggable()) {
-                            LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
-                                    "MailcapRegistry: can't load " + name, e);
+                            LogSupport.log("MailcapCommandMap: URL " + url);
+                        try (InputStream clis = url.openStream()) {
+                            if (clis != null) {
+                                v.add(getImplementation().getByInputStream(clis));
+                                anyLoaded = true;
+                                if (LogSupport.isLoggable())
+                                    LogSupport.log("MailcapCommandMap: " +
+                                            "successfully loaded " +
+                                                "mailcap file from URL: " +
+                                            url);
+                            } else {
+                                if (LogSupport.isLoggable())
+                                    LogSupport.log("MailcapCommandMap: " +
+                                                "not loading mailcap " +
+                                            "file from URL: " + url);
+                            }
+                        } catch (IOException | SecurityException ioex) {
+                            if (LogSupport.isLoggable())
+                                LogSupport.log("MailcapCommandMap: can't load " +
+                                        url, ioex);
+                        } catch (NoSuchElementException | IllegalStateException | ServiceConfigurationError e) {
+                            if (LogSupport.isLoggable()) {
+                                LogSupport.log("Cannot find or load an implementation for MailcapRegistryProvider. " +
+                                        "MailcapRegistry: can't load " + name, e);
+                            }
                         }
                     }
                 }
-                    // Even if nothing was loaded, we stop it because resources were found.
-                    break;
+            } catch (Exception ex) {
+                if (LogSupport.isLoggable())
+                    LogSupport.log("MailcapCommandMap: can't load " + name, ex);
             }
-        } catch (Exception ex) {
-            if (LogSupport.isLoggable())
-                LogSupport.log("MailcapCommandMap: can't load " + name, ex);
-        }
         }
 
         // if failed to load anything, fall back to old technique, just in case
@@ -288,9 +288,7 @@ public class MailcapCommandMap extends CommandMap {
             for (int i = 0; i < names.length; i++) {
                 resources[i] = "/" + names[i];
             }
-            MailcapRegistry mf = loadResource(resources);
-            if (mf != null)
-                v.add(mf);
+            v.addAll(loadResource(resources));
         }
     }
 
